@@ -5,24 +5,10 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/KevinSee/DabomYakimaSthd/master?urlpath=rstudio)
 
-This repository contains the data and code for our paper:
-
-> Authors, (YYYY). *Title of your paper goes here*. Name of journal/book
-> <https://doi.org/xxx/xxx>
-
-Our pre-print is online here:
-
-> Authors, (YYYY). *Title of your paper goes here*. Name of
-> journal/book, Accessed 10 Feb 2020. Online at
-> <https://doi.org/xxx/xxx>
-
-### How to cite
-
-Please cite this compendium as:
-
-> Authors, (2020). *Compendium of R code and data for Title of your
-> paper goes here*. Accessed 10 Feb 2020. Online at
-> <https://doi.org/xxx/xxx>
+This repository contains the data and code for running the **D**am
+**A**dult **B**ranch **O**ccupancy **M**odel
+([DABOM](https://github.com/KevinSee/DABOM))for steelhead returning to
+the Yakima River.
 
 ### How to download or install
 
