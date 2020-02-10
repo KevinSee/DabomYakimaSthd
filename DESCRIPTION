@@ -1,15 +1,19 @@
 Package: DabomYakimaSthd
-Title: What the Package Does (One Line, Title Case)
+Title: Estimate Adult Steelhead Returns to the Yakima River
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person(given = "First",
            family = "Last",
            role = c("aut", "cre"),
            email = "first.last@example.com")
-Description: What the package does (one paragraph)
+Description: Using a random and representative sample of returning adult steelhead, we fit a braching patch-occupancy model to simultaneously estimate movement and detection probabilities, and translate those movement probabilities into escapement estimates.
 License: MIT + file LICENSE
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/KevinSee/DabomYakimaSthd
 BugReports: https://github.com/KevinSee/DabomYakimaSthd/issues
+Imports: bookdown,
+    here
+Suggests: devtools,
+    git2r
