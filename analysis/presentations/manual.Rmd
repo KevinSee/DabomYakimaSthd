@@ -56,3 +56,52 @@ highlights: |
   These are the highlights.
 ---
 
+# Introduction
+
+This manual describes how to run the **D**am **A**dult **B**ranch **O**ccupancy **M**odel ([DABOM](https://github.com/KevinSee/DABOM)) for steelhead crossing over Prosser Dam into the Yakima River. 
+
+# Set-up
+
+The first step is to ensure all the appropriate software and packages are installed on your computer. You will need to have [R](https://cran.r-project.org/) downloaded and installed. You will also need to install `tidyverse`, a series of R packages that work together, as well as the `jagsUI` package to interface with the JAGS software. You can install both by typing the following into your R console:
+
+```{r install-cran, eval = F}
+install.packages("tidyverse")
+install.packages("jagsUI")
+```
+
+You will then need to install a few custom packages written for this model, called `PITcleanr` (for cleaning PIT tag observations) and `DABOM` (for writing and running the DABOM model). You can use the `devtools` package to install both from GitHub with the following code:
+
+```{r install-github, eval = F}
+install.packages("devtools")
+devtools::install_github("KevinSee/PITcleanr")
+devtools::install_github("KevinSee/DABOM")
+```
+
+NOTE: To use `devtools`, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at https://cran.r-project.org/bin/windows/Rtools/.
+
+You will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software to run DABOM. You can download that from [SourceForge](https://sourceforge.net/projects/mcmc-jags/files/). 
+
+# Steps
+
+Briefly, the steps for a new year of data include: 
+
+1. Get tag information
+1. Query PTAGIS for observations
+1. Run PITcleanr to "clean up" observations
+1. Refine PITcleanr output
+1. Prepare data for DABOM and write JAGS model
+1. Run DABOM
+1. Summarise results
+1. Combine with estimates of adult escapement at Prosser
+
+## Tag Information
+
+You will need to compile a list of PIT tags that were caught in the Prosser trap for that spawn year, called the valid tag list. These need to be a random, representative sample of the run, so it should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but is not caught in the trap, it cannot be used for this analysis.
+
+Save this list of valid tags as a text file with no headers, to make it easy to upload to a PTAGIS query.
+
+This is a good opportunity to compile other relevant biological information for the fish in that valid tag list, such as sex, length, weight and origin. 
+
+## PTAGIS Query
+
+The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), and select 
