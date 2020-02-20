@@ -64,7 +64,7 @@ save(configuration, site_df, file = 'analysis/data/derived_data/site_config.rda'
 
 
 #-----------------------------------------------------------------
-# which sites are in site_df, but not in the PTAGIAS configuration file?
+# which sites are in site_df, but not in the PTAGIS configuration file?
 site_df %>%
   filter(!(SiteID %in% configuration$SiteID |
              SiteID %in% configuration$Node))
