@@ -104,4 +104,21 @@ This is a good opportunity to compile other relevant biological information for 
 
 ## PTAGIS Query
 
-The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), and select 
+The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting). You will need a free account from PTAGIS, and to be logged in. Select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query. 
+
+The following fields are required to work with `PITcleanr`:
+
+* Tag
+* Mark Rear Type
+* Event Type
+* Event Site Code
+* Event Date Time
+* Event Release Date Time
+* Antenna
+* Antenna Group Configuration
+
+You are welcome to include other fields as well, but the ones listed above must be added.
+
+Set up a filter for specific tags by clicking on "27 Tag Code - List or Text File" on the right. Select "Import file..." and upload the file you saved in the previous step with all the tag codes in the valid tag list. Name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report".
+
+Once the query has been run, 
