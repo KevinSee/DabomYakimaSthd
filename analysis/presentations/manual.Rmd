@@ -69,6 +69,8 @@ The first step is to ensure all of the appropriate software and R packages are i
 
 First, you will need to have [R](https://cran.r-project.org/) downloaded and installed. You can download and install the "base" distribution and all of the default installation settings should work just fine. In addition, we find it useful to use [RStudio](https://rstudio.com/) to interface with R. Again, download and install the Desktop version of RStudio using the default settings. RStudio provide a graphical user interface (GUI) for R and provide a text/code editor, allows for direct code execution, management of R packages, and allows you to view R objects (e.g., data) in your environment.
 
+Next, you will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software to run DABOM. You can download that from [SourceForge](https://sourceforge.net/projects/mcmc-jags/files/). 
+
 After installing R and RStudio, you will also need to install `tidyverse`, a series of R packages that work together for data science (e.g., data cleaning and wrangling), as well as the `jagsUI` package to interface with the JAGS (Just Another Gibbs Sampler) software which is used by `DABOM` for Bayian inference. The `tidyverse` and `jagsUI` packages are both available from the R community and can be installed by typing the following into your R console:
 
 ```{r install-cran, eval = F}
@@ -93,8 +95,6 @@ library(ggraph)           # to load the package into your R environment
 ```
 
 We are always trying to improve the `PITcleanr` and `DABOM` R packages to minimize these types of errors.
-
-Finally, you will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software to run DABOM. You can download that from [SourceForge](https://sourceforge.net/projects/mcmc-jags/files/). 
 
 # Steps
 
