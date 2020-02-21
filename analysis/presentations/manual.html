@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -1366,7 +1365,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1428,6 +1426,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1456,6 +1455,12 @@ summary {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -1531,7 +1536,7 @@ div.tocify {
 <h4 class="date">21 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
-<p>This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.</p>
+This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
 </div>
 
 </div>
@@ -1547,6 +1552,7 @@ div.tocify {
 <h1><span class="header-section-number">2</span> Set-up</h1>
 <p>The first step is to ensure all of the appropriate software and R packages are installed on your computer. R is simply a language and environment for statistical computing and graphics and is the workhorse for running all of the models described herein; R packages are collections of functions and data sets developed by the R community for particular tasks. Some R packages used here are available from the general R community and some (e.g., <code>DABOM</code>) are developed by Kevin See and contain function specifically for analysis of PIT observation data.</p>
 <p>First, you will need to have <a href="https://cran.r-project.org/">R</a> downloaded and installed. You can download and install the “base” distribution and all of the default installation settings should work just fine. In addition, we find it useful to use <a href="https://rstudio.com/">RStudio</a> to interface with R. Again, download and install the Desktop version of RStudio using the default settings. RStudio provide a graphical user interface (GUI) for R and provide a text/code editor, allows for direct code execution, management of R packages, and allows you to view R objects (e.g., data) in your environment.</p>
+<p>Next, you will also need the <a href="http://mcmc-jags.sourceforge.net/">JAGS</a> software to run DABOM. You can download that from <a href="https://sourceforge.net/projects/mcmc-jags/files/">SourceForge</a>.</p>
 <p>After installing R and RStudio, you will also need to install <code>tidyverse</code>, a series of R packages that work together for data science (e.g., data cleaning and wrangling), as well as the <code>jagsUI</code> package to interface with the JAGS (Just Another Gibbs Sampler) software which is used by <code>DABOM</code> for Bayian inference. The <code>tidyverse</code> and <code>jagsUI</code> packages are both available from the R community and can be installed by typing the following into your R console:</p>
 <pre class="r"><code>install.packages(&quot;tidyverse&quot;)
 install.packages(&quot;jagsUI&quot;)</code></pre>
@@ -1559,7 +1565,6 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 library(ggraph)           # to load the package into your R environment
 # replace ggraph with the appropriate package name as needed</code></pre>
 <p>We are always trying to improve the <code>PITcleanr</code> and <code>DABOM</code> R packages to minimize these types of errors.</p>
-<p>Finally, you will also need the <a href="http://mcmc-jags.sourceforge.net/">JAGS</a> software to run DABOM. You can download that from <a href="https://sourceforge.net/projects/mcmc-jags/files/">SourceForge</a>.</p>
 </div>
 <div id="steps" class="section level1">
 <h1><span class="header-section-number">3</span> Steps</h1>
