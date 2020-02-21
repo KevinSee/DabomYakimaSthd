@@ -5,6 +5,9 @@ author:
       email: Kevin.See@merck.com
       institute: [biomark]
       correspondence: true
+  - Mike Ackerman:
+      email: Mike.Ackerman@merck.com
+      institute: [biomark]
 institute:
   - biomark: Biomark, Inc.
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -62,14 +65,14 @@ This manual describes how to run the **D**am **A**dult **B**ranch **O**ccupancy 
 
 # Set-up
 
-The first step is to ensure all the appropriate software and packages are installed on your computer. You will need to have [R](https://cran.r-project.org/) downloaded and installed. You will also need to install `tidyverse`, a series of R packages that work together, as well as the `jagsUI` package to interface with the JAGS software. You can install both by typing the following into your R console:
+The first step is to ensure all the appropriate software and packages are installed on your computer. You will need to have [R](https://cran.r-project.org/) downloaded and installed. In addition, we find it useful to use [RStudio](https://rstudio.com/) as an interface with R. RStudio provides a text/code editor, allows direct code execution, R package management, and to view objects in your environment. You will also need to install `tidyverse`, a series of R packages that work together for data science (e.g., data wrangling and cleaning), as well as the `jagsUI` package to interface with the JAGS (Just Another Gibbs Sampler) software, the software used by `DABOM` for Bayesian inference. You can install both R packages by typing the following into your R console:
 
 ```{r install-cran, eval = F}
 install.packages("tidyverse")
 install.packages("jagsUI")
 ```
 
-You will then need to install a few custom packages written for this model, called `PITcleanr` (for cleaning PIT tag observations) and `DABOM` (for writing and running the DABOM model). You can use the `devtools` package to install both from GitHub with the following code:
+You will then need to install a few custom packages written for this model, called `PITcleanr` (for cleaning PIT tag observations) and `DABOM` (for writing and running the DABOM model). You can use the `devtools` package to install both from [GitHub](https://github.com/) with the following code:
 
 ```{r install-github, eval = F}
 install.packages("devtools")
