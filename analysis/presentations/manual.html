@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Kevin See1,✉" />
+<meta name="author" content="Kevin See1,✉, and Mike Ackerman1" />
 
 
 <title>Using DABOM for Yakima Steelhead</title>
@@ -1365,6 +1366,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1426,7 +1428,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1455,12 +1456,6 @@ summary {
 }
 }
 
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
 
 .toc-content {
   padding-left: 30px;
@@ -1532,11 +1527,11 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Using DABOM for Yakima Steelhead</h1>
-<h4 class="author">Kevin See<sup>1,✉</sup></h4>
+<h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
 <h4 class="date">21 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
-This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
+<p>This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.</p>
 </div>
 
 </div>
@@ -1546,19 +1541,25 @@ This manual contains the instructions to run the DABOM model for steelhead in th
 <p><sup>✉</sup> Correspondence: <a href="mailto:Kevin.See@merck.com">Kevin See &lt;<a href="mailto:Kevin.See@merck.com" class="email">Kevin.See@merck.com</a>&gt;</a></p>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This manual describes how to run the <strong>D</strong>am <strong>A</strong>dult <strong>B</strong>ranch <strong>O</strong>ccupancy <strong>M</strong>odel (<a href="https://github.com/KevinSee/DABOM">DABOM</a>) for steelhead crossing over Prosser Dam into the Yakima River.</p>
+<p>This manual describes how to run the <strong>D</strong>am <strong>A</strong>dult <strong>B</strong>ranch <strong>O</strong>ccupancy <strong>M</strong>odel (<a href="https://github.com/KevinSee/DABOM">DABOM</a>) for steelhead crossing over Prosser Dam and into the Yakima River. We start by describing how to query <a href="https://www.ptagis.org/">PTAGIS</a> to get all detections of adults at relevant observation sites (e.g., weirs, PIT tag arrays, etc.) for a particular spawning run from a list of “valid” PIT tags. Observation data are then “cleaned up” using the <code>PITcleanr</code> R package to determine a final destination or spawning location for each individual and prepared for use in the <code>DABOM</code> R package and model. Next, we describe how to write a JAGS model for use in the <code>DABOM</code> model, and finally, run <code>DABOM</code> to estimate detection and transition probabilities in the Yakima River system. Movement probabilities can then be multiplied by estimates of adult escapement at Prosser Dam to estimate escapement at any observation site (or tributary) within the Yakima River.</p>
 </div>
 <div id="set-up" class="section level1">
 <h1><span class="header-section-number">2</span> Set-up</h1>
-<p>The first step is to ensure all the appropriate software and packages are installed on your computer. You will need to have <a href="https://cran.r-project.org/">R</a> downloaded and installed. You will also need to install <code>tidyverse</code>, a series of R packages that work together, as well as the <code>jagsUI</code> package to interface with the JAGS software. You can install both by typing the following into your R console:</p>
+<p>The first step is to ensure all of the appropriate software and R packages are installed on your computer. R is simply a language and environment for statistical computing and graphics and is the workhorse for running all of the models described herein; R packages are collections of functions and data sets developed by the R community for particular tasks. Some R packages used here are available from the general R community and some (e.g., <code>DABOM</code>) are developed by Kevin See and contain function specifically for analysis of PIT observation data.</p>
+<p>First, you will need to have <a href="https://cran.r-project.org/">R</a> downloaded and installed. You can download and install the “base” distribution and all of the default installation settings should work just fine. In addition, we find it useful to use <a href="https://rstudio.com/">RStudio</a> to interface with R. Again, download and install the Desktop version of RStudio using the default settings. RStudio provide a graphical user interface (GUI) for R and provide a text/code editor, allows for direct code execution, management of R packages, and allows you to view R objects (e.g., data) in your environment.</p>
+<p>After installing R and RStudio, you will also need to install <code>tidyverse</code>, a series of R packages that work together for data science (e.g., data cleaning and wrangling), as well as the <code>jagsUI</code> package to interface with the JAGS (Just Another Gibbs Sampler) software which is used by <code>DABOM</code> for Bayian inference. The <code>tidyverse</code> and <code>jagsUI</code> packages are both available from the R community and can be installed by typing the following into your R console:</p>
 <pre class="r"><code>install.packages(&quot;tidyverse&quot;)
 install.packages(&quot;jagsUI&quot;)</code></pre>
-<p>You will then need to install a few custom packages written for this model, called <code>PITcleanr</code> (for cleaning PIT tag observations) and <code>DABOM</code> (for writing and running the DABOM model). You can use the <code>devtools</code> package to install both from GitHub with the following code:</p>
+<p>You will then need to install a few custom packages written for this model. The first is called <code>PITcleanr</code> written primarily for clean PIT tag observation data. And <code>DABOM</code> is used for writing and running the DABOM model. You can use the <code>devtools</code> package to install both from <a href="https://github.com/">GitHub</a> using the following code:</p>
 <pre class="r"><code>install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;KevinSee/PITcleanr&quot;)
 devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
-<p>NOTE: To use <code>devtools</code>, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>.</p>
-<p>You will also need the <a href="http://mcmc-jags.sourceforge.net/">JAGS</a> software to run DABOM. You can download that from <a href="https://sourceforge.net/projects/mcmc-jags/files/">SourceForge</a>.</p>
+<p>NOTE: To use <code>devtools</code>, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>. You can try to use <code>devtools</code> without Rtools, initially, and if <code>PITcleanr</code> and <code>DABOM</code> fail to install correctly, try installing Rtools (we have had mixed results with this). Additionally, when installing <code>PITcleanr</code> or <code>DABOM</code> you may receive a messy error message containing something like <em>&quot;there is no package called ‘ggraph’</em>. In that case, try to install and load the given package using the following and then re-attempt to install <code>PITclean</code> and <code>DABOM</code>.</p>
+<pre class="r"><code>install.package(&quot;ggraph&quot;) # to install package from R cran
+library(ggraph)           # to load the package into your R environment
+# replace ggraph with the appropriate package name as needed</code></pre>
+<p>We are always trying to improve the <code>PITcleanr</code> and <code>DABOM</code> R packages to minimize these types of errors.</p>
+<p>Finally, you will also need the <a href="http://mcmc-jags.sourceforge.net/">JAGS</a> software to run DABOM. You can download that from <a href="https://sourceforge.net/projects/mcmc-jags/files/">SourceForge</a>.</p>
 </div>
 <div id="steps" class="section level1">
 <h1><span class="header-section-number">3</span> Steps</h1>
