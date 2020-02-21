@@ -6,7 +6,7 @@ author:
       institute: [biomark]
       correspondence: true
 institute:
-  - biomark: Biomark, Inc.
+  - biomark: Biomark, Inc. 705 South 8th St., Boise, Idaho, 83702, USA
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
     bookdown::html_document2:
@@ -45,11 +45,11 @@ output:
       - --lua-filter=../templates/author-info-blocks.lua
       - --lua-filter=../templates/pagebreak.lua
 bibliography:
-- packages.bib
-- references.bib
+# - ../paper/packages.bib
+- ../paper/references.bib
 csl: "../templates/american-fisheries-society.csl" # Insert path for the bib-style
 abstract: |
-  
+  This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
 keywords: |
   keyword 1; keyword 2; keyword 3
 highlights: |
