@@ -108,12 +108,12 @@ We are always trying to improve the `PITcleanr` and `DABOM` R packages to minimi
 
 # Steps
 
-Briefly, the steps for a new year of data include: 
+Briefly, the steps to process a new year of data include: 
 
-1. Get tag information
+1. Get PIT tag information
 1. Query PTAGIS for observations
 1. Run PITcleanr to "clean up" observations
-1. Refine PITcleanr output
+1. Review PITcleanr output to determine final capture histories and spawning locations
 1. Prepare data for DABOM and write JAGS model
 1. Run DABOM
 1. Summarise results
@@ -121,11 +121,11 @@ Briefly, the steps for a new year of data include:
 
 ## Tag Information
 
-You will need to compile a list of PIT tags that were caught in the Prosser trap for that spawn year, called the valid tag list. These need to be a random, representative sample of the run, so it should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but is not caught in the trap, it cannot be used for this analysis.
+You will need to compile a list of PIT tags in steelhead that were caught in the Prosser trap for a given spawn year, called the valid tag list. Tagged steelhead need to be a random, representative sample of the run, and so should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but it is not caught in the trap, it cannot be used for this analysis.
 
 Save this list of valid tags as a text file with no headers, to make it easy to upload to a PTAGIS query.
 
-This is a good opportunity to compile other relevant biological information for the fish in that valid tag list, such as sex, length, weight and origin. 
+This is also a good opportunity to compile other relevant biological or life history information for each fish in that valid tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.
 
 ## PTAGIS Query
 
