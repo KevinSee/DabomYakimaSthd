@@ -1533,7 +1533,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Using DABOM for Yakima Steelhead</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
-<h4 class="date">21 February, 2020</h4>
+<h4 class="date">24 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
@@ -1567,12 +1567,12 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 </div>
 <div id="steps" class="section level1">
 <h1><span class="header-section-number">3</span> Steps</h1>
-<p>Briefly, the steps for a new year of data include:</p>
+<p>Briefly, the steps to process a new year of data include:</p>
 <ol style="list-style-type: decimal">
-<li>Get tag information</li>
+<li>Get PIT tag information</li>
 <li>Query PTAGIS for observations</li>
 <li>Run PITcleanr to “clean up” observations</li>
-<li>Refine PITcleanr output</li>
+<li>Review PITcleanr output to determine final capture histories and spawning locations</li>
 <li>Prepare data for DABOM and write JAGS model</li>
 <li>Run DABOM</li>
 <li>Summarise results</li>
@@ -1580,9 +1580,9 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 </ol>
 <div id="tag-information" class="section level2">
 <h2><span class="header-section-number">3.1</span> Tag Information</h2>
-<p>You will need to compile a list of PIT tags that were caught in the Prosser trap for that spawn year, called the valid tag list. These need to be a random, representative sample of the run, so it should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but is not caught in the trap, it cannot be used for this analysis.</p>
+<p>You will need to compile a list of PIT tags in steelhead that were caught in the Prosser trap for a given spawn year, called the valid tag list. Tagged steelhead need to be a random, representative sample of the run, and so should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but it is not caught in the trap, it cannot be used for this analysis.</p>
 <p>Save this list of valid tags as a text file with no headers, to make it easy to upload to a PTAGIS query.</p>
-<p>This is a good opportunity to compile other relevant biological information for the fish in that valid tag list, such as sex, length, weight and origin.</p>
+<p>This is also a good opportunity to compile other relevant biological or life history information for each fish in that valid tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.</p>
 </div>
 <div id="ptagis-query" class="section level2">
 <h2><span class="header-section-number">3.2</span> PTAGIS Query</h2>
@@ -1704,7 +1704,7 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-02-21 15:00:22  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-02-24 13:23:11  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO</code> function (<code>proc_list</code> in the code above) is a list, containing two elements:</p>
 <ul>
 <li><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the “path” a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata.</li>
@@ -1716,30 +1716,104 @@ proc_list = processCapHist_PRO(start_date,
 <div id="examine-pitcleanr-output" class="section level2">
 <h2><span class="header-section-number">3.4</span> Examine PITcleanr Output</h2>
 <p>For all the tags with no issues (detections move steadily upstream), the UserProcStatus has been set to <code>TRUE</code>. All the tags with potential detection questions have a blank in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the Excel file, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibily considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either <code>TRUE</code> or <code>FALSE</code>, to show whether the detection at that node should be kept for the DABOM model.</p>
-<p>One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked <code>FALSE</code> in the UserProcStatus columm, and the other ones marked <code>TRUE</code>. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked <code>FALSE</code>. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones.</p>
-<pre class="r"><code>proc_list[[2]] %&gt;%
-  filter(TagID == TagID[1]) %&gt;%
-  select(TagID:lastObsDate, SiteID, Node) %&gt;%
-  bind_rows(tibble(TagID = proc_list[[2]]$TagID[1],
-                   TrapDate = proc_list[[2]]$TrapDate[1],
-                   ObsDate = c(lubridate::ymd_hms(&quot;20180930_13:22:45&quot;),
-                               lubridate::ymd_hms(&quot;20180930_13:24:13&quot;)),
-                   SiteID = 'SAT',
-                   Node = c('SATB0', 'SATA0')) %&gt;%
-              mutate(lastObsDate = ObsDate)) %&gt;%
-  arrange(ObsDate)
-#&gt; # A tibble: 9 x 6
-#&gt;   TagID TrapDate            ObsDate             lastObsDate         SiteID Node 
-#&gt;   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt;
-#&gt; 1 3DD.… 2018-09-06 00:00:00 2018-09-06 10:34:40 2018-10-01 13:32:42 PRO    PRO  
-#&gt; 2 3DD.… 2018-09-06 00:00:00 2018-09-30 13:22:45 2018-09-30 13:22:45 SAT    SATB0
-#&gt; 3 3DD.… 2018-09-06 00:00:00 2018-09-30 13:24:13 2018-09-30 13:24:13 SAT    SATA0
-#&gt; 4 3DD.… 2018-09-06 00:00:00 2018-10-11 03:25:29 2018-10-11 03:25:29 SUN    SUNB0
-#&gt; 5 3DD.… 2018-09-06 00:00:00 2018-10-11 03:25:58 2018-10-11 03:25:58 SUN    SUNA0
-#&gt; 6 3DD.… 2018-09-06 00:00:00 2018-10-22 15:27:28 2018-10-22 15:37:04 ROZ    ROZB0
-#&gt; 7 3DD.… 2018-09-06 00:00:00 2018-10-22 15:37:16 2018-10-22 15:37:16 ROZ    ROZA0
-#&gt; 8 3DD.… 2018-09-06 00:00:00 2018-10-22 15:40:42 2018-10-22 15:40:43 ROZ    ROZB0
-#&gt; 9 3DD.… 2018-09-06 00:00:00 2018-10-22 15:41:15 2018-10-22 15:52:11 ROZ    ROZA0</code></pre>
+<p>One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked <code>FALSE</code> in the UserProcStatus columm, and the other ones marked <code>TRUE</code>. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked <code>FALSE</code>. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones. (See example in Table <a href="#tab:ptagis-examp">3.1</a>)</p>
+<table>
+<caption><span id="tab:ptagis-examp">Table 3.1: </span>Example of PITcleanr output for one PIT tag.</caption>
+<thead>
+<tr class="header">
+<th align="left">TagID</th>
+<th align="left">TrapDate</th>
+<th align="left">ObsDate</th>
+<th align="left">lastObsDate</th>
+<th align="left">SiteID</th>
+<th align="left">Node</th>
+<th align="left">AutoProcStatus</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-09-06 10:34:40</td>
+<td align="left">2018-10-01 13:32:42</td>
+<td align="left">PRO</td>
+<td align="left">PRO</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-09-30 13:22:45</td>
+<td align="left">2018-09-30 13:22:45</td>
+<td align="left">SAT</td>
+<td align="left">SATB0</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-09-30 13:24:13</td>
+<td align="left">2018-09-30 13:24:13</td>
+<td align="left">SAT</td>
+<td align="left">SATA0</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-11 03:25:29</td>
+<td align="left">2018-10-11 03:25:29</td>
+<td align="left">SUN</td>
+<td align="left">SUNB0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-11 03:25:58</td>
+<td align="left">2018-10-11 03:25:58</td>
+<td align="left">SUN</td>
+<td align="left">SUNA0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-22 15:27:28</td>
+<td align="left">2018-10-22 15:37:04</td>
+<td align="left">ROZ</td>
+<td align="left">ROZB0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-22 15:37:16</td>
+<td align="left">2018-10-22 15:37:16</td>
+<td align="left">ROZ</td>
+<td align="left">ROZA0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-22 15:40:42</td>
+<td align="left">2018-10-22 15:40:43</td>
+<td align="left">ROZ</td>
+<td align="left">ROZB0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">3DD.0077370983</td>
+<td align="left">2018-09-06</td>
+<td align="left">2018-10-22 15:41:15</td>
+<td align="left">2018-10-22 15:52:11</td>
+<td align="left">ROZ</td>
+<td align="left">ROZA0</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
