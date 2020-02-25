@@ -131,9 +131,9 @@ This is also a good opportunity to compile other relevant biological or life his
 
 ## PTAGIS Query
 
-The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting). You will need a free account from PTAGIS, and to be logged in. Select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query. 
+The next step is to query PTAGIS for all detections of the fish included on the valid tag list. PTAGIS is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. Go to the Advanced Reporting page on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), which can also be found under the Data tab on the PTAGIS homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query.  
 
-The following fields are required to work with `PITcleanr`:
+You will see several query indices on the left side of the query builder, but for the purposes of `PITclean` and `DABOM`, we only need to deal with a couple of those. First, under "1 Select Attributes" the following fields are required to work with `PITcleanr`:
 
 * Tag
 * Mark Rear Type
@@ -144,9 +144,15 @@ The following fields are required to work with `PITcleanr`:
 * Antenna
 * Antenna Group Configuration
 
-You are welcome to include other fields as well, but the ones listed above must be added.
+You are welcome to include other fields as well, but the ones listed above must be added. Additional fields will just be included as extra columns in your query output.
 
-Set up a filter for specific tags by clicking on "27 Tag Code - List or Text File" on the right. Select "Import file..." and upload the file you saved in the previous step with all the tag codes in the valid tag list. Name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has been run, export the output as a csv file (e.g. "PTAGIS_2018_19.csv"). 
+The only other required index is "2 Select Metrics", but that can remain as the default, "CTH Count".
+
+Set up a filter for specific tags by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file..." under "Value:" and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv"). 
+
+<!--
+Kevin - There were minor discrepancies here between your directions and my query builder, which I wonder if stems from Windows vs. Mac. Hopefully my query builder doesn't differ from most and I changed this to something inappropriate.
+-->
 
 ## Processing PTAGIS Detections
 
