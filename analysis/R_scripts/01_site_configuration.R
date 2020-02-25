@@ -20,7 +20,7 @@ configuration = org_config %>%
                         'PRO',
                         Node),
          Node = if_else(SiteID %in% c("NFTEAN", "TEANAR", "TEANM", "TEANWF"),
-                       "TEAN",
+                       "LMTA0",
                        Node),
          Node = if_else(SiteID == 'ROZ',
                         if_else(AntennaID %in% c('01', '02', '03'),
