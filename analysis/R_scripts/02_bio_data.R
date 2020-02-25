@@ -27,3 +27,7 @@ write_delim(tags,
             path = 'analysis/data/raw_data/tag_lists/Tags_2018_19.txt',
             delim = '\n',
             col_names = F)
+
+# save biological data for later
+write_rds(bio_df,
+          path = 'analysis/data/derived_data/Bio_2018_19.rds')
