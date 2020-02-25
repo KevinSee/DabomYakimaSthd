@@ -148,7 +148,13 @@ You are welcome to include other fields as well, but the ones listed above must 
 
 The only other required index is "2 Select Metrics", but that can remain as the default, "CTH Count".
 
-Set up a filter for specific tags by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file..." under "Value:" and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv"). 
+Set up a filter for specific tags by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file..." under "Value:" and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv") using the default settings:
+
+* Export: Whole report
+* CSV file format
+* Export Report Title: unchecked
+* Export filter details: unchecked
+* Remove extra column: Yes
 
 <!--
 Kevin - There were minor discrepancies here between your directions and my query builder, which I wonder if stems from Windows vs. Mac. Hopefully my query builder doesn't differ from most and I changed this to something inappropriate.
