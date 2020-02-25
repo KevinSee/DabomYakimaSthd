@@ -63,7 +63,7 @@ proc_ch %>%
   as.data.frame()
 
 proc_ch %>%
-  filter(TagID == weird_tags$TagID[[1]])
+  filter(TagID == weird_tags[[1]])
 
 configuration %>%
   filter(SiteID == 'BCC') %>%
