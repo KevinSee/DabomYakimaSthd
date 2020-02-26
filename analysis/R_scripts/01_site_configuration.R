@@ -71,7 +71,7 @@ site_df %>%
 
 configuration %>%
 # org_config %>%
-  filter(grepl("PRA", SiteID)) %>%
+  filter(grepl("ROZ", SiteID)) %>%
   # filter(ConfigID == 130) %>%
   # as.data.frame()
   select(SiteID, ConfigID, SiteName, Node, AntennaID, AntennaGroup, SiteDescription)
