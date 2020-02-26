@@ -231,7 +231,7 @@ configuration = org_config %>%
 
 ### Parent-Child Table
 
-The next step is to build a parent-child table that describes which nodes are upstream of which nodes. The `PITcleanr` function `createParentChildDf` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
+The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In our case, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
 
 ```{r}
 # which spawn year are we dealing with?
