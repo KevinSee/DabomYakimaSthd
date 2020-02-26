@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: clean PTAGIS data with PITcleanr
 # Created: 2/21/20
-# Last Modified: 2/21/20
+# Last Modified: 2/25/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -34,7 +34,7 @@ proc_list = processCapHist_PRO(start_date,
                                parent_child = parent_child,
                                observations = observations,
                                # for earlier years, may want to use the code below
-                               # last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
+                               last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
                                site_df = site_df,
                                save_file = T,
                                file_name = paste0('outgoing/PITcleanr/PRO_Steelhead_', yr, '.xlsx'))
