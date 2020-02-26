@@ -185,7 +185,7 @@ The next step is to query PTAGIS for all the metadata associated with these site
 org_config = buildConfig()
 ```
 
-You then have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all the various sites on the Teanaway River into a single node called "TEAN". Many of the modifications help simplify the nodes downstream of Prosser. 
+Note, the `org_config` object contains **every** INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into a single node called "TEAN". Many of the modifications below help simplify the nodes downstream of Prosser.
 
 ```{r}
 configuration = org_config %>%
