@@ -14,13 +14,16 @@ library(janitor)
 #-----------------------------------------------------------------
 # read in biological data from trap
 bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
+  rename(TagID = PitTag) %>%
+  mutate_at(vars(PassTime),
+            list(as.numeric)) %>%
   filter(!is.na(LadCode))
 
 # pull out PIT tag numbers
 tags = bio_df %>%
   filter(SppCode == 'wsth') %>%
-  filter(!is.na(PitTag)) %>%
-  select(PitTag)
+  filter(!is.na(TagID)) %>%
+  select(TagID)
 
 # save tags to upload to PTAGIS
 write_delim(tags,
