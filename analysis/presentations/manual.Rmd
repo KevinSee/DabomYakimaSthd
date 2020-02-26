@@ -273,12 +273,17 @@ parent_child = createParentChildDf(site_df,
 
 ### Clean PTAGIS Data
 
-The final step of this process is run the PTAGIS detections through a `PITcleanr` function, `processCapHist_PRO`, that will assign each detection to a node in the model, and then collapse the output so we are left with only one detection on a node before that tag is sighted on a different node. 
+The final step of this process is run the PTAGIS detections through a `PITcleanr` function, `processCapHist_PRO()`, that will assign each detection to a node in the model, and then collapse the output so we are left, for each tag, only one detection on a node before that tag is sighted on a different node.
+
+First, we use the `read_csv()` function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the `paste0()` function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use the `read_csv` and the directory and filename of your .csv output to read in your detections and create an object called `observations`.
 
 ```{r}
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+
+# Alternatively,...
+# observations = read_csv("C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv")
 
 # process those observations with PITcleanr, using Yakima-specific function
 proc_list = processCapHist_PRO(start_date,
@@ -291,12 +296,19 @@ proc_list = processCapHist_PRO(start_date,
                                save_file = F)
 ```
 
-The output of the `processCapHist_PRO` function (`proc_list` in the code above) is a list, containing two elements:
+The output of the `processCapHist_PRO()` function (`proc_list` in the code above) is a list, containing two elements:
 
 * *NodeOrder*: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the "path" a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. 
 * *ProcCapHist*: The "cleaned" capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream, based on the previous observation, and two columns containing "ProcStatus" for "processed status". "AutoProcStatus" is `PITcleanr`'s best guess as to whether the observation on that node should be kept (`TRUE`) or discarded (`FALSE`). "UserProcStatus" is where the end user can define that for themselves. 
 
 After this step, the results of *ProcCapHist* can be saved to an Excel file, to be examined by a fisheries biologist.
+
+```{r}
+install.packages("writexl")
+library(writexl)
+write_xlsx(proc_list$ProcCapHist, "../data/derived_data/PITcleanr/PRO_Steelhead_SY2019_proc_list.xlsx")
+
+```
 
 ## Examine PITcleanr Output
 
