@@ -60,6 +60,8 @@ highlights: |
 ---
 
 ```{r setup, echo = FALSE}
+# setwd('analysis/presentations')
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
@@ -129,6 +131,28 @@ Save this list of valid tags as a text file with no headers, to make it easy to 
 
 This is also a good opportunity to compile other relevant biological or life history information for each fish in that valid tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.
 
+```{r}
+library(tidyverse)
+library(readxl)
+
+# read in biological data from trap
+bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
+  rename(TagID = PitTag) %>%
+  mutate_at(vars(PassTime),
+            list(as.numeric)) %>%
+  filter(!is.na(LadCode))
+
+# pull out PIT tag numbers and save as a text file
+bio_df %>%
+  filter(SppCode == 'wsth') %>%
+  filter(!is.na(TagID)) %>%
+  select(TagID) %>%
+  write_delim(path = '../data/raw_data/tag_lists/Tags_test_year.txt',
+              delim = '\n',
+              col_names = F)
+```
+
+
 ## PTAGIS Query
 
 The next step is to query PTAGIS for all detections of the fish included on the valid tag list. PTAGIS is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. Go to the Advanced Reporting page on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), which can also be found under the Data tab on the PTAGIS homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query.  
@@ -176,16 +200,16 @@ The next step is to define which sites we are going to include in the DABOM mode
 ```{r}
 site_df = writePRONodeNetwork()
 site_df
-view(site_df)
+# view(site_df)
 ```
 
-The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` includes a function to do this, `buildConfig()`, but you will need an internet connection to run this. The `buildConfig()` function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the "B" array, and the upstream antennas to the "A" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.
+The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` includes a function to do this, `buildConfig()`, but you will need an internet connection to run this. The `buildConfig()` function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the "B0" array, and the upstream antennas to the "A0" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.
 
 ```{r}
 org_config = buildConfig()
 ```
 
-Note, the `org_config` object contains **every** INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into a single node called "TEAN". Many of the modifications below help simplify the nodes downstream of Prosser.
+Note, the `org_config` object contains **every** INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into the upstream node of LMT, called "LMTA0". Many of the modifications below help simplify the nodes downstream of Prosser.
 
 ```{r}
 configuration = org_config %>%
@@ -296,6 +320,22 @@ proc_list[[2]] %>%
   kable(caption = "Example of PITcleanr output for one PIT tag.")
   
 ```
+
+### Summarise Information for Each Tag
+
+At this point, some summary information can be obtained for each tag in the valid tag list, including potential spawning location. This is based on the furthest node that the tag was detected at, after filtering out unwanted observations (see [Examine PITcleanr Output]). This function also takes biological information obtained at the trap, and the output can be used to summarise sex ratios, age or length distributions for various nodes in the network.
+
+```{r}
+tag_summ = proc_list$ProcCapHist %>%
+  filter(AutoProcStatus) %>%
+  mutate(UserProcStatus = AutoProcStatus) %>%
+  summariseTagData(trap_data = bio_df %>%
+                     filter(TagID %in% proc_list$ProcCapHist$TagID) %>%
+                     group_by(TagID) %>%
+                     slice(1) %>%
+                     ungroup())
+```
+
 
 ## Prepare and Run DABOM
 

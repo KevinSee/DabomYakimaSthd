@@ -1533,7 +1533,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Using DABOM for Yakima Steelhead</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
-<h4 class="date">25 February, 2020</h4>
+<h4 class="date">26 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
@@ -1583,6 +1583,24 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 <p>You will need to compile a list of PIT tags in steelhead that were caught in the Prosser trap for a given spawn year, called the valid tag list. Tagged steelhead need to be a random, representative sample of the run, and so should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but it is not caught in the trap, it cannot be used for this analysis.</p>
 <p>Save this list of valid tags as a text file with no headers, to make it easy to upload to a PTAGIS query.</p>
 <p>This is also a good opportunity to compile other relevant biological or life history information for each fish in that valid tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.</p>
+<pre class="r"><code>library(tidyverse)
+library(readxl)
+
+# read in biological data from trap
+bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %&gt;%
+  rename(TagID = PitTag) %&gt;%
+  mutate_at(vars(PassTime),
+            list(as.numeric)) %&gt;%
+  filter(!is.na(LadCode))
+
+# pull out PIT tag numbers and save as a text file
+bio_df %&gt;%
+  filter(SppCode == 'wsth') %&gt;%
+  filter(!is.na(TagID)) %&gt;%
+  select(TagID) %&gt;%
+  write_delim(path = '../data/raw_data/tag_lists/Tags_test_year.txt',
+              delim = '\n',
+              col_names = F)</code></pre>
 </div>
 <div id="ptagis-query" class="section level2">
 <h2><span class="header-section-number">3.2</span> PTAGIS Query</h2>
@@ -1636,13 +1654,13 @@ site_df
 #&gt;  9 LNR    PRO.SUN.LNR     PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;&quot;    &quot;&quot;   
 #&gt; 10 TTN    PRO.SUN.LNR.TTN PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;TTN&quot; &quot;&quot;   
 #&gt; # … with 12 more rows
-view(site_df)</code></pre>
+# view(site_df)</code></pre>
 <p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> includes a function to do this, <code>buildConfig()</code>, but you will need an internet connection to run this. The <code>buildConfig()</code> function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the “B” array, and the upstream antennas to the “A” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
 <pre class="r"><code>org_config = buildConfig()
 #&gt; [1] &quot;Querying INT sites' metadata&quot;
 #&gt; [1] &quot;Querying INT sites' configuration information&quot;
 #&gt; [1] &quot;Querying MRR sites' metadata&quot;</code></pre>
-<p>You then have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all the various sites on the Teanaway River into a single node called “TEAN”. Many of the modifications help simplify the nodes downstream of Prosser.</p>
+<p>Note, the <code>org_config</code> object contains <strong>every</strong> INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into a single node called “TEAN”. Many of the modifications below help simplify the nodes downstream of Prosser.</p>
 <pre class="r"><code>configuration = org_config %&gt;%
   mutate(Node = if_else(SiteID %in% c('PRO'),
                         'PRO',
@@ -1716,7 +1734,7 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-02-25 16:15:31  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-02-26 10:26:47  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO</code> function (<code>proc_list</code> in the code above) is a list, containing two elements:</p>
 <ul>
 <li><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the “path” a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata.</li>
@@ -1826,6 +1844,18 @@ proc_list = processCapHist_PRO(start_date,
 </tr>
 </tbody>
 </table>
+<div id="summarise-information-for-each-tag" class="section level3">
+<h3><span class="header-section-number">3.4.1</span> Summarise Information for Each Tag</h3>
+<p>At this point, some summary information can be obtained for each tag in the valid tag list, including potential spawning location. This is based on the furthest node that the tag was detected at, after filtering out unwanted observations (see <a href="#examine-pitcleanr-output">Examine PITcleanr Output</a>). This function also takes biological information obtained at the trap, and the output can be used to summarise sex ratios, age or length distributions for various nodes in the network.</p>
+<pre class="r"><code>tag_summ = proc_list$ProcCapHist %&gt;%
+  filter(AutoProcStatus) %&gt;%
+  mutate(UserProcStatus = AutoProcStatus) %&gt;%
+  summariseTagData(trap_data = bio_df %&gt;%
+                     filter(TagID %in% proc_list$ProcCapHist$TagID) %&gt;%
+                     group_by(TagID) %&gt;%
+                     slice(1) %&gt;%
+                     ungroup())</code></pre>
+</div>
 </div>
 <div id="prepare-and-run-dabom" class="section level2">
 <h2><span class="header-section-number">3.5</span> Prepare and Run DABOM</h2>
