@@ -231,12 +231,13 @@ configuration = org_config %>%
 
 ### Parent-Child Table
 
-The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In our case, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
+The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In most cases, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The exception being nodes that occur outside of the Yakima River (e.g., JD1, ICH) to account for adults that are detected at Prosser Dam, but then later detected outside of the Yakim River elsewhere in the Columbia River Basin. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
 
 ```{r}
 # which spawn year are we dealing with?
 yr = 2019
 # start date is July 1 of the previous year
+# the paste0 function simply pastes together our 'yr' and '0701' into the 'YYYYMMDD' format
 start_date = paste0(yr - 1, '0701')
 
 # build parent-child table
