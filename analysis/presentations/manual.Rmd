@@ -131,9 +131,9 @@ This is also a good opportunity to compile other relevant biological or life his
 
 ## PTAGIS Query
 
-The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting). You will need a free account from PTAGIS, and to be logged in. Select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query. 
+The next step is to query PTAGIS for all detections of the fish included on the valid tag list. PTAGIS is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. Go to the Advanced Reporting page on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), which can also be found under the Data tab on the PTAGIS homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query.  
 
-The following fields are required to work with `PITcleanr`:
+You will see several query indices on the left side of the query builder, but for the purposes of `PITclean` and `DABOM`, we only need to deal with a couple of those. First, under "1 Select Attributes" the following fields are required to work with `PITcleanr`:
 
 * Tag
 * Mark Rear Type
@@ -144,13 +144,25 @@ The following fields are required to work with `PITcleanr`:
 * Antenna
 * Antenna Group Configuration
 
-You are welcome to include other fields as well, but the ones listed above must be added.
+You are welcome to include other fields as well, but the ones listed above must be added. Additional fields will just be included as extra columns in your query output.
 
-Set up a filter for specific tags by clicking on "27 Tag Code - List or Text File" on the right. Select "Import file..." and upload the file you saved in the previous step with all the tag codes in the valid tag list. Name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has been run, export the output as a csv file (e.g. "PTAGIS_2018_19.csv"). 
+The only other required index is "2 Select Metrics", but that can remain as the default, "CTH Count".
+
+Set up a filter for specific tags by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file..." under "Value:" and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv") using the default settings:
+
+* Export: Whole report
+* CSV file format
+* Export Report Title: unchecked
+* Export filter details: unchecked
+* Remove extra column: Yes
+
+<!--
+Kevin - There were minor discrepancies here between your directions and my query builder, which I wonder if stems from Windows vs. Mac. Hopefully my query builder doesn't differ from most and I changed this to something inappropriate.
+-->
 
 ## Processing PTAGIS Detections
 
-The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna, so we need to condense those to one detection on a particular array, even if the fish was detected 7 times on 3 different antennas in that array. We use the `PITcleanr` package for this. There are few parts to this particular step. The first is to load the appropriate packages into your R environment. 
+The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna, so we need to condense those to a single detection on a particular array, even if the fish was detected 7 times on 3 different antennas in that array. We use the `PITcleanr` package for this. There are few parts to this particular step. The first is to load the appropriate packages into your R environment. 
 
 ```{r}
 library(PITcleanr)
@@ -159,14 +171,15 @@ library(tidyverse)
 
 ### Site Configuration
 
-The next step is to define which sites we are going to include in the DABOM model. The `PITcleanr` package has a special function to do this, called `writePRONodeNetwork`. This function lists all the various sites by their PTAGIS site ID code, and shows which other sites a tag would need to pass in order to reach that particular site.
+The next step is to define which sites we are going to include in the DABOM model. The `PITcleanr` package has a special function, specific to Prosser Dam and the Yakima River, to do this, called `writePRONodeNetwork()`. This function lists all the various sites by their PTAGIS site ID code, and shows which other sites a tag would need to pass in order to reach that particular site. The below saves a new object `site_df` contaning that information. You can use the `view()` function in R to view the `site_df` object in a new window in RStudio to review the river network.
 
 ```{r}
 site_df = writePRONodeNetwork()
 site_df
+view(site_df)
 ```
 
-The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` has a function to do this, `buildConfig`, but you will need an internet connection to run this. This function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site is it (interrogation, INT, or mark/recapture/recovery, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or an MRR site), all the antennas will be assigned to the same node. If there is a double array, the antennas in the downstream array will be assigned to the "B" array, and the upstream antennas to the "A" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. This file is what will link the PTAGIS detections to the DABOM model nodes.
+The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` includes a function to do this, `buildConfig()`, but you will need an internet connection to run this. The `buildConfig()` function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the "B" array, and the upstream antennas to the "A" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.
 
 ```{r}
 org_config = buildConfig()
