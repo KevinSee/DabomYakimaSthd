@@ -1533,7 +1533,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Using DABOM for Yakima Steelhead</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
-<h4 class="date">24 February, 2020</h4>
+<h4 class="date">25 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
@@ -1586,8 +1586,8 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 </div>
 <div id="ptagis-query" class="section level2">
 <h2><span class="header-section-number">3.2</span> PTAGIS Query</h2>
-<p>The next step is to query PTAGIS for all detections of the fish on the valid tag list. Go to the Advanced Reporting tab on the <a href="https://www.ptagis.org/data/advanced-reporting">PTAGIS website</a>. You will need a free account from PTAGIS, and to be logged in. Select “Launch”. Create your own query by selecting “Create Query Builder2 Report”, and start with a “Complete Tag History” query.</p>
-<p>The following fields are required to work with <code>PITcleanr</code>:</p>
+<p>The next step is to query PTAGIS for all detections of the fish included on the valid tag list. PTAGIS is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. Go to the Advanced Reporting page on the <a href="https://www.ptagis.org/data/advanced-reporting">PTAGIS website</a>, which can also be found under the Data tab on the PTAGIS homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select “Launch”. Create your own query by selecting “Create Query Builder2 Report”, and start with a “Complete Tag History” query.</p>
+<p>You will see several query indices on the left side of the query builder, but for the purposes of <code>PITclean</code> and <code>DABOM</code>, we only need to deal with a couple of those. First, under “1 Select Attributes” the following fields are required to work with <code>PITcleanr</code>:</p>
 <ul>
 <li>Tag</li>
 <li>Mark Rear Type</li>
@@ -1598,17 +1598,28 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 <li>Antenna</li>
 <li>Antenna Group Configuration</li>
 </ul>
-<p>You are welcome to include other fields as well, but the ones listed above must be added.</p>
-<p>Set up a filter for specific tags by clicking on “27 Tag Code - List or Text File” on the right. Select “Import file…” and upload the file you saved in the previous step with all the tag codes in the valid tag list. Name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has been run, export the output as a csv file (e.g. “PTAGIS_2018_19.csv”).</p>
+<p>You are welcome to include other fields as well, but the ones listed above must be added. Additional fields will just be included as extra columns in your query output.</p>
+<p>The only other required index is “2 Select Metrics”, but that can remain as the default, “CTH Count”.</p>
+<p>Set up a filter for specific tags by next navigating to the “28 Tag Code - List or Text File” on the left. And then, after selecting “Tag” under “Attributes:”, you should be able to click on “Import file…” under “Value:” and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under “Report Message Name:” near the bottom, name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has successfully completed, export the output as a .csv file (e.g. “PTAGIS_2018_19.csv”) using the default settings:</p>
+<ul>
+<li>Export: Whole report</li>
+<li>CSV file format</li>
+<li>Export Report Title: unchecked</li>
+<li>Export filter details: unchecked</li>
+<li>Remove extra column: Yes</li>
+</ul>
+<!--
+Kevin - There were minor discrepancies here between your directions and my query builder, which I wonder if stems from Windows vs. Mac. Hopefully my query builder doesn't differ from most and I changed this to something inappropriate.
+-->
 </div>
 <div id="processing-ptagis-detections" class="section level2">
 <h2><span class="header-section-number">3.3</span> Processing PTAGIS Detections</h2>
-<p>The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna, so we need to condense those to one detection on a particular array, even if the fish was detected 7 times on 3 different antennas in that array. We use the <code>PITcleanr</code> package for this. There are few parts to this particular step. The first is to load the appropriate packages into your R environment.</p>
+<p>The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna, so we need to condense those to a single detection on a particular array, even if the fish was detected 7 times on 3 different antennas in that array. We use the <code>PITcleanr</code> package for this. There are few parts to this particular step. The first is to load the appropriate packages into your R environment.</p>
 <pre class="r"><code>library(PITcleanr)
 library(tidyverse)</code></pre>
 <div id="site-configuration" class="section level3">
 <h3><span class="header-section-number">3.3.1</span> Site Configuration</h3>
-<p>The next step is to define which sites we are going to include in the DABOM model. The <code>PITcleanr</code> package has a special function to do this, called <code>writePRONodeNetwork</code>. This function lists all the various sites by their PTAGIS site ID code, and shows which other sites a tag would need to pass in order to reach that particular site.</p>
+<p>The next step is to define which sites we are going to include in the DABOM model. The <code>PITcleanr</code> package has a special function, specific to Prosser Dam and the Yakima River, to do this, called <code>writePRONodeNetwork()</code>. This function lists all the various sites by their PTAGIS site ID code, and shows which other sites a tag would need to pass in order to reach that particular site. The below saves a new object <code>site_df</code> contaning that information. You can use the <code>view()</code> function in R to view the <code>site_df</code> object in a new window in RStudio to review the river network.</p>
 <pre class="r"><code>site_df = writePRONodeNetwork()
 site_df
 #&gt; # A tibble: 22 x 7
@@ -1624,8 +1635,9 @@ site_df
 #&gt;  8 AH1    PRO.SUN.AH1     PRO   &quot;SUN&quot; &quot;AH1&quot; &quot;&quot;    &quot;&quot;   
 #&gt;  9 LNR    PRO.SUN.LNR     PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;&quot;    &quot;&quot;   
 #&gt; 10 TTN    PRO.SUN.LNR.TTN PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;TTN&quot; &quot;&quot;   
-#&gt; # … with 12 more rows</code></pre>
-<p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> has a function to do this, <code>buildConfig</code>, but you will need an internet connection to run this. This function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site is it (interrogation, INT, or mark/recapture/recovery, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or an MRR site), all the antennas will be assigned to the same node. If there is a double array, the antennas in the downstream array will be assigned to the “B” array, and the upstream antennas to the “A” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
+#&gt; # … with 12 more rows
+view(site_df)</code></pre>
+<p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> includes a function to do this, <code>buildConfig()</code>, but you will need an internet connection to run this. The <code>buildConfig()</code> function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the “B” array, and the upstream antennas to the “A” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
 <pre class="r"><code>org_config = buildConfig()
 #&gt; [1] &quot;Querying INT sites' metadata&quot;
 #&gt; [1] &quot;Querying INT sites' configuration information&quot;
@@ -1636,7 +1648,7 @@ site_df
                         'PRO',
                         Node),
          Node = if_else(SiteID %in% c(&quot;NFTEAN&quot;, &quot;TEANAR&quot;, &quot;TEANM&quot;, &quot;TEANWF&quot;),
-                       &quot;TEAN&quot;,
+                       &quot;LMTA0&quot;,
                        Node),
          Node = if_else(SiteID == 'ROZ',
                         if_else(AntennaID %in% c('01', '02', '03'),
@@ -1696,15 +1708,15 @@ proc_list = processCapHist_PRO(start_date,
                                configuration = configuration,
                                parent_child = parent_child,
                                observations = observations,
-                               # for earlier years, may want to use the code below
-                               # last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), &quot;%Y%m%d&quot;),
+                               # use this to filter out observations past July 1
+                               last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), &quot;%Y%m%d&quot;),
                                site_df = site_df,
                                save_file = F)
 #&gt; Constructing valid paths.
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-02-24 13:23:11  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-02-25 16:15:31  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO</code> function (<code>proc_list</code> in the code above) is a list, containing two elements:</p>
 <ul>
 <li><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the “path” a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata.</li>
@@ -1715,7 +1727,7 @@ proc_list = processCapHist_PRO(start_date,
 </div>
 <div id="examine-pitcleanr-output" class="section level2">
 <h2><span class="header-section-number">3.4</span> Examine PITcleanr Output</h2>
-<p>For all the tags with no issues (detections move steadily upstream), the UserProcStatus has been set to <code>TRUE</code>. All the tags with potential detection questions have a blank in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the Excel file, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibily considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either <code>TRUE</code> or <code>FALSE</code>, to show whether the detection at that node should be kept for the DABOM model.</p>
+<p>For all the tags with no issues (detections move steadily upstream), the UserProcStatus has been set to <code>TRUE</code>. All the tags with potential detection questions have a blank in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the Excel file, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibly considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either <code>TRUE</code> or <code>FALSE</code>, to show whether the detection at that node should be kept for the DABOM model.</p>
 <p>One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked <code>FALSE</code> in the UserProcStatus columm, and the other ones marked <code>TRUE</code>. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked <code>FALSE</code>. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones. (See example in Table <a href="#tab:ptagis-examp">3.1</a>)</p>
 <table>
 <caption><span id="tab:ptagis-examp">Table 3.1: </span>Example of PITcleanr output for one PIT tag.</caption>
@@ -1814,6 +1826,9 @@ proc_list = processCapHist_PRO(start_date,
 </tr>
 </tbody>
 </table>
+</div>
+<div id="prepare-and-run-dabom" class="section level2">
+<h2><span class="header-section-number">3.5</span> Prepare and Run DABOM</h2>
 </div>
 </div>
 

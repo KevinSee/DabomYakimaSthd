@@ -193,7 +193,7 @@ configuration = org_config %>%
                         'PRO',
                         Node),
          Node = if_else(SiteID %in% c("NFTEAN", "TEANAR", "TEANM", "TEANWF"),
-                       "TEAN",
+                       "LMTA0",
                        Node),
          Node = if_else(SiteID == 'ROZ',
                         if_else(AntennaID %in% c('01', '02', '03'),
@@ -260,8 +260,8 @@ proc_list = processCapHist_PRO(start_date,
                                configuration = configuration,
                                parent_child = parent_child,
                                observations = observations,
-                               # for earlier years, may want to use the code below
-                               # last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
+                               # use this to filter out observations past July 1
+                               last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
                                site_df = site_df,
                                save_file = F)
 ```
