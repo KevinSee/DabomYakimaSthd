@@ -44,6 +44,59 @@ save(yr, start_date, parent_child, proc_list,
      file = paste0('analysis/data/derived_data/PITcleanr/PRO_Steelhead_', yr, '.rda'))
 
 #-----------------------------------------------------------------
+# tag summaries
+#-----------------------------------------------------------------
+bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds') %>%
+  rename(TagID = PitTag) %>%
+  mutate_at(vars(PassTime),
+            list(as.numeric)) %>%
+  filter(TagID %in% proc_list$ProcCapHist$TagID) %>%
+  distinct() %>%
+  group_by(TagID) %>%
+  slice(1) %>%
+  ungroup()
+
+# Fix UserProcStatus, and summarise tag data
+tag_summ = proc_list$ProcCapHist %>%
+  filter(AutoProcStatus) %>%
+  mutate(UserProcStatus = AutoProcStatus) %>%
+  summariseTagData(trap_data = bio_df)
+
+# any duplicated tags?
+tag_summ %>%
+  filter(TagID %in% TagID[duplicated(TagID)]) %>%
+  as.data.frame()
+
+# where are tags assigned?
+janitor::tabyl(tag_summ, AssignSpawnSite) %>%
+  arrange(desc(n)) %>%
+  janitor::adorn_totals()
+
+# which branch are tags assigned to?
+tag_summ %>%
+  mutate(Branch = fct_explicit_na(Group,
+                                 'PRO_bb')) %>%
+  janitor::tabyl(Branch) %>%
+  arrange(desc(n)) %>%
+  janitor::adorn_totals()
+
+# preliminary estimate of node efficiency
+node_eff = proc_list$ProcCapHist %>%
+  filter(AutoProcStatus) %>%
+  mutate(UserProcStatus = AutoProcStatus) %>%
+  estNodeEff(node_order = proc_list$NodeOrder)
+
+node_eff %>%
+  xtabs(~ (!is.na(detEff)) + (detEff_SE > 0), .)
+
+node_eff %>%
+  filter(!is.na(detEff),
+         detEff_SE > 0)
+
+node_eff %>%
+  filter(grepl('^TOP', Node))
+
+#-----------------------------------------------------------------
 # examine some of the output
 #-----------------------------------------------------------------
 proc_ch = proc_list$ProcCapHist
