@@ -47,9 +47,6 @@ save(yr, start_date, parent_child, proc_list,
 # tag summaries
 #-----------------------------------------------------------------
 bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds') %>%
-  rename(TagID = PitTag) %>%
-  mutate_at(vars(PassTime),
-            list(as.numeric)) %>%
   filter(TagID %in% proc_list$ProcCapHist$TagID) %>%
   distinct() %>%
   group_by(TagID) %>%
