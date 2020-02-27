@@ -101,6 +101,12 @@ devtools::install_github("KevinSee/PITcleanr")
 devtools::install_github("KevinSee/DABOM")
 ```
 
+Hint: We have experienced issues installing with installing `PITcleanr` and `DABOM` related to the following error (converted from warning): package '----' was built under R version x.x.x. Setting the following typically fixes that error and allows you to install the packages from GitHub.
+
+```{r}
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
+```
+
 NOTE: To use `devtools`, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at https://cran.r-project.org/bin/windows/Rtools/. You can try to use `devtools` without Rtools, initially, and if `PITcleanr` and `DABOM` fail to install correctly, try installing Rtools (we have had mixed results with this). Additionally, when installing `PITcleanr` or `DABOM` you may receive a messy error message containing something like *"there is no package called 'ggraph'*. In that case, try to install and load the given package using the following and then re-attempt to install `PITclean` and `DABOM`.
 
 ```{r install-load-example, eval = F}
@@ -151,7 +157,6 @@ bio_df %>%
               delim = '\n',
               col_names = F)
 ```
-
 
 ## PTAGIS Query
 
@@ -255,12 +260,13 @@ configuration = org_config %>%
 
 ### Parent-Child Table
 
-The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In our case, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
+The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In most cases, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The exception being nodes that occur outside of the Yakima River (e.g., JD1, ICH) to account for adults that are detected at Prosser Dam, but then later detected outside of the Yakim River elsewhere in the Columbia River Basin. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
 
 ```{r}
 # which spawn year are we dealing with?
 yr = 2019
 # start date is July 1 of the previous year
+# the paste0 function simply pastes together our 'yr' and '0701' into the 'YYYYMMDD' format
 start_date = paste0(yr - 1, '0701')
 
 # build parent-child table
@@ -272,12 +278,17 @@ parent_child = createParentChildDf(site_df,
 
 ### Clean PTAGIS Data
 
-The final step of this process is run the PTAGIS detections through a `PITcleanr` function, `processCapHist_PRO`, that will assign each detection to a node in the model, and then collapse the output so we are left with only one detection on a node before that tag is sighted on a different node. 
+The final step of this process is run the PTAGIS detections through a `PITcleanr` function, `processCapHist_PRO()`, that will assign each detection to a node in the model, and then collapse the output so we are left, for each tag, only one detection on a node before that tag is sighted on a different node.
+
+First, we use the `read_csv()` function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the `paste0()` function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use the `read_csv()` and the directory and filename of your .csv output to read in your detections and create an object called `observations`.
 
 ```{r}
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+
+# Alternatively,...
+# observations = read_csv("C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv")
 
 # process those observations with PITcleanr, using Yakima-specific function
 proc_list = processCapHist_PRO(start_date,
@@ -290,20 +301,27 @@ proc_list = processCapHist_PRO(start_date,
                                save_file = F)
 ```
 
-The output of the `processCapHist_PRO` function (`proc_list` in the code above) is a list, containing two elements:
+The output of the `processCapHist_PRO()` function (`proc_list` in the code above) is a list, containing two elements:
 
 * *NodeOrder*: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the "path" a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. 
 * *ProcCapHist*: The "cleaned" capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream, based on the previous observation, and two columns containing "ProcStatus" for "processed status". "AutoProcStatus" is `PITcleanr`'s best guess as to whether the observation on that node should be kept (`TRUE`) or discarded (`FALSE`). "UserProcStatus" is where the end user can define that for themselves. 
 
-After this step, the results of *ProcCapHist* can be saved to an Excel file, to be examined by a fisheries biologist.
+After this step, the results of *ProcCapHist* can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the `save_file` argument in `processCapHist_PRO` to `T` or `TRUE` and add the `file_name` containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. *"output/PITcleanr/PRO_Steelhead_2019.csv"*).
+
+<!--
+MA: I was able to successfully write a .csv and .txt output, but .xls output was unsuccessful. I also noticed currently no option for .xlsx in writeCapHistOutput.R, not sure whether that's worth adding. May dive into later.
+-->
 
 ## Examine PITcleanr Output
 
-For all the tags with no issues (detections move steadily upstream), the UserProcStatus has been set to `TRUE`. All the tags with potential detection questions have a blank in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the Excel file, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibly considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either `TRUE` or `FALSE`, to show whether the detection at that node should be kept for the DABOM model.
+For all the tags with no issues (i.e. detections move steadily upstream), the UserProcStatus has been set to `TRUE`. All the tags with potential detection questions have a (blank) in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the output in Excel, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibly considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either `TRUE` or `FALSE`, to show whether the detection at that node should be kept for the DABOM model.
 
-One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked `FALSE` in the UserProcStatus columm, and the other ones marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones. (See example in Table \@ref(tab:ptagis-examp))
+One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array, for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the observation dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked `FALSE` in the UserProcStatus column, and the other one marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default action taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones. 
+
+One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked `FALSE` in the UserProcStatus columm, and the other ones marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones (see example in Table \@ref(tab:ptagis-examp)).
 
 ```{r ptagis-examp, echo = F}
+# proc_list[[2]] is the second element of the proc_list object i.e. the ProcCapHist
 proc_list[[2]] %>%
   filter(TagID == TagID[1]) %>%
   select(TagID:lastObsDate, SiteID, Node) %>%
