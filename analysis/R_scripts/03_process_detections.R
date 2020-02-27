@@ -47,11 +47,7 @@ save(yr, start_date, parent_child, proc_list,
 # tag summaries
 #-----------------------------------------------------------------
 bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds') %>%
-  filter(TagID %in% proc_list$ProcCapHist$TagID) %>%
-  distinct() %>%
-  group_by(TagID) %>%
-  slice(1) %>%
-  ungroup()
+  filter(TagID %in% proc_list$ProcCapHist$TagID)
 
 # Fix UserProcStatus, and summarise tag data
 tag_summ = proc_list$ProcCapHist %>%
@@ -82,6 +78,10 @@ node_eff = proc_list$ProcCapHist %>%
   filter(AutoProcStatus) %>%
   mutate(UserProcStatus = AutoProcStatus) %>%
   estNodeEff(node_order = proc_list$NodeOrder)
+
+node_eff %>%
+  filter(tagsAtNode > 0,
+         detEff < 1)
 
 node_eff %>%
   xtabs(~ (!is.na(detEff)) + (detEff_SE > 0), .)
