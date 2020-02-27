@@ -303,13 +303,6 @@ The output of the `processCapHist_PRO()` function (`proc_list` in the code above
 
 After this step, the results of *ProcCapHist* can be saved to an Excel file, to be examined by a fisheries biologist.
 
-```{r}
-install.packages("writexl")
-library(writexl)
-write_xlsx(proc_list$ProcCapHist, "../data/derived_data/PITcleanr/PRO_Steelhead_SY2019_proc_list.xlsx")
-
-```
-
 ## Examine PITcleanr Output
 
 For all the tags with no issues (detections move steadily upstream), the UserProcStatus has been set to `TRUE`. All the tags with potential detection questions have a blank in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the Excel file, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibly considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either `TRUE` or `FALSE`, to show whether the detection at that node should be kept for the DABOM model.
