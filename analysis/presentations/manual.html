@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -1365,6 +1366,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1426,7 +1428,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1455,12 +1456,6 @@ summary {
 }
 }
 
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
 
 .toc-content {
   padding-left: 30px;
@@ -1533,10 +1528,10 @@ div.tocify {
 
 <h1 class="title toc-ignore">Using DABOM for Yakima Steelhead</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
-<h4 class="date">26 February, 2020</h4>
+<h4 class="date">27 February, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
-This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
+<p>This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.</p>
 </div>
 
 </div>
@@ -1560,6 +1555,8 @@ install.packages(&quot;jagsUI&quot;)</code></pre>
 <pre class="r"><code>install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;KevinSee/PITcleanr&quot;)
 devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
+<p>Hint: We have experienced issues installing with installing <code>PITcleanr</code> and <code>DABOM</code> related to the following error (converted from warning): package ‘—-’ was built under R version x.x.x. Setting the following typically fixes that error and allows you to install the packages from GitHub.</p>
+<pre class="r"><code>Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)</code></pre>
 <p>NOTE: To use <code>devtools</code>, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a>. You can try to use <code>devtools</code> without Rtools, initially, and if <code>PITcleanr</code> and <code>DABOM</code> fail to install correctly, try installing Rtools (we have had mixed results with this). Additionally, when installing <code>PITcleanr</code> or <code>DABOM</code> you may receive a messy error message containing something like <em>&quot;there is no package called ‘ggraph’</em>. In that case, try to install and load the given package using the following and then re-attempt to install <code>PITclean</code> and <code>DABOM</code>.</p>
 <pre class="r"><code>install.package(&quot;ggraph&quot;) # to install package from R cran
 # replace ggraph with the appropriate package name as needed</code></pre>
@@ -1587,7 +1584,7 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 library(readxl)
 
 # read in biological data from trap
-bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %&gt;%
+bio_df = read_excel(&#39;../data/raw_data/YakimaNation/Denil 2018_19.xlsx&#39;) %&gt;%
   rename(TagID = PitTag) %&gt;%
   mutate_at(vars(PassTime),
             list(as.numeric)) %&gt;%
@@ -1595,11 +1592,11 @@ bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %&gt;%
 
 # pull out PIT tag numbers and save as a text file
 bio_df %&gt;%
-  filter(SppCode == 'wsth') %&gt;%
+  filter(SppCode == &#39;wsth&#39;) %&gt;%
   filter(!is.na(TagID)) %&gt;%
   select(TagID) %&gt;%
-  write_delim(path = '../data/raw_data/tag_lists/Tags_test_year.txt',
-              delim = '\n',
+  write_delim(path = &#39;../data/raw_data/tag_lists/Tags_test_year.txt&#39;,
+              delim = &#39;\n&#39;,
               col_names = F)</code></pre>
 </div>
 <div id="ptagis-query" class="section level2">
@@ -1618,7 +1615,7 @@ bio_df %&gt;%
 </ul>
 <p>You are welcome to include other fields as well, but the ones listed above must be added. Additional fields will just be included as extra columns in your query output.</p>
 <p>The only other required index is “2 Select Metrics”, but that can remain as the default, “CTH Count”.</p>
-<p>Set up a filter for specific tags by next navigating to the “28 Tag Code - List or Text File” on the left. And then, after selecting “Tag” under “Attributes:”, you should be able to click on “Import file…” under “Value:” and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under “Report Message Name:” near the bottom, name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has successfully completed, export the output as a .csv file (e.g. “PTAGIS_2018_19.csv”) using the default settings:</p>
+<p>Set up a filter for specific tags by next navigating to the “28 Tag Code - List or Text File” on the left. And then, after selecting “Tag” under “Attributes:”, you should be able to click on “Import file…” under “Value:” and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under “Report Message Name:” near the bottom, name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has successfully completed, export the output as a .csv file (e.g. “PTAGIS_2018_19.csv”) using the default settings:</p>
 <ul>
 <li>Export: Whole report</li>
 <li>CSV file format</li>
@@ -1653,61 +1650,62 @@ site_df
 #&gt;  8 AH1    PRO.SUN.AH1     PRO   &quot;SUN&quot; &quot;AH1&quot; &quot;&quot;    &quot;&quot;   
 #&gt;  9 LNR    PRO.SUN.LNR     PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;&quot;    &quot;&quot;   
 #&gt; 10 TTN    PRO.SUN.LNR.TTN PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;TTN&quot; &quot;&quot;   
-#&gt; # … with 12 more rows
+#&gt; # ... with 12 more rows
 # view(site_df)</code></pre>
-<p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> includes a function to do this, <code>buildConfig()</code>, but you will need an internet connection to run this. The <code>buildConfig()</code> function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the “B” array, and the upstream antennas to the “A” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
+<p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> includes a function to do this, <code>buildConfig()</code>, but you will need an internet connection to run this. The <code>buildConfig()</code> function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the “B0” array, and the upstream antennas to the “A0” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
 <pre class="r"><code>org_config = buildConfig()
-#&gt; [1] &quot;Querying INT sites' metadata&quot;
-#&gt; [1] &quot;Querying INT sites' configuration information&quot;
-#&gt; [1] &quot;Querying MRR sites' metadata&quot;</code></pre>
-<p>Note, the <code>org_config</code> object contains <strong>every</strong> INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into a single node called “TEAN”. Many of the modifications below help simplify the nodes downstream of Prosser.</p>
+#&gt; [1] &quot;Querying INT sites&#39; metadata&quot;
+#&gt; [1] &quot;Querying INT sites&#39; configuration information&quot;
+#&gt; [1] &quot;Querying MRR sites&#39; metadata&quot;</code></pre>
+<p>Note, the <code>org_config</code> object contains <strong>every</strong> INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into the upstream node of LMT, called “LMTA0”. Many of the modifications below help simplify the nodes downstream of Prosser.</p>
 <pre class="r"><code>configuration = org_config %&gt;%
-  mutate(Node = if_else(SiteID %in% c('PRO'),
-                        'PRO',
+  mutate(Node = if_else(SiteID %in% c(&#39;PRO&#39;),
+                        &#39;PRO&#39;,
                         Node),
          Node = if_else(SiteID %in% c(&quot;NFTEAN&quot;, &quot;TEANAR&quot;, &quot;TEANM&quot;, &quot;TEANWF&quot;),
                        &quot;LMTA0&quot;,
                        Node),
-         Node = if_else(SiteID == 'ROZ',
-                        if_else(AntennaID %in% c('01', '02', '03'),
+         Node = if_else(SiteID == &#39;ROZ&#39;,
+                        if_else(AntennaID %in% c(&#39;01&#39;, &#39;02&#39;, &#39;03&#39;),
                                 Node,
                                 as.character(NA)),
                         Node),
-         Node = if_else(SiteID == 'TAN' &amp; ConfigID %in% c(120, 130),
+         Node = if_else(SiteID == &#39;TAN&#39; &amp; ConfigID %in% c(120, 130),
                         &quot;TANB0&quot;,
                         Node),
-         Node = if_else(SiteID %in% c('MC1', 'MC2', 'MCJ', 'MCN'),
-                       'MCN',
+         Node = if_else(SiteID %in% c(&#39;MC1&#39;, &#39;MC2&#39;, &#39;MCJ&#39;, &#39;MCN&#39;),
+                       &#39;MCN&#39;,
                        Node),
-         Node = if_else(SiteID == 'ICH',
-                       'ICHB0',
+         Node = if_else(SiteID == &#39;ICH&#39;,
+                       &#39;ICHB0&#39;,
                        Node),
-         Node = if_else(grepl('522\\.', RKM) &amp; RKMTotal &gt; 538,
-                       'ICHA0',
+         Node = if_else(grepl(&#39;522\\.&#39;, RKM) &amp; RKMTotal &gt; 538,
+                       &#39;ICHA0&#39;,
                        Node),
-         Node = if_else(SiteID == 'JD1',
-                       'JD1B0',
+         Node = if_else(SiteID == &#39;JD1&#39;,
+                       &#39;JD1B0&#39;,
                        Node),
-         Node = if_else(SiteID %in% c('30M', 'BR0', 'JDM', 'SJ1', 'SJ2', 'MJ1'),
-                       'JD1A0',
+         Node = if_else(SiteID %in% c(&#39;30M&#39;, &#39;BR0&#39;, &#39;JDM&#39;, &#39;SJ1&#39;, &#39;SJ2&#39;, &#39;MJ1&#39;),
+                       &#39;JD1A0&#39;,
                        Node),
-         Node = if_else(SiteID != 'JD1' &amp; as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) &lt; 351,
-                       'BelowJD1',
+         Node = if_else(SiteID != &#39;JD1&#39; &amp; as.integer(stringr::str_split(RKM, &#39;\\.&#39;, simplify = T)[,1]) &lt; 351,
+                       &#39;BelowJD1&#39;,
                        Node),
-         Node = if_else(SiteID == 'PRA',
-                        'PRAB0',
+         Node = if_else(SiteID == &#39;PRA&#39;,
+                        &#39;PRAB0&#39;,
                         Node),
-         Node = if_else(SiteID != 'PRA' &amp; as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) &gt;= 639,
-                        'PRAA0',
+         Node = if_else(SiteID != &#39;PRA&#39; &amp; as.integer(stringr::str_split(RKM, &#39;\\.&#39;, simplify = T)[,1]) &gt;= 639,
+                        &#39;PRAA0&#39;,
                         Node))</code></pre>
 </div>
 <div id="parent-child-table" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Parent-Child Table</h3>
-<p>The next step is to build a parent-child table that describes which nodes are upstream of which nodes. The <code>PITcleanr</code> function <code>createParentChildDf</code> does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in <code>YYYYMMDD</code> format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.</p>
+<p>The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In most cases, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The exception being nodes that occur outside of the Yakima River (e.g., JD1, ICH) to account for adults that are detected at Prosser Dam, but then later detected outside of the Yakim River elsewhere in the Columbia River Basin. The <code>PITcleanr</code> function <code>createParentChildDf()</code> does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in <code>YYYYMMDD</code> format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.</p>
 <pre class="r"><code># which spawn year are we dealing with?
 yr = 2019
 # start date is July 1 of the previous year
-start_date = paste0(yr - 1, '0701')
+# the paste0 function simply pastes together our &#39;yr&#39; and &#39;0701&#39; into the &#39;YYYYMMDD&#39; format
+start_date = paste0(yr - 1, &#39;0701&#39;)
 
 # build parent-child table
 parent_child = createParentChildDf(site_df,
@@ -1716,10 +1714,14 @@ parent_child = createParentChildDf(site_df,
 </div>
 <div id="clean-ptagis-data" class="section level3">
 <h3><span class="header-section-number">3.3.3</span> Clean PTAGIS Data</h3>
-<p>The final step of this process is run the PTAGIS detections through a <code>PITcleanr</code> function, <code>processCapHist_PRO</code>, that will assign each detection to a node in the model, and then collapse the output so we are left with only one detection on a node before that tag is sighted on a different node.</p>
+<p>The final step of this process is run the PTAGIS detections through a <code>PITcleanr</code> function, <code>processCapHist_PRO()</code>, that will assign each detection to a node in the model, and then collapse the output so we are left, for each tag, only one detection on a node before that tag is sighted on a different node.</p>
+<p>First, we use the <code>read_csv()</code> function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the <code>paste0()</code> function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use the <code>read_csv</code> and the directory and filename of your .csv output to read in your detections and create an object called <code>observations</code>.</p>
 <pre class="r"><code># get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
-observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+observations = read_csv(paste0(&#39;../data/raw_data/PTAGIS/PTAGIS_&#39;, yr-1, &#39;_&#39;, str_sub(as.character(yr), 3, 4), &#39;.csv&#39;))
+
+# Alternatively,...
+# observations = read_csv(&quot;C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv&quot;)
 
 # process those observations with PITcleanr, using Yakima-specific function
 proc_list = processCapHist_PRO(start_date,
@@ -1734,8 +1736,8 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-02-26 10:26:47  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
-<p>The output of the <code>processCapHist_PRO</code> function (<code>proc_list</code> in the code above) is a list, containing two elements:</p>
+#&gt; [1] &quot;2020-02-27 09:03:50  1 of 102 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+<p>The output of the <code>processCapHist_PRO()</code> function (<code>proc_list</code> in the code above) is a list, containing two elements:</p>
 <ul>
 <li><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the “path” a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata.</li>
 <li><em>ProcCapHist</em>: The “cleaned” capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream, based on the previous observation, and two columns containing “ProcStatus” for “processed status”. “AutoProcStatus” is <code>PITcleanr</code>’s best guess as to whether the observation on that node should be kept (<code>TRUE</code>) or discarded (<code>FALSE</code>). “UserProcStatus” is where the end user can define that for themselves.</li>

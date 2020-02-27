@@ -101,6 +101,12 @@ devtools::install_github("KevinSee/PITcleanr")
 devtools::install_github("KevinSee/DABOM")
 ```
 
+Hint: We have experienced issues installing with installing `PITcleanr` and `DABOM` related to the following error (converted from warning): package '----' was built under R version x.x.x. Setting the following typically fixes that error and allows you to install the packages from GitHub.
+
+```{r}
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
+```
+
 NOTE: To use `devtools`, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at https://cran.r-project.org/bin/windows/Rtools/. You can try to use `devtools` without Rtools, initially, and if `PITcleanr` and `DABOM` fail to install correctly, try installing Rtools (we have had mixed results with this). Additionally, when installing `PITcleanr` or `DABOM` you may receive a messy error message containing something like *"there is no package called 'ggraph'*. In that case, try to install and load the given package using the following and then re-attempt to install `PITclean` and `DABOM`.
 
 ```{r install-load-example, eval = F}
