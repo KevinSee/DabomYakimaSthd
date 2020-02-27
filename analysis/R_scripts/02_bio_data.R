@@ -17,12 +17,17 @@ bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>
   rename(TagID = PitTag) %>%
   mutate_at(vars(PassTime),
             list(as.numeric)) %>%
-  filter(!is.na(LadCode))
+  filter(!is.na(LadCode)) %>%
+  filter(!is.na(TagID)) %>%
+  # filter out duplicate tags by keeping the first record
+  arrange(PassDate, TagID) %>%
+  group_by(TagID) %>%
+  slice(1) %>%
+  ungroup()
 
 # pull out PIT tag numbers
 tags = bio_df %>%
-  filter(SppCode == 'wsth') %>%
-  filter(!is.na(TagID)) %>%
+  # filter(SppCode == 'wsth') %>%
   select(TagID)
 
 # save tags to upload to PTAGIS
