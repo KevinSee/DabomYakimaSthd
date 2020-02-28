@@ -19,6 +19,10 @@ bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>
             list(as.numeric)) %>%
   filter(!is.na(LadCode)) %>%
   filter(!is.na(TagID)) %>%
+  # fix one tag code
+  mutate(TagID = if_else(TagID == "389.1C2E70563A",
+                         "3D9.1C2D70563A",
+                         TagID)) %>%
   # filter out duplicate tags by keeping the first record
   arrange(PassDate, TagID) %>%
   group_by(TagID) %>%
