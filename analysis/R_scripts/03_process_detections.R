@@ -8,7 +8,6 @@
 # load needed libraries
 library(PITcleanr)
 library(tidyverse)
-# library(WriteXLS)
 
 #-----------------------------------------------------------------
 # load configuration and site_df data
@@ -46,8 +45,7 @@ save(yr, start_date, parent_child, proc_list,
 #-----------------------------------------------------------------
 # tag summaries
 #-----------------------------------------------------------------
-bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds') %>%
-  filter(TagID %in% proc_list$ProcCapHist$TagID)
+bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds')
 
 # Fix UserProcStatus, and summarise tag data
 tag_summ = proc_list$ProcCapHist %>%
