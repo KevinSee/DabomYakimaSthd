@@ -43,6 +43,23 @@ save(yr, start_date, parent_child, proc_list,
      file = paste0('analysis/data/derived_data/PITcleanr/PRO_Steelhead_', yr, '.rda'))
 
 #-----------------------------------------------------------------
+# Read in the file returned by the Yakima
+#-----------------------------------------------------------------
+load(paste0('analysis/data/derived_data/PITcleanr/PRO_Steelhead_', yr, '.rda'))
+
+proc_ch = read_excel(paste0('analysis/data/raw_data/YakimaNation/PRO_Steelhead_', yr, '.xlsx')) %>%
+  mutate_at(vars(AutoProcStatus:ValidPath),
+            list(as.logical)) %>%
+  filter(UserProcStatus)
+
+proc_list$ProcCapHist = proc_ch
+
+# re-save some stuff
+save(yr, start_date, parent_child, proc_list,
+     file = paste0('analysis/data/derived_data/PITcleanr/PRO_Steelhead_', yr, '.rda'))
+
+
+#-----------------------------------------------------------------
 # tag summaries
 #-----------------------------------------------------------------
 bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds')
@@ -57,6 +74,16 @@ tag_summ = proc_list$ProcCapHist %>%
 tag_summ %>%
   filter(TagID %in% TagID[duplicated(TagID)]) %>%
   as.data.frame()
+
+# where did hatchery fish go?
+tag_summ %>%
+  filter(SppCode == 'hsth')
+
+# save as csv file to send out
+tag_summ %>%
+  select(-BranchNum, -Group) %>%
+  write_csv(paste0('outgoing/tag_summary/PRO_Steelhead_TagSummary_', yr, '.csv'))
+
 
 # where are tags assigned?
 janitor::tabyl(tag_summ, AssignSpawnSite) %>%
