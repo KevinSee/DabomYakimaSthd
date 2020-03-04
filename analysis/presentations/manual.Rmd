@@ -1,5 +1,5 @@
 ---
-title: "Using DABOM for Yakima Steelhead"
+title: "PITcleanr & DABOM User Manual for Yakima Steelhead"
 author:
   - Kevin See:
       email: Kevin.See@merck.com
@@ -21,7 +21,7 @@ output:
       toc_float:
         collapsed: yes
         smooth_scroll: yes
-      theme: simplex
+      theme: flatly
       pandoc_args:
       - --lua-filter=../templates/scholarly-metadata.lua
       - --lua-filter=../templates/author-info-blocks.lua
@@ -52,9 +52,9 @@ bibliography:
 - ../paper/references.bib
 csl: "../templates/american-fisheries-society.csl" # Insert path for the bib-style
 abstract: |
-  This manual contains the instructions to run the DABOM model for steelhead in the Yakima basin.
+  This manual contains instructions on how to run the DABOM model to estimate adult abundace for steelhead to locations in the Yakima River basin. We start by describing how to generate a list of valid PIT tags at Prosser Dam to be used in the model and then how to query for detections of those PIT tags using PTAGIS. We then "clean up" the detections using the R package PITcleanr. Finally we describe how to write the JAGS model for use in DABOM, and finally, run DABOM to estimate transition probabilities for steelhead throughout the Yakima system. DABOM movement probabilities can then be multiplied by estimates of escapement at Prosser Dam to get abundance to locations or tributaries.
 keywords: |
-  keyword 1; keyword 2; keyword 3
+  PITcleanr; DABOM; steelhead; Yakima; abundance
 highlights: |
   These are the highlights.
 ---
@@ -73,27 +73,30 @@ knitr::opts_chunk$set(
 library(knitr)
 ```
 
-
 # Introduction
 
-This manual describes how to run the **D**am **A**dult **B**ranch **O**ccupancy **M**odel ([DABOM](https://github.com/KevinSee/DABOM)) for steelhead crossing over Prosser Dam and into the Yakima River. We start by describing how to query [PTAGIS](https://www.ptagis.org/) to get all detections of adults at relevant observation sites (e.g., weirs, PIT tag arrays, etc.) for a particular spawning run from a list of "valid" PIT tags. Observation data are then "cleaned up" using the `PITcleanr` R package to determine a final destination or spawning location for each individual and prepared for use in the `DABOM` R package and model. Next, we describe how to write a JAGS model for use in the `DABOM` model, and finally, run `DABOM` to estimate detection and transition probabilities in the Yakima River system. Movement probabilities can then be multiplied by estimates of adult escapement at Prosser Dam to estimate escapement at any observation site (or tributary) within the Yakima River. 
+This manual describes how to run the **D**am **A**dult **B**ranch **O**ccupancy **M**odel ([DABOM](https://github.com/KevinSee/DABOM)) for steelhead crossing over Prosser Dam and into the Yakima River. We start by describing how to query [PTAGIS](https://www.ptagis.org/) to get all detections of adults at relevant observation sites (e.g., weirs, PIT tag arrays, etc.) for a particular spawning run from a list of "valid" PIT tags. Observation data are then "cleaned up" using the `PITcleanr` R package to determine a final destination or spawning location for each individual and detection data are prepared for use in the `DABOM` R package and model. Next, we describe how to write a JAGS model for use in `DABOM`, and finally, run `DABOM` to estimate detection and movement probabilities in the Yakima River system. Movement probabilities can then be multiplied by an estimate of adult escapement at Prosser Dam to estimate escapement, with uncertainty, at any observation site (or tributary) within the Yakima River. 
 
 # Set-up
 
-The first step is to ensure all of the appropriate software and R packages are installed on your computer. R is simply a language and environment for statistical computing and graphics and is the workhorse for running all of the models described herein; R packages are collections of functions and data sets developed by the R community for particular tasks. Some R packages used here are available from the general R community and some (e.g., `DABOM`) are developed by Kevin See and contain function specifically for analysis of PIT observation data.
+## Software
 
-First, you will need to have [R](https://cran.r-project.org/) downloaded and installed. You can download and install the "base" distribution and all of the default installation settings should work just fine. In addition, we find it useful to use [RStudio](https://rstudio.com/) to interface with R. Again, download and install the Desktop version of RStudio using the default settings. RStudio provide a graphical user interface (GUI) for R and provide a text/code editor, allows for direct code execution, management of R packages, and allows you to view R objects (e.g., data) in your environment.
+The first step is to ensure that all appropriate software and R packages are installed on your computer. ([R](https://cran.r-project.org/)) is a language and environment for statistical computing and graphics and is the workhorse for running all of the code and models described here. R packages are collections of functions and data sets developed by the R community for particular tasks. Some R packages used here are available from the general R community ([Available CRAN Packages](https://cran.r-project.org/web/packages/available_packages_by_name.html)) whereas others (e.g., `PITcleanr`, `DABOM`) are developed by ([Kevin See](https://github.com/KevinSee)) and contain functions written for cleaning and analysis of PIT tag detection site and observation data.
 
-Next, you will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software to run DABOM. You can download that from [SourceForge](https://sourceforge.net/projects/mcmc-jags/files/). 
+First, you will need to have [R](https://cran.r-project.org/) downloaded and installed. Use the "base" distribution and all default installation settings should work just fine. Additionally, although not necessary, we find it very useful to use [RStudio](https://rstudio.com/) as an interface for R. Download the Desktop version of RStudio, and again, default installation settings should work just fine. RStudio provides a graphical user interface (GUI) for R with a text/code editor and allows for direct code execution, management of R packages, a viewing of R objects (e.g., data) in the environment.
 
-After installing R and RStudio, you will also need to install `tidyverse`, a series of R packages that work together for data science (e.g., data cleaning and wrangling), as well as the `jagsUI` package to interface with the JAGS (Just Another Gibbs Sampler) software which is used by `DABOM` for Bayian inference. The `tidyverse` and `jagsUI` packages are both available from the R community and can be installed by typing the following into your R console:
+Next, you will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software to run DABOM. You can download that from [SourceForge](https://sourceforge.net/projects/mcmc-jags/files/). JAGS (Just Another Gibbs Sampler) software is used by `DABOM` for Bayesian inference.
+
+## R Packages
+
+After installing R and Studio, you will also need to install `tidyverse`, a series of R packages that work together for data science (i.e. data cleaning and manipulation), as well as the `jagsUI` package to interface with JAGS. The `tidyverse` and `jagsUI` packages are both available from the R community and can be installed by typing the following into your R console:
 
 ```{r install-cran, eval = F}
 install.packages("tidyverse")
 install.packages("jagsUI")
 ```
 
-You will then need to install a few custom packages written for this model. The first is called `PITcleanr` written primarily for clean PIT tag observation data. And `DABOM` is used for writing and running the DABOM model. You can use the `devtools` package to install both from [GitHub](https://github.com/) using the following code:
+Next, install `PITcleanr` and `DABOM` from Kevin See's [GitHub](https://github.com/) page [here](https://github.com/KevinSee). `PITcleanr` was written primarily to build a "river network" describing the relationships among detection sites in a system, to clean PIT tag detection data to establish capture histories for individuals, and to determine the final destination or spawning location for each fish. `DABOM` is used for writing and running the `DABOM` model and estimating detection and movement probabilities. You can use `devtools` to install both of these packages from [GitHub](https://github.com/) using the following: 
 
 ```{r install-github, eval = F}
 install.packages("devtools")
@@ -101,13 +104,13 @@ devtools::install_github("KevinSee/PITcleanr")
 devtools::install_github("KevinSee/DABOM")
 ```
 
-Hint: We have experienced issues installing with installing `PITcleanr` and `DABOM` related to the following error (converted from warning): package '----' was built under R version x.x.x. Setting the following typically fixes that error and allows you to install the packages from GitHub.
+Hint: We have experienced errors installing the `PITcleanr` and `DABOM` packages related to *"Error: (converted from warning) package 'packagenamehere' was built under R version x.x.x"*. Setting the following environment variable typically suppresses the error and allows you to successfully install the packages.
 
 ```{r}
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)
 ```
 
-NOTE: To use `devtools`, you may also have to download and install Rtools (although it may already be installed). The latest version on Rtools can be found at https://cran.r-project.org/bin/windows/Rtools/. You can try to use `devtools` without Rtools, initially, and if `PITcleanr` and `DABOM` fail to install correctly, try installing Rtools (we have had mixed results with this). Additionally, when installing `PITcleanr` or `DABOM` you may receive a messy error message containing something like *"there is no package called 'ggraph'*. In that case, try to install and load the given package using the following and then re-attempt to install `PITclean` and `DABOM`.
+When attempting to install `PITcleanr` or `DABOM` you may receive an error message similar to *"there is no package called 'ggraph'"*. In that case, try to install the given package using the following and then attempt to install `PITclean` or `DABOM`, again.
 
 ```{r install-load-example, eval = F}
 install.package("ggraph") # to install package from R cran
@@ -116,26 +119,34 @@ install.package("ggraph") # to install package from R cran
 
 We are always trying to improve the `PITcleanr` and `DABOM` R packages to minimize these types of errors.
 
-# Steps
+## `devtools` Note
 
-Briefly, the steps to process a new year of data include: 
+***IF THE devtools PACKAGE WORKS FINE ABOVE, SKIP THIS SECTION.*** To use `devtools`, you may have to download and install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). You can try to use `devtools` without Rtools, initially, and if `PITcleanr` and `DABOM` fail to install correctly, installing Rtools may remedy the situation. We have had mixed results with this in the past.
 
-1. Get PIT tag information
-1. Query PTAGIS for observations
-1. Run PITcleanr to "clean up" observations
-1. Review PITcleanr output to determine final capture histories and spawning locations
-1. Prepare data for DABOM and write JAGS model
-1. Run DABOM
-1. Summarise results
-1. Combine with estimates of adult escapement at Prosser
+# Procedure
+
+Briefly, the steps to process the data for a given run or spawn year include:
+
+1. Generate valid PIT tag list
+2. Query PTAGIS for detections
+3. Develop the "river network" describing the relationship among detection sites
+4. Use PITcleanr to "clean up" detection data
+5. Review PITcleanr output to determine final capture histories
+6. Run DABOM to estimate detection and movement probabilities
+7. Summarise DABOM results
+8. Combine DABOM movement probabilities with an estimate of adult escapement at Prosser
+
+Following, we describe each of the steps in detail using the 2018/2019 steelhead run as an example.
+
+# Valid PIT Tag List and PTAGIS Query
 
 ## Tag Information
 
-You will need to compile a list of PIT tags in steelhead that were caught in the Prosser trap for a given spawn year, called the valid tag list. Tagged steelhead need to be a random, representative sample of the run, and so should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but it is not caught in the trap, it cannot be used for this analysis.
+You will need to compile a list of PIT tags in steelhead that were caught in the Prosser trap for a given run or spawn year, called the valid tag list. Tagged steelhead need to be a random, representative sample of the run, and so should only include tags from the trap. If a fish is caught in the trap and happens to be previously tagged, that tag can be used as part of the valid tag list. However, if a previously tagged fish (e.g. a fish tagged as a juvenile in the upper Yakima) is detected crossing Prosser, but is not caught in the trap, it cannot be used for this analysis.
 
-Save this list of valid tags as a text file with no headers, to make it easy to upload to a PTAGIS query.
+Save this list of valid PIT tag codes as a text file with no headers, to make it easy to upload to a PTAGIS query.
 
-This is also a good opportunity to compile other relevant biological or life history information for each fish in that valid tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.
+This is also a good opportunity to compile other relevant biological or life history information for each fish in the valid PIT tag list, such as sex, length, weight, age, origin, genetics, etc. That information may be used later to estimate, for example, sex- or age-specific abundance to locations which is useful for productivity monitoring.
 
 ```{r}
 library(tidyverse)
@@ -160,9 +171,9 @@ bio_df %>%
 
 ## PTAGIS Query
 
-The next step is to query PTAGIS for all detections of the fish included on the valid tag list. PTAGIS is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. Go to the Advanced Reporting page on the [PTAGIS website](https://www.ptagis.org/data/advanced-reporting), which can also be found under the Data tab on the PTAGIS homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select "Launch". Create your own query by selecting "Create Query Builder2 Report", and start with a "Complete Tag History" query.  
+The next step is to query PTAGIS for all detections of the fish included on the valid tag list. [PTAGIS](https://www.ptagis.org/) is the regional database for fish marked with PIT tags by fisheries management agencies and research organizations in the Columbia River Basin. There, go to the [Advanced Reporting](https://www.ptagis.org/data/advanced-reporting) page, which can also be found under the Data tab on the homepage. To access Advanced Reporting, you will need a free account from PTAGIS, and to be logged in. Once on the Advanced Reporting page, select "Launch" and create your own query by selecting "Create Query Builder2 Report". We will use a "Complete Tag History" query.  
 
-You will see several query indices on the left side of the query builder, but for the purposes of `PITclean` and `DABOM`, we only need to deal with a couple of those. First, under "1 Select Attributes" the following fields are required to work with `PITcleanr`:
+You will see several query indices on the left side of the query builder, but for the purposes of `PITcleanr` and `DABOM`, we only need to deal with a couple of those. First, under "1 Select Attributes" the following fields are required to work with `PITcleanr`:
 
 * Tag
 * Mark Rear Type
@@ -173,11 +184,11 @@ You will see several query indices on the left side of the query builder, but fo
 * Antenna
 * Antenna Group Configuration
 
-You are welcome to include other fields as well, but the ones listed above must be added. Additional fields will just be included as extra columns in your query output.
+You are welcome to include other fields as well, but the ones listed above must be added. Any additional fields will just be included as extra columns in your query output.
 
-The only other required index is "2 Select Metrics", but that can remain as the default, "CTH Count".
+The only other required index is "2 Select Metrics", but that can remain as the default, "CTH Count", which provides one record for each event recorded per tag.
 
-Set up a filter for specific tags by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file..." under "Value:" and simply upload the .txt file you saved in the previous step with all the tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv") using the default settings:
+Set up a filter for specific tags (e.g. the valid tag list) by next navigating to the "28 Tag Code - List or Text File" on the left. And then, after selecting "Tag" under "Attributes:", you should be able to click on "Import file...". Simply upload the .txt file you saved in the previous step containing tag codes in the valid tag list. Under "Report Message Name:" near the bottom, name the query something appropriate, such as "PTAGIS_2018_19", and select "Run Report". Once the query has successfully completed, export the output as a .csv file (e.g. "PTAGIS_2018_19.csv") using the default settings:
 
 * Export: Whole report
 * CSV file format
@@ -189,18 +200,20 @@ Set up a filter for specific tags by next navigating to the "28 Tag Code - List 
 Kevin - There were minor discrepancies here between your directions and my query builder, which I wonder if stems from Windows vs. Mac. Hopefully my query builder doesn't differ from most and I changed this to something inappropriate.
 -->
 
+# PITcleanr
+
 ## Processing PTAGIS Detections
 
-The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna, so we need to condense those to a single detection on a particular array, even if the fish was detected 7 times on 3 different antennas in that array. We use the `PITcleanr` package for this. There are few parts to this particular step. The first is to load the appropriate packages into your R environment. 
+The next step is to clean up all the detections listed in the PTAGIS query. Those include every detection on every antenna; we need to condense those to a single detection for each particular array of antennas, even if the fish was detected 7 times on 3 different antennas in that array. We can use the `PITcleanr` package for this. There are a few parts to this particular step. But first, load the appropriate packages into your R environment.
 
 ```{r}
 library(PITcleanr)
 library(tidyverse)
 ```
 
-### Site Configuration
+### Build Site Configuration
 
-The next step is to define which sites we are going to include in the DABOM model. The `PITcleanr` package has a special function, specific to Prosser Dam and the Yakima River, to do this, called `writePRONodeNetwork()`. This function lists all the various sites by their PTAGIS site ID code, and shows which other sites a tag would need to pass in order to reach that particular site. The below saves a new object `site_df` contaning that information. You can use the `view()` function in R to view the `site_df` object in a new window in RStudio to review the river network.
+The first necessary step to "cleaning up" or processing the detections is to define which sites we are going to include in the DABOM model. The `PITcleanr` package contains a function, specific to Prosser Dam and the Yakima River, to do this, called `writePRONodeNetwork()`. This function lists all the various sites by their PTAGIS site ID, and shows which other sites a tag would need to pass in order to reach that particular site. The below saves a new object `site_df` contaning that information. If desired, you can use the `view()` function to review `site_df` in a new RStudio window. 
 
 ```{r}
 site_df = writePRONodeNetwork()
@@ -208,7 +221,7 @@ site_df
 # view(site_df)
 ```
 
-The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` includes a function to do this, `buildConfig()`, but you will need an internet connection to run this. The `buildConfig()` function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a model node to each antenna. These nodes are essentially which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same code. If there is a double array, the antennas in the downstream array will be assigned to the "B0" array, and the upstream antennas to the "A0" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.
+The next step is to query PTAGIS for all the metadata associated with these sites. Again, `PITcleanr` includes a function to do this, `buildConfig()`, but you will need an internet connection to run this. The `buildConfig()` function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a 'model node' to each antenna. The model nodes essentially define which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same model node. If there is a double array, the antennas in the downstream array will be assigned to the "B0" array, and the upstream antennas to the "A0" array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.
 
 ```{r}
 org_config = buildConfig()
@@ -221,6 +234,7 @@ configuration = org_config %>%
   mutate(Node = if_else(SiteID %in% c('PRO'),
                         'PRO',
                         Node),
+         # grouping all of the various sites on the Teanaway River into "LMTA0"
          Node = if_else(SiteID %in% c("NFTEAN", "TEANAR", "TEANM", "TEANWF"),
                        "LMTA0",
                        Node),
@@ -232,15 +246,18 @@ configuration = org_config %>%
          Node = if_else(SiteID == 'TAN' & ConfigID %in% c(120, 130),
                         "TANB0",
                         Node),
+         # group all sites above McNary
          Node = if_else(SiteID %in% c('MC1', 'MC2', 'MCJ', 'MCN'),
                        'MCN',
                        Node),
+         # group all sites above Ice Harbor
          Node = if_else(SiteID == 'ICH',
                        'ICHB0',
                        Node),
          Node = if_else(grepl('522\\.', RKM) & RKMTotal > 538,
                        'ICHA0',
                        Node),
+         # group all sites below John Day
          Node = if_else(SiteID == 'JD1',
                        'JD1B0',
                        Node),
@@ -250,6 +267,7 @@ configuration = org_config %>%
          Node = if_else(SiteID != 'JD1' & as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) < 351,
                        'BelowJD1',
                        Node),
+         # group sites above Priest Rapids
          Node = if_else(SiteID == 'PRA',
                         'PRAB0',
                         Node),
@@ -260,7 +278,7 @@ configuration = org_config %>%
 
 ### Parent-Child Table
 
-The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In most cases, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The exception being nodes that occur outside of the Yakima River (e.g., JD1, ICH) to account for adults that are detected at Prosser Dam, but then later detected outside of the Yakim River elsewhere in the Columbia River Basin. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model, and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
+The next step is to build a parent-child table that describes which nodes are upstream of which nodes. In most cases, when modeling returning adults, the parent node is the first node the adult crosses when returning upstream to spawn and the child node is the next node upstream. The exception being nodes that occur outside of the Yakima River (e.g., JD1, ICH) to account for adults that are detected at Prosser Dam, but then later detected outside of the Yakima River. The `PITcleanr` function `createParentChildDf()` does this, taking as inputs the data frame of sites in our model and the configuration file we just created. The other input is the starting date (in `YYYYMMDD` format) for this model run, because the function uses that to find the appropriate configuration of the antennas. For this version, we define that starting date as July 1 of the year prior to the spawn year we are interested in.
 
 ```{r}
 # which spawn year are we dealing with?
@@ -278,16 +296,16 @@ parent_child = createParentChildDf(site_df,
 
 ### Clean PTAGIS Data
 
-The final step of this process is run the PTAGIS detections through a `PITcleanr` function, `processCapHist_PRO()`, that will assign each detection to a node in the model, and then collapse the output so we are left, for each tag, only one detection on a node before that tag is sighted on a different node.
+The final step of this data cleaning process is run the PTAGIS detections through the `processCapHist_PRO()` function in `PITcleanr` which will assign each detection to a node in the model, and then collapse the output so we are left, for each tag, only one detection on a node before that tag is sighted on a different node.
 
-First, we use the `read_csv()` function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the `paste0()` function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use the `read_csv()` and the directory and filename of your .csv output to read in your detections and create an object called `observations`.
+First, use the `read_csv()` function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the `paste0()` function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use `read_csv()` and the directory and filename of your .csv output to read in your detections and create an object called `observations`.
 
 ```{r}
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
 
-# Alternatively,...
+# Alternatively example...
 # observations = read_csv("C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv")
 
 # process those observations with PITcleanr, using Yakima-specific function
@@ -301,12 +319,13 @@ proc_list = processCapHist_PRO(start_date,
                                save_file = F)
 ```
 
-The output of the `processCapHist_PRO()` function (`proc_list` in the code above) is a list, containing two elements:
+The output of the `processCapHist_PRO()` function (`proc_list` in our example) is a list, containing two elements:
 
-* *NodeOrder*: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there), the "path" a tag would take to get there, consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. 
-* *ProcCapHist*: The "cleaned" capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream, based on the previous observation, and two columns containing "ProcStatus" for "processed status". "AutoProcStatus" is `PITcleanr`'s best guess as to whether the observation on that node should be kept (`TRUE`) or discarded (`FALSE`). "UserProcStatus" is where the end user can define that for themselves. 
+* *NodeOrder*: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there from Prosser Dam), the "path" a tag would take to get there consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. The *NodeOrder* can easily be accessed using `proc_list$NodeOrder` or `proc_list[[1]]`.
 
-After this step, the results of *ProcCapHist* can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the `save_file` argument in `processCapHist_PRO` to `T` or `TRUE` and add the `file_name` containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. *"output/PITcleanr/PRO_Steelhead_2019.csv"*).
+* *ProcCapHist*: The "cleaned" capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream (based on the previous observation), and two columns containing **ProcStatus** for "processed status". **AutoProcStatus** is `PITcleanr`'s best guess as to whether the observation on that node should be kept (`TRUE`) or discarded (`FALSE`). **UserProcStatus** is where the end user can define that for themselves. The *ProcCapHist* can be accessed using `proc_list$ProcCapHist` or `proc_list[[2]]`.
+
+After this step, the results of *ProcCapHist* can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the `save_file` argument in `processCapHist_PRO()` to `T` or `TRUE` and add the `file_name` containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. *"output/PITcleanr/PRO_Steelhead_2019.csv"*).
 
 <!--
 MA: I was able to successfully write a .csv and .txt output, but .xls output was unsuccessful. I also noticed currently no option for .xlsx in writeCapHistOutput.R, not sure whether that's worth adding. May dive into later.
@@ -314,11 +333,9 @@ MA: I was able to successfully write a .csv and .txt output, but .xls output was
 
 ## Examine PITcleanr Output
 
-For all the tags with no issues (i.e. detections move steadily upstream), the UserProcStatus has been set to `TRUE`. All the tags with potential detection questions have a (blank) in the UserProcStatus column for all the detections for that tag. So a user merely needs to open the output in Excel, and filter on the UserProcStatus column, selecting all the rows where it is blank. Initially, that will include all the detections for those tags. By examining the dates and the nodes, and possibly considering the suggestion made by the AutoProcStatus column, the user needs to fill in each blank with either `TRUE` or `FALSE`, to show whether the detection at that node should be kept for the DABOM model.
+The *ProcCapHist* in `proc_list` now contains the cleaned, processed capture histories for each PIT tag with the **AutoProcStatus** column containing `PITcleanr`'s best guess of whether the observation should be used in the DABOM model and a **UserProcStatus** column allowing the end user to make their own determination of whether an observation should be used. For all tags with no issues (i.e. the detections move steadily upstream after Prosser Dam), the **UserProcStatus** column has been set to `TRUE`. However, for any tags with potential detections in question, the **UserProcStatus** is (blank). In this case, the user merely needs to open the output, perhaps in Excel, and filter the **UserProcStatus** selecting all the rows with a (blank). Initally, that will include all the detections for the tags in question. By examing the dates and the nodes, and possibly considering the suggestions made in the **AutoProcStatus** column by `PITcleanr`, the user needs to fill in each blank with either `TRUE` or `FALSE` to show whether the detection at the node should be kept or ignored for the DABOM model, respectively.
 
-One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array, for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the observation dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked `FALSE` in the UserProcStatus column, and the other one marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default action taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones. 
-
-One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array for example, and later is seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the dates, the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the SiteID is SAT should be marked `FALSE` in the UserProcStatus columm, and the other ones marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default taken by the AutoProcStatus column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones (see example in Table \@ref(tab:ptagis-examp)).
+One of the assumptions in the DABOM model is that fish are making a one-way upstream migration, which ends in their spawning location. So if a fish is detected moving past the SAT array, for example, and later seen moving past the SUN site, both of those observations cannot be kept in the model. Based on the observation dates (**ObsDate** and **lastObsDate**), the user will need to decide where the final spawning location was for that fish. If it was past SUN, then the rows where the **SiteID** is SAT should be marked `FALSE` in the "UserProcStatus" column, and the other one marked `TRUE`. Instead, if it appears the fish spawned in Status Creek, then the SUN rows should be marked `FALSE`. The default action taken by the **AutoProcStatus** column is to keep the latest observation, so it would default to keeping the SUN observations and dropping the SAT ones.
 
 ```{r ptagis-examp, echo = F}
 # proc_list[[2]] is the second element of the proc_list object i.e. the ProcCapHist
@@ -340,7 +357,7 @@ proc_list[[2]] %>%
 
 ### Summarise Information for Each Tag
 
-At this point, some summary information can be obtained for each tag in the valid tag list, including potential spawning location. This is based on the furthest node that the tag was detected at, after filtering out unwanted observations (see [Examine PITcleanr Output]). This function also takes biological information obtained at the trap, and the output can be used to summarise sex ratios, age or length distributions for various nodes in the network.
+At this point, some summary information can be obtained for each tag in the valid tag list, including potential spawning (i.e. final) location. This is based on the furthest model node that the tag was detected at, after filtering out unwanted observations (see [Examine PITcleanr Output]). The `summariseTagData()` function also takes biological information obtained at the trap (e.g. the `bio_df` object created above), and the output can be used to summarise, for example, sex ratios, age or length distributions, etc. for various nodes in the network.
 
 ```{r}
 tag_summ = proc_list$ProcCapHist %>%
@@ -353,6 +370,9 @@ tag_summ = proc_list$ProcCapHist %>%
                      ungroup())
 ```
 
+Congratulations! You have now prepared all of your data and detections to build and run the DABOM model.
+
+# DABOM
 
 ## Prepare and Run DABOM
 
