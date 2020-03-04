@@ -50,7 +50,7 @@ model{
   p_pop_PRO[2, 1:n_pops_PRO] ~ ddirch(PRO_dirch_vec[2,]); # uninformed Dirichlet for probs for going to PRO bins
 
   # possible values for each branch
-  # 1 = Below JD1, 2 = JD1, 3 = MCN, 4 = ICH, 5 = PRA, 6 = SAT, 7 = TOP, 8 = SUN, 9 = Black box
+  # 1 = Below JD1, 2 = JD1, 3 = MCN, 4 = ICH, 5 = SAT, 6 = TOP, 7 = SUN, 8 = PRA, 9 = Black box
 
   for (i in 1:(n_fish)) {
    a_PRO[i] ~ dcat( p_pop_PRO[fishOrigin[i], 1:n_pops_PRO] )
@@ -76,24 +76,24 @@ model{
     Downstream[i,5] ~ dbern( ICHB0_p * catexp_PRO[i,4] )
     Downstream[i,6] ~ dbern( ICHA0_p * catexp_PRO[i,4] )
 
-    Downstream[i,7] ~ dbern( PRAB0_p * catexp_PRO[i,5] )
-    Downstream[i,8] ~ dbern( PRAA0_p * catexp_PRO[i,5] )
+    Downstream[i,7] ~ dbern( PRAB0_p * catexp_PRO[i,8] )
+    Downstream[i,8] ~ dbern( PRAA0_p * catexp_PRO[i,8] )
   }
 
   #---------------------------------------------
   # Status
   #---------------------------------------------
   for (i in 1:n_fish) {
-    Status[i,1] ~ dbern( SATB0_p * catexp_PRO[i,6] )
-    Status[i,2] ~ dbern( SATA0_p * catexp_PRO[i,6] )
+    Status[i,1] ~ dbern( SATB0_p * catexp_PRO[i,5] )
+    Status[i,2] ~ dbern( SATA0_p * catexp_PRO[i,5] )
   }
 
   #---------------------------------------------
   # Toppenish
   #---------------------------------------------
   for (i in 1:n_fish) {
-    Toppenish[i,1] ~ dbern( TOPB0_p * catexp_PRO[i,7] )
-    Toppenish[i,2] ~ dbern( TOPA0_p * catexp_PRO[i,7] )
+    Toppenish[i,1] ~ dbern( TOPB0_p * catexp_PRO[i,6] )
+    Toppenish[i,2] ~ dbern( TOPA0_p * catexp_PRO[i,6] )
   }
 
   # branch after TOP
@@ -116,7 +116,7 @@ model{
   # 1 = SM1, 2 = TP2, 3 = Black box
 
   for (i in 1:n_fish) {
-   a_TOP[i] ~ dcat( pMatTOP[(catexp_PRO[i,7] * fishOrigin[i] + 1), 1:(n_pops_TOP+1)] )
+   a_TOP[i] ~ dcat( pMatTOP[(catexp_PRO[i,6] * fishOrigin[i] + 1), 1:(n_pops_TOP+1)] )
      for (j in 1:n_pops_TOP)	{
       catexp_TOP[i,j] <- equals(a_TOP[i],j) # equals(x,y) is a test for equality, returns [1,0]
      }
@@ -134,8 +134,8 @@ model{
   #---------------------------------------------
 
   for (i in 1:n_fish) {
-    Sunnyside[i,1] ~ dbern( SUNB0_p * catexp_PRO[i,8] )
-    Sunnyside[i,2] ~ dbern( SUNA0_p * catexp_PRO[i,8] )
+    Sunnyside[i,1] ~ dbern( SUNB0_p * catexp_PRO[i,7] )
+    Sunnyside[i,2] ~ dbern( SUNA0_p * catexp_PRO[i,7] )
   }
 
   # branch after SUN
@@ -158,7 +158,7 @@ model{
   # 1 = AH1, 2 = LNR, 3 = LWC, 4 = ROZ, 5 = Black box
 
   for (i in 1:n_fish) {
-   a_SUN[i] ~ dcat( pMatSUN[(catexp_PRO[i,8] * fishOrigin[i] + 1), 1:(n_pops_SUN+1)] )
+   a_SUN[i] ~ dcat( pMatSUN[(catexp_PRO[i,7] * fishOrigin[i] + 1), 1:(n_pops_SUN+1)] )
      for (j in 1:n_pops_SUN)	{
       catexp_SUN[i,j] <- equals(a_SUN[i],j) # equals(x,y) is a test for equality, returns [1,0]
      }

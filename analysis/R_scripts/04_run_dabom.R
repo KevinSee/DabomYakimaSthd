@@ -83,12 +83,11 @@ jags_params = setSavedParams(model_file = mod_path)
 # Run the model
 
 # Recommended MCMC parameters are:
-#
-#   * `n.chains`: 4
+# * `n.chains`: 4
 # * `n.iter`: 5,000
 # * `n.burnin`: 2,500
 # * `n.thin`: 10
-# 4*(5000+2500) = 30000
+# ( 4*(5000-2500) ) / 10 = 1000 samples
 
 set.seed(12)
 dabom_mod <- jags.basic(data = jags_data,
