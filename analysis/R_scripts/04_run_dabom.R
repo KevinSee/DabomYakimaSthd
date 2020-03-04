@@ -106,7 +106,7 @@ dabom_mod <- jags.basic(data = jags_data,
 # save some stuff
 proc_list[["proc_ch"]] <- proc_ch
 
-save(dabom_mod, dabom_list, proc_list,
+save(dabom_mod, dabom_list, proc_list, parent_child,
      file = paste0("analysis/data/derived_data/model_fits/PRO_DABOM_", spp, '_', yr,'.rda'))
 
 

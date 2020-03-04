@@ -196,7 +196,7 @@ model{
   # 1 = LMC, 2 = TAN, 3 = SWK, 4 = LMT, 5 = Black box
 
   for(j in 1:2) {
-    phi_UMC[j] ~ dbeta(1,1) # prob of migrating up past UMC
+    phi_LMC[j] ~ dbeta(1,1) # prob of migrating up past UMC
   }
 
   for (i in 1:n_fish) {
@@ -208,9 +208,9 @@ model{
     Sunnyside[i,10] ~ dbern( LMCB0_p * catexp_ROZ[i,1] )
     Sunnyside[i,11] ~ dbern( LMCA0_p * catexp_ROZ[i,1] )
 
-    z_UMC[i] ~ dbern(catexp_ROZ[i,1] * phi_UMC[fishOrigin[i]] ) # did fish go past UMC?
-    Sunnyside[i,12] ~ dbern( UMCB0_p * z_UMC[i] )
-    Sunnyside[i,13] ~ dbern( UMCA0_p * z_UMC[i] )
+    z_LMC[i] ~ dbern(catexp_ROZ[i,1] * phi_LMC[fishOrigin[i]] ) # did fish go past UMC?
+    Sunnyside[i,12] ~ dbern( UMCB0_p * z_LMC[i] )
+    Sunnyside[i,13] ~ dbern( UMCA0_p * z_LMC[i] )
 
     Sunnyside[i,14] ~ dbern( TANB0_p * catexp_ROZ[i,2] )
     Sunnyside[i,15] ~ dbern( TANA0_p * catexp_ROZ[i,2] )
