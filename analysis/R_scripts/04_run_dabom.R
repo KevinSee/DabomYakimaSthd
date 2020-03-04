@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 2/27/20
+# Last Modified: 3/4/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -42,7 +42,7 @@ writeDABOM_PRO(file_name = basic_modNm)
 # filepath for specific JAGS model code for species and year
 mod_path = paste0('analysis/model_files/PRO_', spp, '_', yr, '.txt')
 
-#writes species and year specific jags code
+# writes species and year specific jags code
 fixNoFishNodes(basic_modNm,
                mod_path,
                proc_ch,
@@ -65,7 +65,7 @@ init_fnc = setInitialValues_PRO(dabom_list,
                                 mod_path,
                                 parent_child)
 
-#Create all the input data for the JAGS model
+# Create all the input data for the JAGS model
 jags_data = createJAGSinputs_PRO(dabom_list,
                                  mod_path,
                                  parent_child)

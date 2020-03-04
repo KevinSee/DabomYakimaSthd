@@ -2,7 +2,7 @@
 model{
 
   # Set up array detection efficiency priors
-  BelowJD1_p ~ dbeta(1,1)
+  BelowJD1_p <- 1 # Single array, no upstream detections
   JD1B0_p <- 0 # no detections / not in operation
   JD1A0_p <- 0 # no detections / not in operation
   MCN_p <- 0 # no detections / not in operation
@@ -23,7 +23,7 @@ model{
   SUNA0_p ~ dbeta(1,1)
   AH1B0_p ~ dbeta(1,1)
   AH1A0_p ~ dbeta(1,1)
-  LNR_p ~ dbeta(1,1)
+  LNR_p <- 1 # Single array, no upstream detections
 
   LWCB0_p ~ dbeta(1,1)
   LWCA0_p ~ dbeta(1,1)
