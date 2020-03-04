@@ -9,6 +9,7 @@
 library(PITcleanr)
 library(DABOM)
 library(tidyverse)
+library(jagsUI)
 
 spp = "Steelhead"
 #-----------------------------------------------------------------
@@ -55,12 +56,19 @@ dabom_list = createDABOMcapHist(proc_ch,
                                 proc_list$NodeOrder,
                                 split_matrices = T)
 
+# add fish origin
+# call them all wild for now
+dabom_list$fishOrigin = rep(1, nrow(dabom_list[[1]]))
 
 # Creates a function to spit out initial values for MCMC chains
-init_fnc = setInitialValues_PRO(dabom_list)
+init_fnc = setInitialValues_PRO(dabom_list,
+                                mod_path,
+                                parent_child)
 
 #Create all the input data for the JAGS model
-jags_data = createJAGSinputs_PRO(dabom_list)
+jags_data = createJAGSinputs_PRO(dabom_list,
+                                 mod_path,
+                                 parent_child)
 
 
 #------------------------------------------------------------------------------
@@ -69,3 +77,73 @@ jags_data = createJAGSinputs_PRO(dabom_list)
 #------------------------------------------------------------------------------
 
 jags_params = setSavedParams(model_file = mod_path)
+
+
+#------------------------------------------------------------------------------
+# Run the model
+
+# Recommended MCMC parameters are:
+#
+#   * `n.chains`: 4
+# * `n.iter`: 5,000
+# * `n.burnin`: 2,500
+# * `n.thin`: 10
+# 4*(5000+2500) = 30000
+
+set.seed(12)
+dabom_mod <- jags.basic(data = jags_data,
+                        inits = init_fnc,
+                        parameters.to.save = jags_params,
+                        model.file = mod_path,
+                        n.chains = 4,
+                        n.iter = 5000,
+                        n.burnin = 2500,
+                        n.thin = 10,
+                        # n.chains = 1,
+                        # n.iter = 2,
+                        # n.burnin = 1,
+                        DIC = T)
+
+#------------------------------------------------------------------------------
+# diagnostics
+library(mcmcr)
+
+# pull out mcmc.list object
+my_mod = dabom_mod
+
+#---------------------------------------
+# using mcmcr
+anyNA(my_mod)
+my_mcmcr = as.mcmcr(my_mod)
+
+# get Rhat statistics for all parameters
+rhat_df = rhat(my_mcmcr,
+               by = 'parameter',
+               as_df = T) %>%
+  mutate(type = if_else(grepl('_p$', parameter),
+                        'Detection',
+                        if_else(grepl('^p_pop', parameter) |
+                                  grepl('^phi', parameter),
+                                'Movement',
+                                'Other')))
+
+# plot histogram of Rhat statistics
+rhat_df %>%
+  ggplot(aes(x = rhat)) +
+  geom_histogram(fill = 'blue',
+                 bins = 40) +
+  facet_wrap(~ type,
+             scales = 'free')
+
+# which parameters have converged and which haven't?
+convg_df = converged(my_mcmcr,
+                     by = 'parameter',
+                     as_df = T)
+
+janitor::tabyl(convg_df,
+               converged)
+
+# look at parameters that have not converged
+convg_df %>%
+  filter(!converged) %>%
+  left_join(rhat_df)

@@ -155,7 +155,7 @@ model{
   pMatSUN[3,(n_pops_SUN+1)] <- 0 #set the "not there" bin to prob = 0
 
   # possible values for each branch
-  # 1 = AH1, 2 = LNR, 3 = ROZ, 4 = Black box
+  # 1 = AH1, 2 = LNR, 3 = LWC, 4 = ROZ, 5 = Black box
 
   for (i in 1:n_fish) {
    a_SUN[i] ~ dcat( pMatSUN[(catexp_PRO[i,8] * fishOrigin[i] + 1), 1:(n_pops_SUN+1)] )
@@ -171,8 +171,8 @@ model{
     Sunnyside[i,6] ~ dbern( LWCB0_p * catexp_SUN[i,3] )
     Sunnyside[i,7] ~ dbern( LWCA0_p * catexp_SUN[i,3] )
 
-    Sunnyside[i,8] ~ dbern( ROZB0_p * catexp_SUN[i,3] )
-    Sunnyside[i,9] ~ dbern( ROZA0_p * catexp_SUN[i,3] )
+    Sunnyside[i,8] ~ dbern( ROZB0_p * catexp_SUN[i,4] )
+    Sunnyside[i,9] ~ dbern( ROZA0_p * catexp_SUN[i,4] )
   }
 
 
@@ -193,14 +193,14 @@ model{
   pMatROZ[3,(n_pops_ROZ+1)] <- 0 #set the "not there" bin to prob = 0
 
   # possible values for each branch
-  # 1 = LMC, 2 = TAN, 3 = SWK, 4 = TEAN, 5 = Black box
+  # 1 = LMC, 2 = TAN, 3 = SWK, 4 = LMT, 5 = Black box
 
   for(j in 1:2) {
     phi_UMC[j] ~ dbeta(1,1) # prob of migrating up past UMC
   }
 
   for (i in 1:n_fish) {
-   a_ROZ[i] ~ dcat( pMatROZ[(catexp_SUN[i,3] * fishOrigin[i] + 1), 1:(n_pops_ROZ+1)] )
+   a_ROZ[i] ~ dcat( pMatROZ[(catexp_SUN[i,4] * fishOrigin[i] + 1), 1:(n_pops_ROZ+1)] )
      for (j in 1:n_pops_ROZ)	{
       catexp_ROZ[i,j] <- equals(a_ROZ[i],j) # equals(x,y) is a test for equality, returns [1,0]
      }
