@@ -152,3 +152,30 @@ observations %>%
 proc_ch %>%
   filter(TagID == tag_id) %>%
   as.data.frame()
+
+
+tag_summ %>%
+  mutate(Population = Group,
+         Population = if_else(AssignSpawnSite == 'LWC' | grepl('ROZ', TagPath),
+                              'Upper Yakima',
+                              Population),
+         Population = if_else(AssignSpawnSite %in% c('LNR', 'AH1'),
+                              'Naches',
+                              Population),
+         Population = if_else(is.na(Group),
+                              'PRO_bb',
+                              Population)) %>%
+  filter(Population %in% c('Status', 'Naches', 'Toppenish', 'Upper Yakima')) %>%
+  ggplot(aes(x = PassDate,
+             color = Population,
+             fill = Population)) +
+  # geom_density(alpha = 0.2) +
+  geom_histogram() +
+  facet_wrap(~ Population) +
+  theme_bw() +
+  scale_color_brewer(palette = 'Set1') +
+  scale_fill_brewer(palette = 'Set1')
+
+# ggsave('outgoing/figures/RunTiming_2019.pdf',
+#        width = 6,
+#        height = 6)
