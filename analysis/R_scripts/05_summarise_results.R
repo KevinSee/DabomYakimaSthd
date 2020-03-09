@@ -55,6 +55,7 @@ trans_summ = trans_df %>%
             list(~ if_else(. < 0, 0, .))) %>%
   ungroup()
 
+sum(trans_summ$mean)
 
 #-----------------------------------------------------------------
 # total escapement past Prosser
@@ -132,6 +133,7 @@ roz_win_cnt = getWindowCounts(dam = 'ROZ',
   summarise_at(vars(win_cnt),
                list(sum)) %>%
   pull(win_cnt)
+roz_win_cnt
 
 escape_summ %>%
   filter(location == 'ROZ')
