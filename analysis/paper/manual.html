@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -1372,7 +1371,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -1434,6 +1432,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -1462,6 +1461,12 @@ summary {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -1534,10 +1539,10 @@ div.tocify {
 
 <h1 class="title toc-ignore">PITcleanr &amp; DABOM User Manual for Yakima Steelhead</h1>
 <h4 class="author">Kevin See<sup>1,✉</sup>, and Mike Ackerman<sup>1</sup></h4>
-<h4 class="date">28 February, 2020</h4>
+<h4 class="date">09 March, 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
-<p>This manual contains instructions on how to run the DABOM model to estimate adult abundace for steelhead to locations in the Yakima River basin. We start by describing how to generate a list of valid PIT tags at Prosser Dam to be used in the model and then how to query for detections of those PIT tags using PTAGIS. We then “clean up” the detections using the R package PITcleanr. Finally we describe how to write the JAGS model for use in DABOM, and finally, run DABOM to estimate transition probabilities for steelhead throughout the Yakima system. DABOM movement probabilities can then be multiplied by estimates of escapement at Prosser Dam to get abundance to locations or tributaries.</p>
+This manual contains instructions on how to run the DABOM model to estimate adult abundace for steelhead to locations in the Yakima River basin. We start by describing how to generate a list of valid PIT tags at Prosser Dam to be used in the model and then how to query for detections of those PIT tags using PTAGIS. We then “clean up” the detections using the R package PITcleanr. Finally we describe how to write the JAGS model for use in DABOM, and finally, run DABOM to estimate transition probabilities for steelhead throughout the Yakima system. DABOM movement probabilities can then be multiplied by estimates of escapement at Prosser Dam to get abundance to locations or tributaries.
 </div>
 
 </div>
@@ -1564,8 +1569,8 @@ div.tocify {
 install.packages(&quot;jagsUI&quot;)</code></pre>
 <p>Next, install <code>PITcleanr</code> and <code>DABOM</code> from Kevin See’s <a href="https://github.com/">GitHub</a> page <a href="https://github.com/KevinSee">here</a>. <code>PITcleanr</code> was written primarily to build a “river network” describing the relationships among detection sites in a system, to clean PIT tag detection data to establish capture histories for individuals, and to determine the final destination or spawning location for each fish. <code>DABOM</code> is used for writing and running the <code>DABOM</code> model and estimating detection and movement probabilities. You can use <code>devtools</code> to install both of these packages from <a href="https://github.com/">GitHub</a> using the following:</p>
 <pre class="r"><code>install.packages(&quot;devtools&quot;)
-devtools::install_github(&quot;KevinSee/PITcleanr&quot;)
-devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
+devtools::install_github(&quot;KevinSee/PITcleanr&quot;, ref = &quot;yakima&quot;)
+devtools::install_github(&quot;KevinSee/DABOM&quot;, ref = &quot;yakima&quot;)</code></pre>
 <p>Hint: We have experienced errors installing the <code>PITcleanr</code> and <code>DABOM</code> packages related to <em>“Error: (converted from warning) package ‘packagenamehere’ was built under R version x.x.x”</em>. Setting the following environment variable typically suppresses the error and allows you to successfully install the packages.</p>
 <pre class="r"><code>Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = TRUE)</code></pre>
 <p>When attempting to install <code>PITcleanr</code> or <code>DABOM</code> you may receive an error message similar to <em>“there is no package called ‘ggraph’”</em>. In that case, try to install the given package using the following and then attempt to install <code>PITclean</code> or <code>DABOM</code>, again.</p>
@@ -1604,7 +1609,7 @@ devtools::install_github(&quot;KevinSee/DABOM&quot;)</code></pre>
 library(readxl)
 
 # read in biological data from trap
-bio_df = read_excel(&#39;../data/raw_data/YakimaNation/Denil 2018_19.xlsx&#39;) %&gt;%
+bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %&gt;%
   rename(TagID = PitTag) %&gt;%
   mutate_at(vars(PassTime),
             list(as.numeric)) %&gt;%
@@ -1612,11 +1617,11 @@ bio_df = read_excel(&#39;../data/raw_data/YakimaNation/Denil 2018_19.xlsx&#39;) 
 
 # pull out PIT tag numbers and save as a text file
 bio_df %&gt;%
-  filter(SppCode == &#39;wsth&#39;) %&gt;%
+  filter(SppCode == 'wsth') %&gt;%
   filter(!is.na(TagID)) %&gt;%
   select(TagID) %&gt;%
-  write_delim(path = &#39;../data/raw_data/tag_lists/Tags_test_year.txt&#39;,
-              delim = &#39;\n&#39;,
+  write_delim(path = '../data/raw_data/tag_lists/Tags_test_year.txt',
+              delim = '\n',
               col_names = F)</code></pre>
 </div>
 <div id="ptagis-query" class="section level2">
@@ -1635,7 +1640,7 @@ bio_df %&gt;%
 </ul>
 <p>You are welcome to include other fields as well, but the ones listed above must be added. Any additional fields will just be included as extra columns in your query output.</p>
 <p>The only other required index is “2 Select Metrics”, but that can remain as the default, “CTH Count”, which provides one record for each event recorded per tag.</p>
-<p>Set up a filter for specific tags (e.g. the valid tag list) by next navigating to the “28 Tag Code - List or Text File” on the left. And then, after selecting “Tag” under “Attributes:”, you should be able to click on “Import file…”. Simply upload the .txt file you saved in the previous step containing tag codes in the valid tag list. Under “Report Message Name:” near the bottom, name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has successfully completed, export the output as a .csv file (e.g. “PTAGIS_2018_19.csv”) using the default settings:</p>
+<p>Set up a filter for specific tags (e.g. the valid tag list) by next navigating to the “28 Tag Code - List or Text File” on the left. And then, after selecting “Tag” under “Attributes:”, you should be able to click on “Import file…”. Simply upload the .txt file you saved in the previous step containing tag codes in the valid tag list. Under “Report Message Name:” near the bottom, name the query something appropriate, such as “PTAGIS_2018_19”, and select “Run Report”. Once the query has successfully completed, export the output as a .csv file (e.g. “PTAGIS_2018_19.csv”) using the default settings:</p>
 <ul>
 <li>Export: Whole report</li>
 <li>CSV file format</li>
@@ -1673,57 +1678,57 @@ site_df
 #&gt;  8 AH1    PRO.SUN.AH1     PRO   &quot;SUN&quot; &quot;AH1&quot; &quot;&quot;    &quot;&quot;   
 #&gt;  9 LNR    PRO.SUN.LNR     PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;&quot;    &quot;&quot;   
 #&gt; 10 TTN    PRO.SUN.LNR.TTN PRO   &quot;SUN&quot; &quot;LNR&quot; &quot;TTN&quot; &quot;&quot;   
-#&gt; # ... with 12 more rows
+#&gt; # … with 12 more rows
 # view(site_df)</code></pre>
 <p>The next step is to query PTAGIS for all the metadata associated with these sites. Again, <code>PITcleanr</code> includes a function to do this, <code>buildConfig()</code>, but you will need an internet connection to run this. The <code>buildConfig()</code> function returns information about each site in PTAGIS, including the site code, the various configuration codes, the antenna IDs, when that configuration started and ended (if it has), what type of site it is (interrogation, INT, or mark/recapture/recover, MRR), the site name, the antenna group each antenna is part of, and several other pieces of information. It also assigns a ‘model node’ to each antenna. The model nodes essentially define which array each antenna is part of within each site. If it is a single array (or perhaps an MRR site), all of the antennas will be assigned to the same model node. If there is a double array, the antennas in the downstream array will be assigned to the “B0” array, and the upstream antennas to the “A0” array. If there is a triple array, by default the middle array is grouped with the upper array, to help simplify the DABOM model structure. Defining upstream and downstream arrays and nodes are a necessary step to estimate detection probabilities at double (or triple) arrays. This file is what will link the PTAGIS detections to the DABOM model nodes.</p>
 <pre class="r"><code>org_config = buildConfig()
-#&gt; [1] &quot;Querying INT sites&#39; metadata&quot;
-#&gt; [1] &quot;Querying INT sites&#39; configuration information&quot;
-#&gt; [1] &quot;Querying MRR sites&#39; metadata&quot;</code></pre>
+#&gt; [1] &quot;Querying INT sites' metadata&quot;
+#&gt; [1] &quot;Querying INT sites' configuration information&quot;
+#&gt; [1] &quot;Querying MRR sites' metadata&quot;</code></pre>
 <p>Note, the <code>org_config</code> object contains <strong>every</strong> INT and MRR detection site included in PTAGIS. You now have the opportunity to modify this configuration file however you would like, re-assigning various antennas or sites to different nodes. For this version of DABOM, we have some suggestions, such as grouping all of the various sites on the Teanaway River into the upstream node of LMT, called “LMTA0”. Many of the modifications below help simplify the nodes downstream of Prosser.</p>
 <pre class="r"><code>configuration = org_config %&gt;%
-  mutate(Node = if_else(SiteID %in% c(&#39;PRO&#39;),
-                        &#39;PRO&#39;,
+  mutate(Node = if_else(SiteID %in% c('PRO'),
+                        'PRO',
                         Node),
          # grouping all of the various sites on the Teanaway River into &quot;LMTA0&quot;
          Node = if_else(SiteID %in% c(&quot;NFTEAN&quot;, &quot;TEANAR&quot;, &quot;TEANM&quot;, &quot;TEANWF&quot;),
                        &quot;LMTA0&quot;,
                        Node),
-         Node = if_else(SiteID == &#39;ROZ&#39;,
-                        if_else(AntennaID %in% c(&#39;01&#39;, &#39;02&#39;, &#39;03&#39;),
+         Node = if_else(SiteID == 'ROZ',
+                        if_else(AntennaID %in% c('01', '02', '03'),
                                 Node,
                                 as.character(NA)),
                         Node),
-         Node = if_else(SiteID == &#39;TAN&#39; &amp; ConfigID %in% c(120, 130),
+         Node = if_else(SiteID == 'TAN' &amp; ConfigID %in% c(120, 130),
                         &quot;TANB0&quot;,
                         Node),
          # group all sites above McNary
-         Node = if_else(SiteID %in% c(&#39;MC1&#39;, &#39;MC2&#39;, &#39;MCJ&#39;, &#39;MCN&#39;),
-                       &#39;MCN&#39;,
+         Node = if_else(SiteID %in% c('MC1', 'MC2', 'MCJ', 'MCN'),
+                       'MCN',
                        Node),
          # group all sites above Ice Harbor
-         Node = if_else(SiteID == &#39;ICH&#39;,
-                       &#39;ICHB0&#39;,
+         Node = if_else(SiteID == 'ICH',
+                       'ICHB0',
                        Node),
-         Node = if_else(grepl(&#39;522\\.&#39;, RKM) &amp; RKMTotal &gt; 538,
-                       &#39;ICHA0&#39;,
+         Node = if_else(grepl('522\\.', RKM) &amp; RKMTotal &gt; 538,
+                       'ICHA0',
                        Node),
          # group all sites below John Day
-         Node = if_else(SiteID == &#39;JD1&#39;,
-                       &#39;JD1B0&#39;,
+         Node = if_else(SiteID == 'JD1',
+                       'JD1B0',
                        Node),
-         Node = if_else(SiteID %in% c(&#39;30M&#39;, &#39;BR0&#39;, &#39;JDM&#39;, &#39;SJ1&#39;, &#39;SJ2&#39;, &#39;MJ1&#39;),
-                       &#39;JD1A0&#39;,
+         Node = if_else(SiteID %in% c('30M', 'BR0', 'JDM', 'SJ1', 'SJ2', 'MJ1'),
+                       'JD1A0',
                        Node),
-         Node = if_else(SiteID != &#39;JD1&#39; &amp; as.integer(stringr::str_split(RKM, &#39;\\.&#39;, simplify = T)[,1]) &lt; 351,
-                       &#39;BelowJD1&#39;,
+         Node = if_else(SiteID != 'JD1' &amp; as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) &lt; 351,
+                       'BelowJD1',
                        Node),
          # group sites above Priest Rapids
-         Node = if_else(SiteID == &#39;PRA&#39;,
-                        &#39;PRAB0&#39;,
+         Node = if_else(SiteID == 'PRA',
+                        'PRAB0',
                         Node),
-         Node = if_else(SiteID != &#39;PRA&#39; &amp; as.integer(stringr::str_split(RKM, &#39;\\.&#39;, simplify = T)[,1]) &gt;= 639,
-                        &#39;PRAA0&#39;,
+         Node = if_else(SiteID != 'PRA' &amp; as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) &gt;= 639,
+                        'PRAA0',
                         Node))</code></pre>
 </div>
 <div id="parent-child-table" class="section level3">
@@ -1732,8 +1737,8 @@ site_df
 <pre class="r"><code># which spawn year are we dealing with?
 yr = 2019
 # start date is July 1 of the previous year
-# the paste0 function simply pastes together our &#39;yr&#39; and &#39;0701&#39; into the &#39;YYYYMMDD&#39; format
-start_date = paste0(yr - 1, &#39;0701&#39;)
+# the paste0 function simply pastes together our 'yr' and '0701' into the 'YYYYMMDD' format
+start_date = paste0(yr - 1, '0701')
 
 # build parent-child table
 parent_child = createParentChildDf(site_df,
@@ -1746,7 +1751,7 @@ parent_child = createParentChildDf(site_df,
 <p>First, use the <code>read_csv()</code> function to read in all of the detections we output from our PTAGIS query above. In the example below, we use the <code>paste0()</code> function and some additional code to recreate the filename of the .csv output we created above. Alternatively, you can just use <code>read_csv()</code> and the directory and filename of your .csv output to read in your detections and create an object called <code>observations</code>.</p>
 <pre class="r"><code># get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
-observations = read_csv(paste0(&#39;../data/raw_data/PTAGIS/PTAGIS_&#39;, yr-1, &#39;_&#39;, str_sub(as.character(yr), 3, 4), &#39;.csv&#39;))
+observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
 
 # Alternatively example...
 # observations = read_csv(&quot;C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv&quot;)
@@ -1764,13 +1769,13 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-02-28 13:13:45  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-03-09 09:45:59  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO()</code> function (<code>proc_list</code> in our example) is a list, containing two elements:</p>
 <ul>
 <li><p><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there from Prosser Dam), the “path” a tag would take to get there consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. The <em>NodeOrder</em> can easily be accessed using <code>proc_list$NodeOrder</code> or <code>proc_list[[1]]</code>.</p></li>
 <li><p><em>ProcCapHist</em>: The “cleaned” capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream (based on the previous observation), and two columns containing <strong>ProcStatus</strong> for “processed status”. <strong>AutoProcStatus</strong> is <code>PITcleanr</code>’s best guess as to whether the observation on that node should be kept (<code>TRUE</code>) or discarded (<code>FALSE</code>). <strong>UserProcStatus</strong> is where the end user can define that for themselves. The <em>ProcCapHist</em> can be accessed using <code>proc_list$ProcCapHist</code> or <code>proc_list[[2]]</code>.</p></li>
 </ul>
-<p>After this step, the results of <em>ProcCapHist</em> can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the <code>save_file</code> argument in <code>processCapHist_PRO()</code> to <code>T</code> or <code>TRUE</code> and add the <code>file_name</code> containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. <em>“output/PITcleanr/PRO_Steelhead_2019.csv”</em>).</p>
+<p>After this step, the results of <em>ProcCapHist</em> can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the <code>save_file</code> argument in <code>processCapHist_PRO()</code> to <code>T</code> or <code>TRUE</code> and add the <code>file_name</code> containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. <em>“output/PITcleanr/PRO_Steelhead_2019.csv”</em>).</p>
 <!--
 MA: I was able to successfully write a .csv and .txt output, but .xls output was unsuccessful. I also noticed currently no option for .xlsx in writeCapHistOutput.R, not sure whether that's worth adding. May dive into later.
 -->

@@ -100,8 +100,8 @@ Next, install `PITcleanr` and `DABOM` from Kevin See's [GitHub](https://github.c
 
 ```{r install-github, eval = F}
 install.packages("devtools")
-devtools::install_github("KevinSee/PITcleanr")
-devtools::install_github("KevinSee/DABOM")
+devtools::install_github("KevinSee/PITcleanr", ref = "yakima")
+devtools::install_github("KevinSee/DABOM", ref = "yakima")
 ```
 
 Hint: We have experienced errors installing the `PITcleanr` and `DABOM` packages related to *"Error: (converted from warning) package 'packagenamehere' was built under R version x.x.x"*. Setting the following environment variable typically suppresses the error and allows you to successfully install the packages.
@@ -128,13 +128,13 @@ We are always trying to improve the `PITcleanr` and `DABOM` R packages to minimi
 Briefly, the steps to process the data for a given run or spawn year include:
 
 1. Generate valid PIT tag list
-2. Query PTAGIS for detections
-3. Develop the "river network" describing the relationship among detection sites
-4. Use PITcleanr to "clean up" detection data
-5. Review PITcleanr output to determine final capture histories
-6. Run DABOM to estimate detection and movement probabilities
-7. Summarise DABOM results
-8. Combine DABOM movement probabilities with an estimate of adult escapement at Prosser
+1. Query PTAGIS for detections
+1. Develop the "river network" describing the relationship among detection sites
+1. Use PITcleanr to "clean up" detection data
+1. Review PITcleanr output to determine final capture histories
+1. Run DABOM to estimate detection and movement probabilities
+1. Summarise DABOM results
+1. Combine DABOM movement probabilities with an estimate of adult escapement at Prosser
 
 Following, we describe each of the steps in detail using the 2018/2019 steelhead run as an example.
 
