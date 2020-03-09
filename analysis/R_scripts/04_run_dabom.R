@@ -154,3 +154,27 @@ janitor::tabyl(convg_df,
 convg_df %>%
   filter(!converged) %>%
   left_join(rhat_df)
+
+#---------------------------------------
+# using postpack
+library(postpack)
+
+# what parameters were tracked?
+get_p(my_mod,
+      type = 'base')
+
+# some summary statistics
+post_summ(my_mod,
+          '_p$') %>%
+  t() %>%
+  as_tibble(rownames = 'param') %>%
+  filter(!grepl('p_pop_main', param))
+
+param_chk = c('LWCB0_p',
+              'LWCA0_p',
+              'p_pop_SUN[1,3]')
+
+diag_plots(post = my_mod,
+           p = param_chk,
+           save = T,
+           file = 'outgoing/LWC_diagnostics.pdf')
