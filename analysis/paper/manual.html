@@ -1564,9 +1564,10 @@ This manual contains instructions on how to run the DABOM model to estimate adul
 </div>
 <div id="r-packages" class="section level2">
 <h2><span class="header-section-number">2.2</span> R Packages</h2>
-<p>After installing R and Studio, you will also need to install <code>tidyverse</code>, a series of R packages that work together for data science (i.e. data cleaning and manipulation), as well as the <code>jagsUI</code> package to interface with JAGS. The <code>tidyverse</code> and <code>jagsUI</code> packages are both available from the R community and can be installed by typing the following into your R console:</p>
+<p>After installing R and Studio, you will also need to install <code>tidyverse</code>, a series of R packages that work together for data science (i.e. data cleaning and manipulation), as well as the <code>jagsUI</code> package to interface with JAGS. To save some results to Excel files, we use the <code>WriteXLS</code> pacakge. The <code>tidyverse</code>, <code>jagsUI</code> and <code>WriteXLS</code> packages are all available from the R community and can be installed by typing the following into your R console:</p>
 <pre class="r"><code>install.packages(&quot;tidyverse&quot;)
-install.packages(&quot;jagsUI&quot;)</code></pre>
+install.packages(&quot;jagsUI&quot;)
+install.packages('WriteXLS')</code></pre>
 <p>Next, install <code>PITcleanr</code> and <code>DABOM</code> from Kevin See’s <a href="https://github.com/">GitHub</a> page <a href="https://github.com/KevinSee">here</a>. <code>PITcleanr</code> was written primarily to build a “river network” describing the relationships among detection sites in a system, to clean PIT tag detection data to establish capture histories for individuals, and to determine the final destination or spawning location for each fish. <code>DABOM</code> is used for writing and running the <code>DABOM</code> model and estimating detection and movement probabilities. You can use <code>devtools</code> to install both of these packages from <a href="https://github.com/">GitHub</a> using the following:</p>
 <pre class="r"><code>install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;KevinSee/PITcleanr&quot;, ref = &quot;yakima&quot;)
@@ -1769,7 +1770,7 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-03-09 09:45:59  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-03-09 11:50:15  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO()</code> function (<code>proc_list</code> in our example) is a list, containing two elements:</p>
 <ul>
 <li><p><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there from Prosser Dam), the “path” a tag would take to get there consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. The <em>NodeOrder</em> can easily be accessed using <code>proc_list$NodeOrder</code> or <code>proc_list[[1]]</code>.</p></li>
@@ -1893,6 +1894,200 @@ MA: I was able to successfully write a .csv and .txt output, but .xls output was
                      group_by(TagID) %&gt;%
                      slice(1) %&gt;%
                      ungroup())</code></pre>
+<pre class="r"><code>tag_summ %&gt;%
+  slice(1:7) %&gt;%
+  kable(caption = 'Example of tag summaries.')</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-10">Table 5.2: </span>Example of tag summaries.</caption>
+<thead>
+<tr class="header">
+<th align="left">TagID</th>
+<th align="left">LastObs</th>
+<th align="right">BranchNum</th>
+<th align="left">Group</th>
+<th align="left">AssignSpawnSite</th>
+<th align="left">AssignSpawnNode</th>
+<th align="left">TagPath</th>
+<th align="left">FacilityName</th>
+<th align="left">LadCode</th>
+<th align="left">PassDate</th>
+<th align="right">PassTime</th>
+<th align="left">SppCode</th>
+<th align="left">CarcassNo</th>
+<th align="left">Status</th>
+<th align="left">Origin</th>
+<th align="left">Age</th>
+<th align="left">Sex</th>
+<th align="right">Forklgth</th>
+<th align="left">Pohlgth</th>
+<th align="right">Mehlgth</th>
+<th align="right">Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">384.3B23A8BBDA</td>
+<td align="left">2019-04-16 18:41:05</td>
+<td align="right">7</td>
+<td align="left">Toppenish</td>
+<td align="left">TP2</td>
+<td align="left">TP2A0</td>
+<td align="left">PRO, TOPB0, TOPA0, TP2B0, TP2A0, TP2B0, TP2A0, TP2B0, TOPB0, TOPA0</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-04-10</td>
+<td align="right">0.3000000</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">F</td>
+<td align="right">68</td>
+<td align="left">NA</td>
+<td align="right">56</td>
+<td align="right">7.00</td>
+</tr>
+<tr class="even">
+<td align="left">3D9.1C2D70563A</td>
+<td align="left">2019-03-15 21:06:15</td>
+<td align="right">7</td>
+<td align="left">Toppenish</td>
+<td align="left">SM1</td>
+<td align="left">SM1A0</td>
+<td align="left">PRO, TOPB0, TOPA0, SM1B0, SM1A0, TOPA0, TOPB0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">3D9.1C2D75CCE7</td>
+<td align="left">2019-04-24 03:37:12</td>
+<td align="right">8</td>
+<td align="left">Sunnyside</td>
+<td align="left">ROZ</td>
+<td align="left">ROZA0</td>
+<td align="left">PRO, ROZB0, ROZA0, ROZB0, ROZA0, ROZB0, ROZA0, ROZB0, ROZA0, ROZB0</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-04-17</td>
+<td align="right">0.2944444</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">–</td>
+<td align="left">NA</td>
+<td align="left">M</td>
+<td align="right">72</td>
+<td align="left">NA</td>
+<td align="right">57</td>
+<td align="right">7.35</td>
+</tr>
+<tr class="even">
+<td align="left">3D9.1C2D76325A</td>
+<td align="left">2019-04-13 19:24:09</td>
+<td align="right">6</td>
+<td align="left">Status</td>
+<td align="left">SAT</td>
+<td align="left">SATA0</td>
+<td align="left">PRO, SATA0</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-04-06</td>
+<td align="right">0.4666667</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">F</td>
+<td align="right">74</td>
+<td align="left">NA</td>
+<td align="right">61</td>
+<td align="right">7.00</td>
+</tr>
+<tr class="odd">
+<td align="left">3D9.1C2D7638B8</td>
+<td align="left">2019-05-28 01:32:22</td>
+<td align="right">8</td>
+<td align="left">Sunnyside</td>
+<td align="left">TAN</td>
+<td align="left">TANA0</td>
+<td align="left">PRO, ROZB0, ROZA0, TANB0, TANA0, TANB0</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-04-01</td>
+<td align="right">0.3833333</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">F</td>
+<td align="right">59</td>
+<td align="left">NA</td>
+<td align="right">48</td>
+<td align="right">4.45</td>
+</tr>
+<tr class="even">
+<td align="left">3D9.1C2D763A5A</td>
+<td align="left">2019-04-05 07:48:13</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">PRO</td>
+<td align="left">PRO</td>
+<td align="left">PRO</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-04-05</td>
+<td align="right">0.3416667</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">F</td>
+<td align="right">58</td>
+<td align="left">NA</td>
+<td align="right">47</td>
+<td align="right">3.50</td>
+</tr>
+<tr class="odd">
+<td align="left">3D9.1C2D764101</td>
+<td align="left">2019-04-10 05:53:17</td>
+<td align="right">8</td>
+<td align="left">Sunnyside</td>
+<td align="left">SUN</td>
+<td align="left">SUNB0</td>
+<td align="left">PRO, SUNB0</td>
+<td align="left">Prosser</td>
+<td align="left">pb</td>
+<td align="left">2019-03-28</td>
+<td align="right">0.5916667</td>
+<td align="left">wsth</td>
+<td align="left">NA</td>
+<td align="left">PAS</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">M</td>
+<td align="right">64</td>
+<td align="left">NA</td>
+<td align="right">52</td>
+<td align="right">4.50</td>
+</tr>
+</tbody>
+</table>
 <p>Congratulations! You have now prepared all of your data and detections to build and run the DABOM model.</p>
 </div>
 </div>
@@ -1901,6 +2096,655 @@ MA: I was able to successfully write a .csv and .txt output, but .xls output was
 <h1><span class="header-section-number">6</span> DABOM</h1>
 <div id="prepare-and-run-dabom" class="section level2">
 <h2><span class="header-section-number">6.1</span> Prepare and Run DABOM</h2>
+<pre class="r"><code>library(DABOM)
+library(jagsUI)</code></pre>
+<p>The DABOM model requires as input a capture or detection history of every valid tag. This is a series of <code>1</code>’s and <code>0</code>’s depicting whether that tag was detected (or not) on each node in the network. The <code>DABOM</code> package includes a function to create these detection histories, based on the output from <code>PITcleanr</code>. To make the model easier to manipulate in the future, if more sites are added, we have split the overall detection histories into several matrices to feed into DABOM. The arguement <code>split_matrices = TRUE</code> in the function below does that. To create a single matrix with the entire detection history for each tag (for diagnostic purposes), simply set that arguement to <code>FALSE</code>.</p>
+<pre class="r"><code># pull out the detections we are going to keep in the processed capture history
+proc_ch &lt;- proc_list$ProcCapHist %&gt;%
+  mutate(UserProcStatus = AutoProcStatus) %&gt;%
+  filter(UserProcStatus)
+
+# put them into matrix form to be fed into JAGS
+dabom_list = createDABOMcapHist(proc_ch,
+                                proc_list$NodeOrder,
+                                split_matrices = T)</code></pre>
+<p>This version of DABOM was created to be run on both hatchery and wild fish, using all tags together to estimate detection probabilities, but allowing for different movement rates between hatchery and wild fish, since presumeably they may be going to very different places. Therefore, one of the inputs is a vector of fish origin (1 for wild fish, 2 for hatchery), called “fishOrigin”. Currently, there are not enough hatchery tags to estimate separate movement probabilities by origin, so we are setting the origin to be equivalent for all tags, and adding it to input list <code>dabom_list</code>.</p>
+<pre class="r"><code>dabom_list$fishOrigin = rep(1, nrow(dabom_list[[1]]))</code></pre>
+<p>Next, we write the text file that the JAGS software uses. There is a generic version for the Prosser dam DABOM:</p>
+<pre class="r"><code># file path to the default and initial model
+basic_modNm = 'model_files/PRO_DABOM.txt'
+
+writeDABOM_PRO(file_name = basic_modNm)</code></pre>
+<p>We can then update that based on our tag detections. If no tags were detected at a particular node, we set that node’s detection probability to 0, since it would be difficult if not impossible to estimate, or that node / site may not have existed for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without upstream detections there is no way to estimate the detection probability there. This may lead to conservative estimates of escapement past that particular site (i.e. escapement was <em>at least</em> this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are close to 100% already, this may not be a bad assumption to make. This function re-writes the generic JAGS model with one specific to the year we are running, and saves it as a different text file.</p>
+<pre class="r"><code># filepath for specific JAGS model code for species and year
+mod_path = paste0('model_files/PRO_Steelhead_', yr, '.txt')
+
+# writes species and year specific jags code
+fixNoFishNodes(basic_modNm,
+               mod_path,
+               proc_ch,
+               proc_list$NodeOrder)
+#&gt; Fixed JD1B0, JD1A0, MCN, PRAB0, PRAA0, LMCB0, LMCA0, UMCB0, UMCA0, SWKB0, SWKA0, LMTB0 at 0% detection probability, because no tags were observed there.
+#&gt; 
+#&gt; Fixed BelowJD1 at 100% detection probability, because it is a single array with no upstream detections.
+#&gt; 
+#&gt; Fixed LMT at 100% detection probability, because it is a single array with no upstream detections.
+#&gt; 
+#&gt; Fixed LNR at 100% detection probability, because it is a single array with no upstream detections.
+#&gt; 
+#&gt; Fixed upstream movement past site LMC to 0 because no detections there or upstream.</code></pre>
+<p>Based on the code in that model text file, we can extract the names of the parameters we wish to save.</p>
+<pre class="r"><code># Tell JAGS which parameters in the model that it should save.
+jags_params = setSavedParams(model_file = mod_path)</code></pre>
+<p>Now we’re ready to set some initial values for the JAGS model. We don’t set the values for detection or movement probabilities, but we do need to set the initial values for where fish are that have been detected. Otherwise JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek) but it was detected somewhere else (Status Creek).</p>
+<pre class="r"><code># Creates a function to spit out initial values for MCMC chains
+init_fnc = setInitialValues_PRO(dabom_list,
+                                mod_path,
+                                parent_child)</code></pre>
+<p>Finally, we can put all that together and compile all the input data that we need to run the JAGS model. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely <code>1</code>’s and <code>0</code>’s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.</p>
+<pre class="r"><code># Create all the input data for the JAGS model
+jags_data = createJAGSinputs_PRO(dabom_list,
+                                 mod_path,
+                                 parent_child)</code></pre>
+<p>To actually run DABOM, we use the <code>jagsUI</code> package. Part of the inputs are the Monte Carlo Marchov chain (MCMC) parameters. We recommend:</p>
+<ul>
+<li>4 chains (<code>n.chains = 4</code>)</li>
+<li>5,000 iterations (<code>n.iter = 5000</code>)</li>
+<li>2,500 of which are burn-in (<code>n.burnin = 2500</code>)</li>
+<li>Keep every 10 iterations (<code>n.thin = 10</code>)</li>
+</ul>
+<p>This provides a total of 1000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in <code>R</code> means you can reproduce the exact MCMC draws.</p>
+<pre class="r"><code># Run the model
+set.seed(12)
+dabom_mod &lt;- jags.basic(data = jags_data,
+                        inits = init_fnc,
+                        parameters.to.save = jags_params,
+                        model.file = mod_path,
+                        n.chains = 4,
+                        n.iter = 5000,
+                        n.burnin = 2500,
+                        n.thin = 10,
+                        DIC = T)
+#&gt; 
+#&gt; Processing function input....... 
+#&gt; 
+#&gt; Converting data frame 'Downstream' to matrix.
+#&gt; 
+#&gt; Converting data frame 'Status' to matrix.
+#&gt; 
+#&gt; Converting data frame 'Sunnyside' to matrix.
+#&gt; 
+#&gt; Converting data frame 'Toppenish' to matrix.
+#&gt; 
+#&gt; Done. 
+#&gt;  
+#&gt; Compiling model graph
+#&gt;    Resolving undeclared variables
+#&gt;    Allocating nodes
+#&gt; Graph information:
+#&gt;    Observed stochastic nodes: 3745
+#&gt;    Unobserved stochastic nodes: 565
+#&gt;    Total graph size: 11146
+#&gt; 
+#&gt; Initializing model
+#&gt; 
+#&gt; Adaptive phase..... 
+#&gt; Adaptive phase complete 
+#&gt;  
+#&gt; 
+#&gt;  Burn-in phase, 2500 iterations x 4 chains 
+#&gt;  
+#&gt; 
+#&gt; Sampling from joint posterior, 2500 iterations x 4 chains 
+#&gt;  
+#&gt; 
+#&gt; MCMC took 0.84 minutes.</code></pre>
+<p>What is returned (from the <code>jags.basic</code> function) is an <code>mcmc.list</code> object. The user can generate many diagnostic plots and statistics, using packages such as <code>coda</code>, <code>mcmcr</code> or even <code>shinystan</code>.</p>
+</div>
+<div id="summarise-dabom-results" class="section level2">
+<h2><span class="header-section-number">6.2</span> Summarise DABOM results</h2>
+<p>Detection probabilities are easily summarised by using the function <code>summariseDetectProbs</code>:</p>
+<pre class="r"><code># summarise detection probabilities
+detect_summ = summariseDetectProbs(dabom_mod = dabom_mod,
+                                   capHist_proc = proc_ch,
+                                   cred_int_prob = 0.95) %&gt;%
+  # remove nodes that were not saved by JAGS
+  filter(!is.na(mean))</code></pre>
+<pre class="r"><code>detect_summ %&gt;%
+  filter(sd &gt; 0) %&gt;%
+  arrange(desc(sd)) %&gt;%
+  kable(digits = 3,
+        caption = 'Summary of detection parameters.')</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-21">Table 6.1: </span>Summary of detection parameters.</caption>
+<thead>
+<tr class="header">
+<th align="left">Node</th>
+<th align="right">n_tags</th>
+<th align="right">mean</th>
+<th align="right">median</th>
+<th align="right">mode</th>
+<th align="right">sd</th>
+<th align="right">lowerCI</th>
+<th align="right">upperCI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ICHB0</td>
+<td align="right">1</td>
+<td align="right">0.597</td>
+<td align="right">0.611</td>
+<td align="right">0.885</td>
+<td align="right">0.260</td>
+<td align="right">0.143</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="even">
+<td align="left">ICHA0</td>
+<td align="right">1</td>
+<td align="right">0.602</td>
+<td align="right">0.625</td>
+<td align="right">0.827</td>
+<td align="right">0.255</td>
+<td align="right">0.136</td>
+<td align="right">0.997</td>
+</tr>
+<tr class="odd">
+<td align="left">TANA0</td>
+<td align="right">2</td>
+<td align="right">0.696</td>
+<td align="right">0.735</td>
+<td align="right">0.894</td>
+<td align="right">0.218</td>
+<td align="right">0.278</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">TANB0</td>
+<td align="right">2</td>
+<td align="right">0.700</td>
+<td align="right">0.734</td>
+<td align="right">0.884</td>
+<td align="right">0.216</td>
+<td align="right">0.299</td>
+<td align="right">0.998</td>
+</tr>
+<tr class="odd">
+<td align="left">SM1A0</td>
+<td align="right">2</td>
+<td align="right">0.737</td>
+<td align="right">0.789</td>
+<td align="right">0.904</td>
+<td align="right">0.200</td>
+<td align="right">0.338</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="even">
+<td align="left">SM1B0</td>
+<td align="right">2</td>
+<td align="right">0.738</td>
+<td align="right">0.783</td>
+<td align="right">0.900</td>
+<td align="right">0.193</td>
+<td align="right">0.379</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="odd">
+<td align="left">LWCB0</td>
+<td align="right">3</td>
+<td align="right">0.771</td>
+<td align="right">0.821</td>
+<td align="right">0.927</td>
+<td align="right">0.184</td>
+<td align="right">0.408</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="even">
+<td align="left">LWCA0</td>
+<td align="right">3</td>
+<td align="right">0.774</td>
+<td align="right">0.815</td>
+<td align="right">0.927</td>
+<td align="right">0.178</td>
+<td align="right">0.408</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">SATA0</td>
+<td align="right">12</td>
+<td align="right">0.584</td>
+<td align="right">0.587</td>
+<td align="right">0.602</td>
+<td align="right">0.123</td>
+<td align="right">0.363</td>
+<td align="right">0.831</td>
+</tr>
+<tr class="even">
+<td align="left">SATB0</td>
+<td align="right">13</td>
+<td align="right">0.627</td>
+<td align="right">0.634</td>
+<td align="right">0.641</td>
+<td align="right">0.120</td>
+<td align="right">0.381</td>
+<td align="right">0.840</td>
+</tr>
+<tr class="odd">
+<td align="left">TOPA0</td>
+<td align="right">11</td>
+<td align="right">0.704</td>
+<td align="right">0.712</td>
+<td align="right">0.705</td>
+<td align="right">0.109</td>
+<td align="right">0.488</td>
+<td align="right">0.895</td>
+</tr>
+<tr class="even">
+<td align="left">AH1B0</td>
+<td align="right">8</td>
+<td align="right">0.885</td>
+<td align="right">0.913</td>
+<td align="right">0.967</td>
+<td align="right">0.101</td>
+<td align="right">0.682</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">AH1A0</td>
+<td align="right">8</td>
+<td align="right">0.887</td>
+<td align="right">0.913</td>
+<td align="right">0.967</td>
+<td align="right">0.097</td>
+<td align="right">0.694</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">TP2B0</td>
+<td align="right">11</td>
+<td align="right">0.851</td>
+<td align="right">0.865</td>
+<td align="right">0.892</td>
+<td align="right">0.090</td>
+<td align="right">0.668</td>
+<td align="right">0.994</td>
+</tr>
+<tr class="odd">
+<td align="left">TOPB0</td>
+<td align="right">14</td>
+<td align="right">0.883</td>
+<td align="right">0.898</td>
+<td align="right">0.918</td>
+<td align="right">0.073</td>
+<td align="right">0.742</td>
+<td align="right">0.995</td>
+</tr>
+<tr class="even">
+<td align="left">TP2A0</td>
+<td align="right">12</td>
+<td align="right">0.922</td>
+<td align="right">0.944</td>
+<td align="right">0.973</td>
+<td align="right">0.070</td>
+<td align="right">0.784</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">ROZA0</td>
+<td align="right">12</td>
+<td align="right">0.927</td>
+<td align="right">0.948</td>
+<td align="right">0.978</td>
+<td align="right">0.069</td>
+<td align="right">0.779</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">ROZB0</td>
+<td align="right">12</td>
+<td align="right">0.929</td>
+<td align="right">0.949</td>
+<td align="right">0.980</td>
+<td align="right">0.068</td>
+<td align="right">0.784</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">SUNB0</td>
+<td align="right">14</td>
+<td align="right">0.271</td>
+<td align="right">0.269</td>
+<td align="right">0.283</td>
+<td align="right">0.058</td>
+<td align="right">0.166</td>
+<td align="right">0.392</td>
+</tr>
+<tr class="even">
+<td align="left">SUNA0</td>
+<td align="right">13</td>
+<td align="right">0.255</td>
+<td align="right">0.253</td>
+<td align="right">0.252</td>
+<td align="right">0.057</td>
+<td align="right">0.147</td>
+<td align="right">0.375</td>
+</tr>
+</tbody>
+</table>
+<p>The movement or transition probabilities have to be extracted, and then multiplied appropriately, so that the movement past a site far upstream in network also accounts for moving past all the downstream sites before that one. There is a function specific to the Prosser Dam version of DABOM to do this. The “param” column in the <code>trans_summ</code> summary table refers to the probability of a tag moving <em>past</em> that site, or if the param ends in &quot;_bb&quot;, the probability of falling into the black box above that site.</p>
+<pre class="r"><code># compile all movement probabilities, and multiply them appropriately
+trans_df = compileTransProbs_PRO(dabom_mod,
+                                 parent_child)</code></pre>
+<pre class="r"><code># summarize transition probabilities
+trans_summ = trans_df %&gt;%
+  group_by(origin, param) %&gt;%
+  summarise(mean = mean(value),
+            median = median(value),
+            mode = estMode(value),
+            sd = sd(value),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(value))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(value))[,2]) %&gt;%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. &lt; 0, 0, .))) %&gt;%
+  ungroup()
+
+trans_summ %&gt;%
+filter(sd &gt; 0) %&gt;%
+  kable(digits = 3,
+        caption = 'Summary of movement parameters.')</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-23">Table 6.2: </span>Summary of movement parameters.</caption>
+<thead>
+<tr class="header">
+<th align="left">origin</th>
+<th align="left">param</th>
+<th align="right">mean</th>
+<th align="right">median</th>
+<th align="right">mode</th>
+<th align="right">sd</th>
+<th align="right">lowerCI</th>
+<th align="right">upperCI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">AH1</td>
+<td align="right">0.076</td>
+<td align="right">0.072</td>
+<td align="right">0.066</td>
+<td align="right">0.025</td>
+<td align="right">0.031</td>
+<td align="right">0.126</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">BelowJD1</td>
+<td align="right">0.017</td>
+<td align="right">0.014</td>
+<td align="right">0.011</td>
+<td align="right">0.013</td>
+<td align="right">0.001</td>
+<td align="right">0.043</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">ICH</td>
+<td align="right">0.023</td>
+<td align="right">0.018</td>
+<td align="right">0.011</td>
+<td align="right">0.018</td>
+<td align="right">0.001</td>
+<td align="right">0.054</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">LMT</td>
+<td align="right">0.014</td>
+<td align="right">0.012</td>
+<td align="right">0.009</td>
+<td align="right">0.010</td>
+<td align="right">0.001</td>
+<td align="right">0.036</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">LNR</td>
+<td align="right">0.221</td>
+<td align="right">0.218</td>
+<td align="right">0.214</td>
+<td align="right">0.038</td>
+<td align="right">0.148</td>
+<td align="right">0.294</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">LWC</td>
+<td align="right">0.035</td>
+<td align="right">0.033</td>
+<td align="right">0.028</td>
+<td align="right">0.017</td>
+<td align="right">0.005</td>
+<td align="right">0.069</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">PRO_bb</td>
+<td align="right">0.149</td>
+<td align="right">0.150</td>
+<td align="right">0.147</td>
+<td align="right">0.044</td>
+<td align="right">0.052</td>
+<td align="right">0.229</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">ROZ</td>
+<td align="right">0.108</td>
+<td align="right">0.105</td>
+<td align="right">0.094</td>
+<td align="right">0.028</td>
+<td align="right">0.053</td>
+<td align="right">0.161</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">ROZ_bb</td>
+<td align="right">0.068</td>
+<td align="right">0.065</td>
+<td align="right">0.058</td>
+<td align="right">0.023</td>
+<td align="right">0.025</td>
+<td align="right">0.116</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">SAT</td>
+<td align="right">0.192</td>
+<td align="right">0.187</td>
+<td align="right">0.176</td>
+<td align="right">0.046</td>
+<td align="right">0.117</td>
+<td align="right">0.294</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">SM1</td>
+<td align="right">0.025</td>
+<td align="right">0.022</td>
+<td align="right">0.016</td>
+<td align="right">0.014</td>
+<td align="right">0.002</td>
+<td align="right">0.050</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">SUN</td>
+<td align="right">0.478</td>
+<td align="right">0.479</td>
+<td align="right">0.483</td>
+<td align="right">0.046</td>
+<td align="right">0.391</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">SUN_bb</td>
+<td align="right">0.039</td>
+<td align="right">0.036</td>
+<td align="right">0.033</td>
+<td align="right">0.018</td>
+<td align="right">0.008</td>
+<td align="right">0.075</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">TAN</td>
+<td align="right">0.025</td>
+<td align="right">0.021</td>
+<td align="right">0.016</td>
+<td align="right">0.015</td>
+<td align="right">0.002</td>
+<td align="right">0.055</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">TOP</td>
+<td align="right">0.141</td>
+<td align="right">0.140</td>
+<td align="right">0.138</td>
+<td align="right">0.032</td>
+<td align="right">0.083</td>
+<td align="right">0.205</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">TOP_bb</td>
+<td align="right">0.014</td>
+<td align="right">0.011</td>
+<td align="right">0.006</td>
+<td align="right">0.011</td>
+<td align="right">0.000</td>
+<td align="right">0.035</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">TP2</td>
+<td align="right">0.103</td>
+<td align="right">0.099</td>
+<td align="right">0.095</td>
+<td align="right">0.027</td>
+<td align="right">0.054</td>
+<td align="right">0.161</td>
+</tr>
+</tbody>
+</table>
+<p>The next step is to multiply those transition probabilities by the total escapement at Prosser Dam. There is an additional R package, <code>STADEM</code> (<em>St</em>ate-space <em>A</em>dult <em>D</em>am <em>E</em>scapement <em>M</em>odel) that contains a function to query the window counts at a variety of dams within the Columbia River basin on a daily time-step. Those daily counts can be summed up for the season:</p>
+<pre class="r"><code># window count
+tot_win_cnt = getWindowCounts(dam = 'PRO',
+                              spp = 'Steelhead',
+                              start_date = paste0(yr-1, '0701'),
+                              end_date = paste0(yr, '0630')) %&gt;%
+  summarise_at(vars(win_cnt),
+               list(sum)) %&gt;%
+  pull(win_cnt)</code></pre>
+<p>However, for spawn year 2018-2019, the Yakima Nation provided a number that was slightly different from this query. We have used the number provided by Yakima Nation in our results.</p>
+<pre class="r"><code># Chris Frederiksen says total count was 1132
+tot_win_cnt = 1132</code></pre>
+<p>We then multiply the transistion probabilities by this window count,</p>
+<pre class="r"><code># translate movement estimates to escapement
+escape_summ = trans_df %&gt;%
+  filter(origin == 1) %&gt;%
+  mutate(tot_escp = tot_win_cnt,
+         escp = value * tot_escp) %&gt;%
+  group_by(location = param) %&gt;%
+  summarise(mean = mean(escp),
+            median = median(escp),
+            mode = estMode(escp),
+            sd = sd(escp),
+            # skew = moments::skewness(escp),
+            # kurtosis = moments::kurtosis(escp),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %&gt;%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. &lt; 0, 0, .))) %&gt;%
+  ungroup()</code></pre>
+<p>and if we’d like to summarise escapement at the population scale, that’s just a matter of extracting some estimates and adding a few of them together.</p>
+<pre class="r"><code># generate population level estimates
+pop_summ = trans_df %&gt;%
+  filter(origin == 1) %&gt;%
+  mutate(tot_escp = tot_win_cnt,
+         escp = value * tot_escp) %&gt;%
+  select(-value) %&gt;%
+  spread(param, escp) %&gt;%
+  mutate(Status = SAT,
+         Toppenish = TOP,
+         Naches = LNR + AH1,
+         `Upper Yakima` = LWC + ROZ,
+         Sunnyside_bb = SUN_bb) %&gt;%
+  select(chain:tot_escp, Status:Sunnyside_bb) %&gt;%
+  gather(pop, escp, Status:Sunnyside_bb) %&gt;%
+  mutate(pop = factor(pop,
+                      levels = c('Status',
+                                 'Toppenish',
+                                 'Naches',
+                                 'Upper Yakima',
+                                 'Sunnyside_bb'))) %&gt;%
+  group_by(pop) %&gt;%
+  summarise(mean = mean(escp),
+            median = median(escp),
+            mode = estMode(escp),
+            sd = sd(escp),
+            # skew = moments::skewness(escp),
+            # kurtosis = moments::kurtosis(escp),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %&gt;%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. &lt; 0, 0, .))) %&gt;%
+  ungroup()</code></pre>
+<p>If we’d like, we can compare the estimates of escapement past Roza dam to the dam counts there.</p>
+<pre class="r"><code>library(STADEM)
+
+getWindowCounts(dam = 'ROZ',
+                spp = 'Steelhead',
+                start_date = paste0(yr-1, '0701'),
+                end_date = paste0(yr, '0630')) %&gt;%
+  summarise_at(vars(win_cnt),
+               list(sum)) %&gt;%
+  pull(win_cnt)
+#&gt; [1] 123
+
+escape_summ %&gt;%
+  filter(location == 'ROZ')
+#&gt; # A tibble: 1 x 7
+#&gt;   location  mean median  mode    sd lowerCI upperCI
+#&gt;   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1 ROZ       122.   119.  107.  32.1    60.4    182.</code></pre>
+<p>Finally, we can save these results to an Excel spreadsheet, including the population estimates, estimates past each detection site, and the detection probabilities for each node.</p>
+<pre class="r"><code># write results to an Excel file
+save_list = list('Population Escapement' = pop_summ %&gt;%
+                   select(-skew, -kurtosis) %&gt;%
+                   mutate_at(vars(-pop),
+                             list(round),
+                             digits = 1),
+                 'All Escapement' = escape_summ %&gt;%
+                   select(-skew, -kurtosis) %&gt;%
+                   mutate_at(vars(-location),
+                             list(round),
+                             digits = 1),
+                 'Detection' = detect_summ %&gt;%
+                   mutate_at(vars(-Node),
+                             list(round),
+                             digits = 3))
+
+WriteXLS(x = save_list,
+         ExcelFileName = paste0('../../outgoing/estimates/PRO_est_', spp, '_', yr, '_', format(Sys.Date(), '%Y%m%d'), '.xlsx'),
+         AdjWidth = T,
+         AutoFilter = F,
+         BoldHeaderRow = T,
+         FreezeRow = 1)
+</code></pre>
 </div>
 </div>
 

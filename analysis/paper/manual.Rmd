@@ -60,8 +60,8 @@ highlights: |
 ---
 
 ```{r setup, echo = FALSE}
-# setwd('analysis/presentations')
-
+# setwd('analysis/paper')
+library(knitr)
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
@@ -70,7 +70,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(knitr)
 ```
 
 # Introduction
@@ -89,11 +88,12 @@ Next, you will also need the [JAGS](http://mcmc-jags.sourceforge.net/) software 
 
 ## R Packages
 
-After installing R and Studio, you will also need to install `tidyverse`, a series of R packages that work together for data science (i.e. data cleaning and manipulation), as well as the `jagsUI` package to interface with JAGS. The `tidyverse` and `jagsUI` packages are both available from the R community and can be installed by typing the following into your R console:
+After installing R and Studio, you will also need to install `tidyverse`, a series of R packages that work together for data science (i.e. data cleaning and manipulation), as well as the `jagsUI` package to interface with JAGS. To save some results to Excel files, we use the `WriteXLS` pacakge. The `tidyverse`, `jagsUI` and `WriteXLS` packages are all available from the R community and can be installed by typing the following into your R console:
 
 ```{r install-cran, eval = F}
 install.packages("tidyverse")
 install.packages("jagsUI")
+install.packages('WriteXLS')
 ```
 
 Next, install `PITcleanr` and `DABOM` from Kevin See's [GitHub](https://github.com/) page [here](https://github.com/KevinSee). `PITcleanr` was written primarily to build a "river network" describing the relationships among detection sites in a system, to clean PIT tag detection data to establish capture histories for individuals, and to determine the final destination or spawning location for each fish. `DABOM` is used for writing and running the `DABOM` model and estimating detection and movement probabilities. You can use `devtools` to install both of these packages from [GitHub](https://github.com/) using the following: 
@@ -370,9 +370,291 @@ tag_summ = proc_list$ProcCapHist %>%
                      ungroup())
 ```
 
+```{r}
+tag_summ %>%
+  slice(1:7) %>%
+  kable(caption = 'Example of tag summaries.')
+```
+
+
 Congratulations! You have now prepared all of your data and detections to build and run the DABOM model.
 
 # DABOM
 
 ## Prepare and Run DABOM
+
+```{r}
+library(DABOM)
+library(jagsUI)
+```
+
+
+The DABOM model requires as input a capture or detection history of every valid tag. This is a series of `1`'s and `0`'s depicting whether that tag was detected (or not) on each node in the network. The `DABOM` package includes a function to create these detection histories, based on the output from `PITcleanr`. To make the model easier to manipulate in the future, if more sites are added, we have split the overall detection histories into several matrices to feed into DABOM. The arguement `split_matrices = TRUE` in the function below does that. To create a single matrix with the entire detection history for each tag (for diagnostic purposes), simply set that arguement to `FALSE`. 
+
+```{r}
+# pull out the detections we are going to keep in the processed capture history
+proc_ch <- proc_list$ProcCapHist %>%
+  mutate(UserProcStatus = AutoProcStatus) %>%
+  filter(UserProcStatus)
+
+# put them into matrix form to be fed into JAGS
+dabom_list = createDABOMcapHist(proc_ch,
+                                proc_list$NodeOrder,
+                                split_matrices = T)
+```
+
+This version of DABOM was created to be run on both hatchery and wild fish, using all tags together to estimate detection probabilities, but allowing for different movement rates between hatchery and wild fish, since presumeably they may be going to very different places. Therefore, one of the inputs is a vector of fish origin (1 for wild fish, 2 for hatchery), called "fishOrigin". Currently, there are not enough hatchery tags to estimate separate movement probabilities by origin, so we are setting the origin to be equivalent for all tags, and adding it to input list `dabom_list`.
+
+```{r}
+dabom_list$fishOrigin = rep(1, nrow(dabom_list[[1]]))
+```
+
+Next, we write the text file that the JAGS software uses. There is a generic version for the Prosser dam DABOM:
+
+```{r}
+# file path to the default and initial model
+basic_modNm = 'model_files/PRO_DABOM.txt'
+
+writeDABOM_PRO(file_name = basic_modNm)
+
+```
+
+We can then update that based on our tag detections. If no tags were detected at a particular node, we set that node's detection probability to 0, since it would be difficult if not impossible to estimate, or that node / site may not have existed for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without upstream detections there is no way to estimate the detection probability there. This may lead to conservative estimates of escapement past that particular site (i.e. escapement was *at least* this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are close to 100% already, this may not be a bad assumption to make. This function re-writes the generic JAGS model with one specific to the year we are running, and saves it as a different text file.
+
+```{r}
+# filepath for specific JAGS model code for species and year
+mod_path = paste0('model_files/PRO_Steelhead_', yr, '.txt')
+
+# writes species and year specific jags code
+fixNoFishNodes(basic_modNm,
+               mod_path,
+               proc_ch,
+               proc_list$NodeOrder)
+
+```
+
+Based on the code in that model text file, we can extract the names of the parameters we wish to save. 
+
+```{r}
+# Tell JAGS which parameters in the model that it should save.
+jags_params = setSavedParams(model_file = mod_path)
+```
+
+
+Now we're ready to set some initial values for the JAGS model. We don't set the values for detection or movement probabilities, but we do need to set the initial values for where fish are that have been detected. Otherwise JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek) but it was detected somewhere else (Status Creek). 
+
+```{r}
+# Creates a function to spit out initial values for MCMC chains
+init_fnc = setInitialValues_PRO(dabom_list,
+                                mod_path,
+                                parent_child)
+```
+
+Finally, we can put all that together and compile all the input data that we need to run the JAGS model. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely `1`'s and `0`'s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.
+
+```{r}
+# Create all the input data for the JAGS model
+jags_data = createJAGSinputs_PRO(dabom_list,
+                                 mod_path,
+                                 parent_child)
+```
+
+To actually run DABOM, we use the `jagsUI` package. Part of the inputs are the Monte Carlo Marchov chain (MCMC) parameters. We recommend:
+
+* 4 chains (`n.chains = 4`)
+* 5,000 iterations (`n.iter = 5000`)
+* 2,500 of which are burn-in (`n.burnin = 2500`)
+* Keep every 10 iterations (`n.thin = 10`)
+
+This provides a total of 1000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in `R` means you can reproduce the exact MCMC draws. 
+
+```{r}
+# Run the model
+set.seed(12)
+dabom_mod <- jags.basic(data = jags_data,
+                        inits = init_fnc,
+                        parameters.to.save = jags_params,
+                        model.file = mod_path,
+                        n.chains = 4,
+                        n.iter = 5000,
+                        n.burnin = 2500,
+                        n.thin = 10,
+                        DIC = T)
+```
+
+What is returned (from the `jags.basic` function) is an `mcmc.list` object. The user can generate many diagnostic plots and statistics, using packages such as `coda`, `mcmcr` or even `shinystan`. 
+
+## Summarise DABOM results
+
+Detection probabilities are easily summarised by using the function `summariseDetectProbs`:
+
+```{r}
+# summarise detection probabilities
+detect_summ = summariseDetectProbs(dabom_mod = dabom_mod,
+                                   capHist_proc = proc_ch,
+                                   cred_int_prob = 0.95) %>%
+  # remove nodes that were not saved by JAGS
+  filter(!is.na(mean))
+```
+
+```{r}
+detect_summ %>%
+  filter(sd > 0) %>%
+  arrange(desc(sd)) %>%
+  kable(digits = 3,
+        caption = 'Summary of detection parameters.')
+```
+
+The movement or transition probabilities have to be extracted, and then multiplied appropriately, so that the movement past a site far upstream in network also accounts for moving past all the downstream sites before that one. There is a function specific to the Prosser Dam version of DABOM to do this. The "param" column in the `trans_summ` summary table refers to the probability of a tag moving *past* that site, or if the param ends in "_bb", the probability of falling into the black box above that site.
+
+```{r}
+# compile all movement probabilities, and multiply them appropriately
+trans_df = compileTransProbs_PRO(dabom_mod,
+                                 parent_child)
+```
+
+```{r}
+# summarize transition probabilities
+trans_summ = trans_df %>%
+  group_by(origin, param) %>%
+  summarise(mean = mean(value),
+            median = median(value),
+            mode = estMode(value),
+            sd = sd(value),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(value))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(value))[,2]) %>%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. < 0, 0, .))) %>%
+  ungroup()
+
+trans_summ %>%
+filter(sd > 0) %>%
+  kable(digits = 3,
+        caption = 'Summary of movement parameters.')
+```
+
+The next step is to multiply those transition probabilities by the total escapement at Prosser Dam. There is an additional R package, `STADEM` (*St*ate-space *A*dult *D*am *E*scapement *M*odel) that contains a function to query the window counts at a variety of dams within the Columbia River basin on a daily time-step. Those daily counts can be summed up for the season:
+
+```{r, eval = F}
+# window count
+tot_win_cnt = getWindowCounts(dam = 'PRO',
+                              spp = 'Steelhead',
+                              start_date = paste0(yr-1, '0701'),
+                              end_date = paste0(yr, '0630')) %>%
+  summarise_at(vars(win_cnt),
+               list(sum)) %>%
+  pull(win_cnt)
+```
+
+However, for spawn year 2018-2019, the Yakima Nation provided a number that was slightly different from this query. We have used the number provided by Yakima Nation in our results.
+
+```{r, eval = T}
+# Chris Frederiksen says total count was 1132
+tot_win_cnt = 1132
+```
+
+We then multiply the transistion probabilities by this window count,
+
+```{r}
+# translate movement estimates to escapement
+escape_summ = trans_df %>%
+  filter(origin == 1) %>%
+  mutate(tot_escp = tot_win_cnt,
+         escp = value * tot_escp) %>%
+  group_by(location = param) %>%
+  summarise(mean = mean(escp),
+            median = median(escp),
+            mode = estMode(escp),
+            sd = sd(escp),
+            # skew = moments::skewness(escp),
+            # kurtosis = moments::kurtosis(escp),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %>%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. < 0, 0, .))) %>%
+  ungroup()
+```
+
+and if we'd like to summarise escapement at the population scale, that's just a matter of extracting some estimates and adding a few of them together.
+
+```{r}
+# generate population level estimates
+pop_summ = trans_df %>%
+  filter(origin == 1) %>%
+  mutate(tot_escp = tot_win_cnt,
+         escp = value * tot_escp) %>%
+  select(-value) %>%
+  spread(param, escp) %>%
+  mutate(Status = SAT,
+         Toppenish = TOP,
+         Naches = LNR + AH1,
+         `Upper Yakima` = LWC + ROZ,
+         Sunnyside_bb = SUN_bb) %>%
+  select(chain:tot_escp, Status:Sunnyside_bb) %>%
+  gather(pop, escp, Status:Sunnyside_bb) %>%
+  mutate(pop = factor(pop,
+                      levels = c('Status',
+                                 'Toppenish',
+                                 'Naches',
+                                 'Upper Yakima',
+                                 'Sunnyside_bb'))) %>%
+  group_by(pop) %>%
+  summarise(mean = mean(escp),
+            median = median(escp),
+            mode = estMode(escp),
+            sd = sd(escp),
+            # skew = moments::skewness(escp),
+            # kurtosis = moments::kurtosis(escp),
+            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
+            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %>%
+  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
+            list(~ if_else(. < 0, 0, .))) %>%
+  ungroup()
+
+```
+
+If we'd like, we can compare the estimates of escapement past Roza dam to the dam counts there.
+
+```{r}
+library(STADEM)
+
+getWindowCounts(dam = 'ROZ',
+                spp = 'Steelhead',
+                start_date = paste0(yr-1, '0701'),
+                end_date = paste0(yr, '0630')) %>%
+  summarise_at(vars(win_cnt),
+               list(sum)) %>%
+  pull(win_cnt)
+
+escape_summ %>%
+  filter(location == 'ROZ')
+```
+
+Finally, we can save these results to an Excel spreadsheet, including the population estimates, estimates past each detection site, and the detection probabilities for each node.
+
+```{r, eval = F}
+# write results to an Excel file
+save_list = list('Population Escapement' = pop_summ %>%
+                   select(-skew, -kurtosis) %>%
+                   mutate_at(vars(-pop),
+                             list(round),
+                             digits = 1),
+                 'All Escapement' = escape_summ %>%
+                   select(-skew, -kurtosis) %>%
+                   mutate_at(vars(-location),
+                             list(round),
+                             digits = 1),
+                 'Detection' = detect_summ %>%
+                   mutate_at(vars(-Node),
+                             list(round),
+                             digits = 3))
+
+WriteXLS(x = save_list,
+         ExcelFileName = paste0('../../outgoing/estimates/PRO_est_', spp, '_', yr, '_', format(Sys.Date(), '%Y%m%d'), '.xlsx'),
+         AdjWidth = T,
+         AutoFilter = F,
+         BoldHeaderRow = T,
+         FreezeRow = 1)
+
+```
 
