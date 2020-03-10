@@ -194,6 +194,9 @@ nodes = par_ch_site %>%
               select(node = Node,
                      NodeOrder,
                      Group)) %>%
+  mutate(NodeOrder = if_else(node == 'PRO_bb',
+                         1.5,
+                         as.numeric(NodeOrder))) %>%
   mutate(Group = if_else(node == 'PRO_bb',
                          'PRO',
                          as.character(Group))) %>%
@@ -321,19 +324,20 @@ myColors = RColorBrewer::brewer.pal(nlevels(nodes$Group), 'Set1')
 
 # myColors = sample(myColors, length(myColors))
 
-myLabs = nodes$label
-myLabs[grepl('_bb$', myLabs)] = NA
+# myLabs = nodes$label
+# myLabs[grepl('_bb$', myLabs)] = NA
 
 pro_sites = nplot(myGraph,
                   layout = l,
                   vertex.color = myColors[nodes$Group],
                   # vertex.color = myColors[nodes$nodeType],
-                  vertex.size = 8,
+                  # vertex.size = 1,
+                  vertex.size.range = c(0.1, 0.05),
                   vertex.nsides = c(100, 3, 4, 4)[nodes$nodeType],
-                  vertex.rot = c(0, 1.5, 0.75, 0.75)[nodes$nodeType],
+                  vertex.rot = c(0, 1.55, 0.78, 0.78)[nodes$nodeType],
                   vertex.label = nodes$label,
                   # vertex.label = myLabs,
-                  vertex.label.fontsize = 6,
+                  vertex.label.fontsize = 12,
                   # edge.curvature = 0)
                   edge.curvature = pi/6)
 pro_sites
