@@ -1765,7 +1765,7 @@ proc_list = processCapHist_PRO(start_date,
 #&gt; Creating node orderGetting trap date.
 #&gt; Assigning nodes.
 #&gt; Processing assigned nodes
-#&gt; [1] &quot;2020-03-20 12:25:58  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
+#&gt; [1] &quot;2020-03-20 15:46:17  1 of 107 tags. Current tag: 384.3B23A8BBDA&quot;</code></pre>
 <p>The output of the <code>processCapHist_PRO()</code> function (<code>proc_list</code> in our example) is a list, containing two elements:</p>
 <ul>
 <li><p><em>NodeOrder</em>: a data frame containing each node in the model, the node order (how many nodes to cross to arrive there from Prosser Dam), the “path” a tag would take to get there consisting of all the nodes it could be detected at along the way, which site that node is associated with, and the RKM of that site from PTAGIS metadata. The <em>NodeOrder</em> can easily be accessed using <code>proc_list$NodeOrder</code> or <code>proc_list[[1]]</code>.</p></li>
@@ -2110,12 +2110,13 @@ dabom_list = createDABOMcapHist(proc_ch,
 </div>
 <div id="dabom-jags-model" class="section level2">
 <h2><span class="header-section-number">6.2</span> DABOM JAGS Model</h2>
-<p>To run the DABOM model, we need to write the text file containing the structure for the Yakima DABOM model that the JAGS software will use. The <code>DABOM</code> R package contains a function <code>writeDABOM_PRO</code> to write a generic version for the Prosser Dam DABOM:</p>
+<p>To run the DABOM model, we need to write the text file with the Yakima DABOM model that the JAGS software will use. The <code>DABOM</code> R package contains a function <code>writeDABOM_PRO</code> to write a generic version for the Prosser Dam version of DABOM:</p>
 <pre class="r"><code># file path to the default and initial model
 basic_modNm = &#39;model_files/PRO_DABOM.txt&#39;
 
+# write the Prosser Dam DABOM model for JAGS
 writeDABOM_PRO(file_name = basic_modNm)</code></pre>
-<p>We can then update that based on our tag detections. If no tags were detected at a particular node, we set that node’s detection probability to 0, since it would be difficult if not impossible to estimate, or that node / site may not have existed for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without upstream detections there is no way to estimate the detection probability there. This may lead to conservative estimates of escapement past that particular site (i.e. escapement was <em>at least</em> this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are close to 100% already, this may not be a bad assumption to make. This function re-writes the generic JAGS model with one specific to the year we are running, and saves it as a different text file.</p>
+<p>We then need to update that “default” DABOM model based on our tag detections. For starters, if no tags were detected at a particular node in the model, we need to set that node’s detection probability to 0, since it would be difficult if not impossible to estimate. Or that node / site may not have existed or been in operation for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without detections upstream of a site there is no way to estimate the detection probability there. Setting the detection probability to 100% may lead to a conservative estimate of escapement past that particular site (i.e. escapement was <em>at least</em> this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are likely close to 100% already, this may not be a bad assumption to make. The function <code>fixNoFishNodes()</code> in <code>DABOM</code> re-writes the default JAGS model with one specific to the year we are running, and saves it as a different text file.</p>
 <pre class="r"><code># filepath for specific JAGS model code for species and year
 mod_path = paste0(&#39;model_files/PRO_Steelhead_&#39;, yr, &#39;.txt&#39;)
 
@@ -2133,27 +2134,30 @@ fixNoFishNodes(basic_modNm,
 #&gt; Fixed LNR at 100% detection probability, because it is a single array with no upstream detections.
 #&gt; 
 #&gt; Fixed upstream movement past site LMC to 0 because no detections there or upstream.</code></pre>
-<p>Based on the code in that model text file, we can extract the names of the parameters we wish to save.</p>
+<p>Based on the code in that modified model text file for our DABOM run, we can then extract the names of the parameters we wish to save.</p>
 <pre class="r"><code># Tell JAGS which parameters in the model that it should save.
 jags_params = setSavedParams(model_file = mod_path)</code></pre>
-<p>Now we’re ready to set some initial values for the JAGS model. We don’t set the values for detection or movement probabilities, but we do need to set the initial values for where fish are that have been detected. Otherwise JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek) but it was detected somewhere else (Status Creek).</p>
+<p>Now we’re ready to set some intial values for the JAGS model. We don’t set the values for the detection or movement probabilities; however, we do need to set the initial values for where fish are that have been detection. Otherwise, JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek), but it was detected elsewhere (e.g. Status Creek).</p>
 <pre class="r"><code># Creates a function to spit out initial values for MCMC chains
 init_fnc = setInitialValues_PRO(dabom_list,
                                 mod_path,
                                 parent_child)</code></pre>
-<p>Finally, we can put all that together and compile all the input data that we need to run the JAGS model. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely <code>1</code>’s and <code>0</code>’s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.</p>
+<p>Finally, we can compile all the input data necessary to run the JAGS model using the <code>createJAGSinputs_PRO()</code> function. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely <code>1</code>’s and <code>0</code>’s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.</p>
 <pre class="r"><code># Create all the input data for the JAGS model
 jags_data = createJAGSinputs_PRO(dabom_list,
                                  mod_path,
                                  parent_child)</code></pre>
-<p>To actually run DABOM, we use the <code>jagsUI</code> package. Part of the inputs are the Monte Carlo Marchov chain (MCMC) parameters. We recommend:</p>
+</div>
+<div id="run-dabom" class="section level2">
+<h2><span class="header-section-number">6.3</span> Run DABOM</h2>
+<p>To actually run DABOM, we use the <code>jags.basic()</code> function in the <code>jagsUI</code> package. Part of the inputs to that function include the Monte Carlo Markov chain (MCMC) parameters. We recommend:</p>
 <ul>
 <li>4 chains (<code>n.chains = 4</code>)</li>
 <li>5,000 iterations (<code>n.iter = 5000</code>)</li>
 <li>2,500 of which are burn-in (<code>n.burnin = 2500</code>)</li>
 <li>Keep every 10 iterations (<code>n.thin = 10</code>)</li>
 </ul>
-<p>This provides a total of 1000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in <code>R</code> means you can reproduce the exact MCMC draws.</p>
+<p>This provides a total of 1,000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in <code>R</code> means you can reproduce the exact MCMC draws.</p>
 <pre class="r"><code># Run the model
 set.seed(12)
 dabom_mod &lt;- jags.basic(data = jags_data,
@@ -2198,11 +2202,11 @@ dabom_mod &lt;- jags.basic(data = jags_data,
 #&gt; Sampling from joint posterior, 2500 iterations x 4 chains 
 #&gt;  
 #&gt; 
-#&gt; MCMC took 1.356 minutes.</code></pre>
-<p>What is returned (from the <code>jags.basic</code> function) is an <code>mcmc.list</code> object. The user can generate many diagnostic plots and statistics, using packages such as <code>coda</code>, <code>mcmcr</code> or even <code>shinystan</code>.</p>
+#&gt; MCMC took 1.321 minutes.</code></pre>
+<p>What is returned (from the <code>jags.basic</code> function) is an <code>mcmc.list</code> object. The user can generate many diagnostic plots and statistics, using packages such as <code>coda</code>, <code>mcmcr</code>, <code>shinystan</code>. or even <code>postpack</code> available <a href="https://github.com/bstaton1/postpack">here</a> on <a href="www.github.com/">www.github.com/</a>.</p>
 </div>
 <div id="summarise-dabom-results" class="section level2">
-<h2><span class="header-section-number">6.3</span> Summarise DABOM results</h2>
+<h2><span class="header-section-number">6.4</span> Summarise DABOM results</h2>
 <p>Detection probabilities are easily summarised by using the function <code>summariseDetectProbs</code>:</p>
 <pre class="r"><code># summarise detection probabilities
 detect_summ = summariseDetectProbs(dabom_mod = dabom_mod,
@@ -2231,204 +2235,204 @@ detect_summ = summariseDetectProbs(dabom_mod = dabom_mod,
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ICHA0</td>
-<td align="right">1</td>
-<td align="right">0.586</td>
-<td align="right">0.603</td>
-<td align="right">0.854</td>
-<td align="right">0.258</td>
-<td align="right">0.139</td>
-<td align="right">0.999</td>
-</tr>
-<tr class="even">
 <td align="left">ICHB0</td>
 <td align="right">1</td>
-<td align="right">0.593</td>
-<td align="right">0.622</td>
-<td align="right">0.856</td>
-<td align="right">0.254</td>
-<td align="right">0.153</td>
-<td align="right">0.999</td>
-</tr>
-<tr class="odd">
-<td align="left">TANA0</td>
-<td align="right">2</td>
-<td align="right">0.701</td>
-<td align="right">0.737</td>
-<td align="right">0.902</td>
-<td align="right">0.216</td>
-<td align="right">0.293</td>
+<td align="right">0.590</td>
+<td align="right">0.610</td>
+<td align="right">0.848</td>
+<td align="right">0.260</td>
+<td align="right">0.135</td>
 <td align="right">0.999</td>
 </tr>
 <tr class="even">
+<td align="left">ICHA0</td>
+<td align="right">1</td>
+<td align="right">0.596</td>
+<td align="right">0.620</td>
+<td align="right">0.872</td>
+<td align="right">0.255</td>
+<td align="right">0.148</td>
+<td align="right">0.999</td>
+</tr>
+<tr class="odd">
 <td align="left">TANB0</td>
 <td align="right">2</td>
-<td align="right">0.715</td>
-<td align="right">0.758</td>
-<td align="right">0.915</td>
-<td align="right">0.210</td>
-<td align="right">0.313</td>
-<td align="right">1.000</td>
-</tr>
-<tr class="odd">
-<td align="left">SM1A0</td>
-<td align="right">2</td>
-<td align="right">0.734</td>
-<td align="right">0.780</td>
-<td align="right">0.923</td>
-<td align="right">0.206</td>
-<td align="right">0.321</td>
+<td align="right">0.703</td>
+<td align="right">0.747</td>
+<td align="right">0.890</td>
+<td align="right">0.213</td>
+<td align="right">0.303</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="even">
+<td align="left">TANA0</td>
+<td align="right">2</td>
+<td align="right">0.713</td>
+<td align="right">0.756</td>
+<td align="right">0.882</td>
+<td align="right">0.212</td>
+<td align="right">0.308</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
 <td align="left">SM1B0</td>
 <td align="right">2</td>
-<td align="right">0.737</td>
-<td align="right">0.785</td>
-<td align="right">0.927</td>
-<td align="right">0.204</td>
+<td align="right">0.715</td>
+<td align="right">0.743</td>
+<td align="right">0.918</td>
+<td align="right">0.205</td>
 <td align="right">0.338</td>
 <td align="right">1.000</td>
+</tr>
+<tr class="even">
+<td align="left">SM1A0</td>
+<td align="right">2</td>
+<td align="right">0.724</td>
+<td align="right">0.766</td>
+<td align="right">0.891</td>
+<td align="right">0.202</td>
+<td align="right">0.338</td>
+<td align="right">0.999</td>
 </tr>
 <tr class="odd">
 <td align="left">LWCB0</td>
 <td align="right">3</td>
-<td align="right">0.761</td>
-<td align="right">0.799</td>
-<td align="right">0.901</td>
-<td align="right">0.180</td>
-<td align="right">0.389</td>
-<td align="right">0.997</td>
+<td align="right">0.770</td>
+<td align="right">0.808</td>
+<td align="right">0.928</td>
+<td align="right">0.179</td>
+<td align="right">0.423</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">LWCA0</td>
 <td align="right">3</td>
-<td align="right">0.769</td>
-<td align="right">0.810</td>
-<td align="right">0.926</td>
-<td align="right">0.178</td>
-<td align="right">0.417</td>
-<td align="right">0.999</td>
+<td align="right">0.779</td>
+<td align="right">0.820</td>
+<td align="right">0.931</td>
+<td align="right">0.173</td>
+<td align="right">0.431</td>
+<td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">SATB0</td>
 <td align="right">13</td>
-<td align="right">0.625</td>
-<td align="right">0.629</td>
-<td align="right">0.605</td>
-<td align="right">0.127</td>
-<td align="right">0.382</td>
-<td align="right">0.860</td>
+<td align="right">0.632</td>
+<td align="right">0.640</td>
+<td align="right">0.658</td>
+<td align="right">0.122</td>
+<td align="right">0.407</td>
+<td align="right">0.876</td>
 </tr>
 <tr class="even">
 <td align="left">SATA0</td>
 <td align="right">12</td>
-<td align="right">0.584</td>
-<td align="right">0.588</td>
-<td align="right">0.589</td>
-<td align="right">0.127</td>
-<td align="right">0.343</td>
-<td align="right">0.820</td>
+<td align="right">0.592</td>
+<td align="right">0.597</td>
+<td align="right">0.607</td>
+<td align="right">0.121</td>
+<td align="right">0.377</td>
+<td align="right">0.826</td>
 </tr>
 <tr class="odd">
 <td align="left">TOPA0</td>
 <td align="right">11</td>
-<td align="right">0.708</td>
-<td align="right">0.717</td>
-<td align="right">0.719</td>
-<td align="right">0.111</td>
-<td align="right">0.490</td>
-<td align="right">0.908</td>
+<td align="right">0.700</td>
+<td align="right">0.710</td>
+<td align="right">0.747</td>
+<td align="right">0.107</td>
+<td align="right">0.492</td>
+<td align="right">0.884</td>
 </tr>
 <tr class="even">
-<td align="left">AH1A0</td>
+<td align="left">AH1B0</td>
 <td align="right">8</td>
-<td align="right">0.886</td>
-<td align="right">0.914</td>
-<td align="right">0.963</td>
-<td align="right">0.101</td>
-<td align="right">0.675</td>
+<td align="right">0.885</td>
+<td align="right">0.916</td>
+<td align="right">0.966</td>
+<td align="right">0.102</td>
+<td align="right">0.676</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="odd">
-<td align="left">AH1B0</td>
+<td align="left">AH1A0</td>
 <td align="right">8</td>
-<td align="right">0.892</td>
-<td align="right">0.922</td>
-<td align="right">0.968</td>
-<td align="right">0.099</td>
+<td align="right">0.889</td>
+<td align="right">0.915</td>
+<td align="right">0.967</td>
+<td align="right">0.096</td>
 <td align="right">0.694</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">TP2B0</td>
 <td align="right">11</td>
-<td align="right">0.853</td>
-<td align="right">0.868</td>
-<td align="right">0.917</td>
-<td align="right">0.092</td>
-<td align="right">0.674</td>
-<td align="right">0.988</td>
+<td align="right">0.857</td>
+<td align="right">0.871</td>
+<td align="right">0.894</td>
+<td align="right">0.089</td>
+<td align="right">0.680</td>
+<td align="right">0.993</td>
 </tr>
 <tr class="odd">
 <td align="left">TOPB0</td>
 <td align="right">14</td>
-<td align="right">0.885</td>
-<td align="right">0.900</td>
-<td align="right">0.930</td>
-<td align="right">0.074</td>
-<td align="right">0.743</td>
-<td align="right">0.992</td>
+<td align="right">0.880</td>
+<td align="right">0.895</td>
+<td align="right">0.924</td>
+<td align="right">0.077</td>
+<td align="right">0.727</td>
+<td align="right">0.994</td>
 </tr>
 <tr class="even">
-<td align="left">TP2A0</td>
-<td align="right">12</td>
-<td align="right">0.921</td>
-<td align="right">0.942</td>
-<td align="right">0.976</td>
-<td align="right">0.072</td>
-<td align="right">0.774</td>
-<td align="right">0.999</td>
-</tr>
-<tr class="odd">
 <td align="left">ROZB0</td>
 <td align="right">12</td>
-<td align="right">0.926</td>
-<td align="right">0.945</td>
-<td align="right">0.981</td>
-<td align="right">0.068</td>
-<td align="right">0.783</td>
+<td align="right">0.924</td>
+<td align="right">0.946</td>
+<td align="right">0.978</td>
+<td align="right">0.072</td>
+<td align="right">0.779</td>
+<td align="right">1.000</td>
+</tr>
+<tr class="odd">
+<td align="left">TP2A0</td>
+<td align="right">12</td>
+<td align="right">0.923</td>
+<td align="right">0.944</td>
+<td align="right">0.977</td>
+<td align="right">0.070</td>
+<td align="right">0.776</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="even">
 <td align="left">ROZA0</td>
 <td align="right">12</td>
-<td align="right">0.928</td>
-<td align="right">0.948</td>
-<td align="right">0.979</td>
-<td align="right">0.067</td>
-<td align="right">0.789</td>
+<td align="right">0.931</td>
+<td align="right">0.951</td>
+<td align="right">0.981</td>
+<td align="right">0.065</td>
+<td align="right">0.798</td>
 <td align="right">1.000</td>
 </tr>
 <tr class="odd">
 <td align="left">SUNB0</td>
 <td align="right">14</td>
-<td align="right">0.274</td>
+<td align="right">0.272</td>
 <td align="right">0.271</td>
-<td align="right">0.249</td>
-<td align="right">0.059</td>
-<td align="right">0.164</td>
-<td align="right">0.383</td>
+<td align="right">0.271</td>
+<td align="right">0.061</td>
+<td align="right">0.167</td>
+<td align="right">0.402</td>
 </tr>
 <tr class="even">
 <td align="left">SUNA0</td>
 <td align="right">13</td>
-<td align="right">0.258</td>
-<td align="right">0.254</td>
-<td align="right">0.250</td>
-<td align="right">0.058</td>
-<td align="right">0.149</td>
-<td align="right">0.375</td>
+<td align="right">0.251</td>
+<td align="right">0.247</td>
+<td align="right">0.241</td>
+<td align="right">0.057</td>
+<td align="right">0.137</td>
+<td align="right">0.355</td>
 </tr>
 </tbody>
 </table>
@@ -2471,19 +2475,19 @@ filter(sd &gt; 0) %&gt;%
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">AH1</td>
-<td align="right">0.076</td>
-<td align="right">0.074</td>
-<td align="right">0.078</td>
-<td align="right">0.024</td>
-<td align="right">0.037</td>
-<td align="right">0.130</td>
+<td align="right">0.075</td>
+<td align="right">0.073</td>
+<td align="right">0.067</td>
+<td align="right">0.025</td>
+<td align="right">0.032</td>
+<td align="right">0.126</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">BelowJD1</td>
-<td align="right">0.018</td>
-<td align="right">0.014</td>
-<td align="right">0.011</td>
+<td align="right">0.019</td>
+<td align="right">0.016</td>
+<td align="right">0.010</td>
 <td align="right">0.013</td>
 <td align="right">0.001</td>
 <td align="right">0.042</td>
@@ -2491,12 +2495,12 @@ filter(sd &gt; 0) %&gt;%
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">ICH</td>
-<td align="right">0.023</td>
+<td align="right">0.022</td>
 <td align="right">0.018</td>
-<td align="right">0.014</td>
-<td align="right">0.019</td>
+<td align="right">0.009</td>
+<td align="right">0.018</td>
 <td align="right">0.001</td>
-<td align="right">0.058</td>
+<td align="right">0.056</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
@@ -2505,47 +2509,47 @@ filter(sd &gt; 0) %&gt;%
 <td align="right">0.012</td>
 <td align="right">0.008</td>
 <td align="right">0.010</td>
-<td align="right">0.001</td>
-<td align="right">0.033</td>
+<td align="right">0.000</td>
+<td align="right">0.034</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">LNR</td>
+<td align="right">0.223</td>
 <td align="right">0.221</td>
 <td align="right">0.218</td>
-<td align="right">0.212</td>
-<td align="right">0.037</td>
-<td align="right">0.153</td>
-<td align="right">0.296</td>
+<td align="right">0.038</td>
+<td align="right">0.150</td>
+<td align="right">0.294</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">LWC</td>
-<td align="right">0.036</td>
-<td align="right">0.033</td>
-<td align="right">0.027</td>
-<td align="right">0.018</td>
-<td align="right">0.007</td>
-<td align="right">0.068</td>
+<td align="right">0.034</td>
+<td align="right">0.031</td>
+<td align="right">0.028</td>
+<td align="right">0.017</td>
+<td align="right">0.008</td>
+<td align="right">0.067</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">PRO_bb</td>
-<td align="right">0.149</td>
-<td align="right">0.149</td>
-<td align="right">0.145</td>
-<td align="right">0.045</td>
-<td align="right">0.055</td>
-<td align="right">0.235</td>
+<td align="right">0.151</td>
+<td align="right">0.152</td>
+<td align="right">0.148</td>
+<td align="right">0.044</td>
+<td align="right">0.061</td>
+<td align="right">0.234</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">ROZ</td>
-<td align="right">0.108</td>
-<td align="right">0.106</td>
+<td align="right">0.107</td>
 <td align="right">0.105</td>
+<td align="right">0.103</td>
 <td align="right">0.028</td>
-<td align="right">0.053</td>
+<td align="right">0.055</td>
 <td align="right">0.160</td>
 </tr>
 <tr class="odd">
@@ -2553,90 +2557,90 @@ filter(sd &gt; 0) %&gt;%
 <td align="left">ROZ_bb</td>
 <td align="right">0.069</td>
 <td align="right">0.067</td>
-<td align="right">0.058</td>
-<td align="right">0.024</td>
-<td align="right">0.022</td>
-<td align="right">0.111</td>
+<td align="right">0.063</td>
+<td align="right">0.023</td>
+<td align="right">0.031</td>
+<td align="right">0.120</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">SAT</td>
-<td align="right">0.190</td>
-<td align="right">0.184</td>
-<td align="right">0.178</td>
+<td align="right">0.189</td>
+<td align="right">0.183</td>
+<td align="right">0.171</td>
 <td align="right">0.046</td>
-<td align="right">0.102</td>
-<td align="right">0.274</td>
+<td align="right">0.110</td>
+<td align="right">0.284</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">SM1</td>
-<td align="right">0.024</td>
-<td align="right">0.021</td>
+<td align="right">0.025</td>
+<td align="right">0.022</td>
 <td align="right">0.017</td>
 <td align="right">0.014</td>
-<td align="right">0.004</td>
-<td align="right">0.054</td>
+<td align="right">0.003</td>
+<td align="right">0.051</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">SUN</td>
-<td align="right">0.479</td>
-<td align="right">0.478</td>
-<td align="right">0.483</td>
-<td align="right">0.047</td>
+<td align="right">0.477</td>
+<td align="right">0.475</td>
+<td align="right">0.466</td>
+<td align="right">0.048</td>
 <td align="right">0.386</td>
-<td align="right">0.570</td>
+<td align="right">0.574</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">SUN_bb</td>
-<td align="right">0.037</td>
-<td align="right">0.034</td>
-<td align="right">0.029</td>
-<td align="right">0.019</td>
-<td align="right">0.009</td>
-<td align="right">0.075</td>
+<td align="right">0.038</td>
+<td align="right">0.035</td>
+<td align="right">0.031</td>
+<td align="right">0.018</td>
+<td align="right">0.005</td>
+<td align="right">0.071</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">TAN</td>
-<td align="right">0.025</td>
-<td align="right">0.021</td>
-<td align="right">0.016</td>
-<td align="right">0.015</td>
-<td align="right">0.002</td>
-<td align="right">0.055</td>
+<td align="right">0.024</td>
+<td align="right">0.020</td>
+<td align="right">0.017</td>
+<td align="right">0.014</td>
+<td align="right">0.003</td>
+<td align="right">0.053</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">TOP</td>
-<td align="right">0.142</td>
-<td align="right">0.140</td>
-<td align="right">0.133</td>
-<td align="right">0.033</td>
-<td align="right">0.078</td>
-<td align="right">0.203</td>
+<td align="right">0.143</td>
+<td align="right">0.141</td>
+<td align="right">0.127</td>
+<td align="right">0.034</td>
+<td align="right">0.081</td>
+<td align="right">0.210</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
 <td align="left">TOP_bb</td>
-<td align="right">0.013</td>
-<td align="right">0.010</td>
-<td align="right">0.006</td>
+<td align="right">0.014</td>
+<td align="right">0.012</td>
+<td align="right">0.005</td>
 <td align="right">0.011</td>
 <td align="right">0.000</td>
-<td align="right">0.035</td>
+<td align="right">0.034</td>
 </tr>
 <tr class="odd">
 <td align="left">1</td>
 <td align="left">TP2</td>
-<td align="right">0.105</td>
+<td align="right">0.104</td>
 <td align="right">0.102</td>
-<td align="right">0.098</td>
-<td align="right">0.028</td>
-<td align="right">0.053</td>
-<td align="right">0.161</td>
+<td align="right">0.105</td>
+<td align="right">0.029</td>
+<td align="right">0.052</td>
+<td align="right">0.160</td>
 </tr>
 </tbody>
 </table>
@@ -2720,7 +2724,7 @@ escape_summ %&gt;%
 #&gt; # A tibble: 1 x 7
 #&gt;   location  mean median  mode    sd lowerCI upperCI
 #&gt;   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-#&gt; 1 ROZ       123.   120.  119.  31.8    59.9    181.</code></pre>
+#&gt; 1 ROZ       121.   118.  116.  31.5    62.2    181.</code></pre>
 <p>Finally, we can save these results to an Excel spreadsheet, including the population estimates, estimates past each detection site, and the detection probabilities for each node.</p>
 <pre class="r"><code># write results to an Excel file
 save_list = list(&#39;Population Escapement&#39; = pop_summ %&gt;%

@@ -376,7 +376,6 @@ tag_summ %>%
   kable(caption = 'Example of tag summaries.')
 ```
 
-
 Congratulations! You have now prepared all of your data and detections to build and run the DABOM model.
 
 # DABOM
@@ -414,17 +413,18 @@ We have compiled all of the necessary inputs for DABOM. Next, we need to generat
 
 ## DABOM JAGS Model
 
-To run the DABOM model, we need to write the text file containing the structure for the Yakima DABOM model that the JAGS software will use. The `DABOM` R package contains a function `writeDABOM_PRO` to write a generic version for the Prosser Dam DABOM:
+To run the DABOM model, we need to write the text file with the Yakima DABOM model that the JAGS software will use. The `DABOM` R package contains a function `writeDABOM_PRO` to write a generic version for the Prosser Dam version of DABOM:
 
 ```{r}
 # file path to the default and initial model
 basic_modNm = 'model_files/PRO_DABOM.txt'
 
+# write the Prosser Dam DABOM model for JAGS
 writeDABOM_PRO(file_name = basic_modNm)
 
 ```
 
-We can then update that based on our tag detections. If no tags were detected at a particular node, we set that node's detection probability to 0, since it would be difficult if not impossible to estimate, or that node / site may not have existed for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without upstream detections there is no way to estimate the detection probability there. This may lead to conservative estimates of escapement past that particular site (i.e. escapement was *at least* this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are close to 100% already, this may not be a bad assumption to make. This function re-writes the generic JAGS model with one specific to the year we are running, and saves it as a different text file.
+We then need to update that "default" DABOM model based on our tag detections. For starters, if no tags were detected at a particular node in the model, we need to set that node's detection probability to 0, since it would be difficult if not impossible to estimate. Or that node / site may not have existed or been in operation for the year we are running the model. Similarly, if a terminal site contains only a single array, or only had detections on a single array, that array has its detection probability fixed to 100%, because without detections upstream of a site there is no way to estimate the detection probability there. Setting the detection probability to 100% may lead to a conservative estimate of escapement past that particular site (i.e. escapement was *at least* this much), but since many terminal sites are further upstream in the watershed, where most detection probabilities are likely close to 100% already, this may not be a bad assumption to make. The function `fixNoFishNodes()` in `DABOM` re-writes the default JAGS model with one specific to the year we are running, and saves it as a different text file.
 
 ```{r}
 # filepath for specific JAGS model code for species and year
@@ -438,15 +438,14 @@ fixNoFishNodes(basic_modNm,
 
 ```
 
-Based on the code in that model text file, we can extract the names of the parameters we wish to save. 
+Based on the code in that modified model text file for our DABOM run, we can then extract the names of the parameters we wish to save. 
 
 ```{r}
 # Tell JAGS which parameters in the model that it should save.
 jags_params = setSavedParams(model_file = mod_path)
 ```
 
-
-Now we're ready to set some initial values for the JAGS model. We don't set the values for detection or movement probabilities, but we do need to set the initial values for where fish are that have been detected. Otherwise JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek) but it was detected somewhere else (Status Creek). 
+Now we're ready to set some intial values for the JAGS model. We don't set the values for the detection or movement probabilities; however, we do need to set the initial values for where fish are that have been detection. Otherwise, JAGS will throw an error because a tag has a randomly selected initial value (e.g. Toppenish Creek), but it was detected elsewhere (e.g. Status Creek).
 
 ```{r}
 # Creates a function to spit out initial values for MCMC chains
@@ -455,7 +454,7 @@ init_fnc = setInitialValues_PRO(dabom_list,
                                 parent_child)
 ```
 
-Finally, we can put all that together and compile all the input data that we need to run the JAGS model. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely `1`'s and `0`'s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.
+Finally, we can compile all the input data necessary to run the JAGS model using the `createJAGSinputs_PRO()` function. This includes the capture history matrices, the origin of each tag, and the priors for the Dirichlet vector that goes with each node with multiple branches. That prior is merely `1`'s and `0`'s, turning branches off if there were no observed tags there, and preventing the model from trying to estimate movement parameters to places with no detections.
 
 ```{r}
 # Create all the input data for the JAGS model
@@ -464,14 +463,16 @@ jags_data = createJAGSinputs_PRO(dabom_list,
                                  parent_child)
 ```
 
-To actually run DABOM, we use the `jagsUI` package. Part of the inputs are the Monte Carlo Marchov chain (MCMC) parameters. We recommend:
+## Run DABOM
+
+To actually run DABOM, we use the `jags.basic()` function in the `jagsUI` package. Part of the inputs to that function include the Monte Carlo Markov chain (MCMC) parameters. We recommend:
 
 * 4 chains (`n.chains = 4`)
 * 5,000 iterations (`n.iter = 5000`)
 * 2,500 of which are burn-in (`n.burnin = 2500`)
 * Keep every 10 iterations (`n.thin = 10`)
 
-This provides a total of 1000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in `R` means you can reproduce the exact MCMC draws. 
+This provides a total of 1,000 draws from the posterior. In our experience, this leads to convergence of all the parameters, without taking too long to run. Setting the seed in `R` means you can reproduce the exact MCMC draws. 
 
 ```{r}
 # Run the model
@@ -487,11 +488,15 @@ dabom_mod <- jags.basic(data = jags_data,
                         DIC = T)
 ```
 
-What is returned (from the `jags.basic` function) is an `mcmc.list` object. The user can generate many diagnostic plots and statistics, using packages such as `coda`, `mcmcr` or even `shinystan`. 
+What is returned (from the `jags.basic` function) is an `mcmc.list` object. The user can generate many diagnostic plots and statistics, using packages such as `coda`, `mcmcr`, `shinystan`, or even `postpack` available [here](https://github.com/bstaton1/postpack) on [www.github.com/](www.github.com/).  
 
 ## Summarise DABOM results
 
-Detection probabilities are easily summarised by using the function `summariseDetectProbs`:
+Now that we have completed our DABOM run, we can summarise a number of results from the `dabom_mod` `mcmc.list` object we created above including detection and movement (i.e. transition) probabilties. In addition, transition probabilities can be multiplied by some estimate of escapement in the system (e.g. Prosser Dam) to get abundance to any node or group of nodes (e.g. a tributary). 
+
+### Detection probabilities
+
+Detection probabilities are easily summarised using the function `summariseDetectProbs()`:
 
 ```{r}
 # summarise detection probabilities
@@ -510,7 +515,9 @@ detect_summ %>%
         caption = 'Summary of detection parameters.')
 ```
 
-The movement or transition probabilities have to be extracted, and then multiplied appropriately, so that the movement past a site far upstream in network also accounts for moving past all the downstream sites before that one. There is a function specific to the Prosser Dam version of DABOM to do this. The "param" column in the `trans_summ` summary table refers to the probability of a tag moving *past* that site, or if the param ends in "_bb", the probability of falling into the black box above that site.
+### Transition probabilities
+
+The movement or transition probabilities have to be extracted, and then multiplied appropriately, so that the movement past a site far upstream in the network also accounts for moving past all of the downstream sites before that one. There is a function specific to the Prosser Dam version of DABOM `compileTransProbs_PRO` to do this for you. The **param** column in the `trans_summ` summary table below refers to the probability of a tag moving *past* that site, or if the parameter ends in "_bb", the probability of falling into the black box above that site.
 
 ```{r}
 # compile all movement probabilities, and multiply them appropriately
@@ -538,9 +545,15 @@ filter(sd > 0) %>%
         caption = 'Summary of movement parameters.')
 ```
 
+## Abundance estimates
+
 The next step is to multiply those transition probabilities by the total escapement at Prosser Dam. There is an additional R package, `STADEM` (*St*ate-space *A*dult *D*am *E*scapement *M*odel) that contains a function to query the window counts at a variety of dams within the Columbia River basin on a daily time-step. Those daily counts can be summed up for the season:
 
 ```{r, eval = F}
+# install and load STADEM
+devtools::install_github("KevinSee/STADEM")
+library(STADEM)
+
 # window count
 tot_win_cnt = getWindowCounts(dam = 'PRO',
                               spp = 'Steelhead',
@@ -621,8 +634,6 @@ pop_summ = trans_df %>%
 If we'd like, we can compare the estimates of escapement past Roza dam to the dam counts there.
 
 ```{r}
-library(STADEM)
-
 getWindowCounts(dam = 'ROZ',
                 spp = 'Steelhead',
                 start_date = paste0(yr-1, '0701'),
