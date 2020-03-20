@@ -305,7 +305,7 @@ First, use the `read_csv()` function to read in all of the detections we output 
 # These come from running a saved query on the list of tags to be used
 observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
 
-# Alternatively example...
+# Alternative example...
 # observations = read_csv("C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv")
 
 # process those observations with PITcleanr, using Yakima-specific function
@@ -381,21 +381,22 @@ Congratulations! You have now prepared all of your data and detections to build 
 
 # DABOM
 
-## Prepare and Run DABOM
+## DABOM Inputs
 
 ```{r}
 library(DABOM)
 library(jagsUI)
 ```
 
+The DABOM model requires as input a capture or detection history of every valid tag. This is a series of `1`'s and `0`'s depicting whether that tag was detected (or not) on each node in the network. The `DABOM` package includes a function `createDABOMcapHist()` to create these detection histories, based on the output from `PITcleanr`. To make the model easier to manipulate in the future, e.g. if more sites/arrays are added, we have included an option to split the complete detection histories into separate matrices to feed into DABOM. The argument `split_matrices = TRUE` shown below in the `createDABOMcapHist()` function does just that. Alternatively, to create a single matric with the entire detection history for each tag (e.g., for diagnostic purposes), simply set that argument to `FALSE`.
 
-The DABOM model requires as input a capture or detection history of every valid tag. This is a series of `1`'s and `0`'s depicting whether that tag was detected (or not) on each node in the network. The `DABOM` package includes a function to create these detection histories, based on the output from `PITcleanr`. To make the model easier to manipulate in the future, if more sites are added, we have split the overall detection histories into several matrices to feed into DABOM. The arguement `split_matrices = TRUE` in the function below does that. To create a single matrix with the entire detection history for each tag (for diagnostic purposes), simply set that arguement to `FALSE`. 
+In this example, we simply set the **UserProcStatus** to be the same as the **AutoProcStatus** (`mutate(UserProcStatus = AutoProcStatus`) containing `PITcleanr`'s suggestion on whether an observation should be used in DABOM, and then remove any observation where **UserProcStatus** equals `FALSE`. Alternatively, one could use any **UserProcStatus** determined by the user after examining the detection histories (see [Examine PITcleanr Output]).
 
 ```{r}
 # pull out the detections we are going to keep in the processed capture history
 proc_ch <- proc_list$ProcCapHist %>%
   mutate(UserProcStatus = AutoProcStatus) %>%
-  filter(UserProcStatus)
+  filter(UserProcStatus == TRUE)
 
 # put them into matrix form to be fed into JAGS
 dabom_list = createDABOMcapHist(proc_ch,
@@ -403,13 +404,17 @@ dabom_list = createDABOMcapHist(proc_ch,
                                 split_matrices = T)
 ```
 
-This version of DABOM was created to be run on both hatchery and wild fish, using all tags together to estimate detection probabilities, but allowing for different movement rates between hatchery and wild fish, since presumeably they may be going to very different places. Therefore, one of the inputs is a vector of fish origin (1 for wild fish, 2 for hatchery), called "fishOrigin". Currently, there are not enough hatchery tags to estimate separate movement probabilities by origin, so we are setting the origin to be equivalent for all tags, and adding it to input list `dabom_list`.
+This version of DABOM was created to be run on both hatchery and wild origin fish, using all tags and observations together to estimate detection probabilities, but allowing for different movement rates between hatchery and wild fish, since presumably they may be going to very different places. Therefore, one of the inputs is a vector containing the origin for each fish (`1` for wild fish, `2` for hatchery), called `fishOrigin`. Currently, there are not enough hatchery tags in the Yakima River system to estimate separate movement probabilities by origin, and so we are setting the origin to be equivalent (`1`) for all tags, and adding it as another input to the input list `dabom_list`.
 
 ```{r}
 dabom_list$fishOrigin = rep(1, nrow(dabom_list[[1]]))
 ```
 
-Next, we write the text file that the JAGS software uses. There is a generic version for the Prosser dam DABOM:
+We have compiled all of the necessary inputs for DABOM. Next, we need to generate the DABOM model that the JAGS software will use.
+
+## DABOM JAGS Model
+
+To run the DABOM model, we need to write the text file containing the structure for the Yakima DABOM model that the JAGS software will use. The `DABOM` R package contains a function `writeDABOM_PRO` to write a generic version for the Prosser Dam DABOM:
 
 ```{r}
 # file path to the default and initial model
