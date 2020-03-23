@@ -325,11 +325,7 @@ The output of the `processCapHist_PRO()` function (`proc_list` in our example) i
 
 * *ProcCapHist*: The "cleaned" capture histories, with a row for each detection that has been kept. It shows the tag ID, the date that tag was in the trap, the first and last observed date and time on that node, the PTAGIS site ID associated with that node, whether the tag was moving upstream or downstream (based on the previous observation), and two columns containing **ProcStatus** for "processed status". **AutoProcStatus** is `PITcleanr`'s best guess as to whether the observation on that node should be kept (`TRUE`) or discarded (`FALSE`). **UserProcStatus** is where the end user can define that for themselves. The *ProcCapHist* can be accessed using `proc_list$ProcCapHist` or `proc_list[[2]]`.
 
-After this step, the results of *ProcCapHist* can be saved to a .txt, .csv, or .xls file, to be examined by a fisheries biologist. To save the results, simply change the `save_file` argument in `processCapHist_PRO()` to `T` or `TRUE` and add the `file_name` containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. *"output/PITcleanr/PRO_Steelhead_2019.csv"*).
-
-<!--
-MA: I was able to successfully write a .csv and .txt output, but .xls output was unsuccessful. I also noticed currently no option for .xlsx in writeCapHistOutput.R, not sure whether that's worth adding. May dive into later.
--->
+After this step, the results of *ProcCapHist* can be saved to a .txt, .csv, .xls, or .xlsx file, to be examined by a fisheries biologist. To save the results, simply change the `save_file` argument in `processCapHist_PRO()` to `T` or `TRUE` and add the `file_name` containing the file name (with possible extension) and optionally, the directory, to be saved to (e.g. *"output/PITcleanr/PRO_Steelhead_2019.csv"*). NOTE: to save an .xls or .xlsx file may require installation of [Perl](https://www.perl.org/get.html) depending on your OS.
 
 ## Examine PITcleanr Output
 
