@@ -494,7 +494,7 @@ What is returned (from the `jags.basic` function) is an `mcmc.list` object. The 
 
 Now that we have completed our DABOM run, we can summarise a number of results from the `dabom_mod` `mcmc.list` object we created above including detection and movement (i.e. transition) probabilties. In addition, transition probabilities can be multiplied by some estimate of escapement in the system (e.g. Prosser Dam) to get abundance to any node or group of nodes (e.g. a tributary). 
 
-### Detection probabilities
+### Detection Probabilities
 
 Detection probabilities are easily summarised using the function `summariseDetectProbs()`:
 
@@ -515,7 +515,7 @@ detect_summ %>%
         caption = 'Summary of detection parameters.')
 ```
 
-### Transition probabilities
+### Transition Probabilities
 
 The movement or transition probabilities have to be extracted, and then multiplied appropriately, so that the movement past a site far upstream in the network also accounts for moving past all of the downstream sites before that one. There is a function specific to the Prosser Dam version of DABOM `compileTransProbs_PRO` to do this for you. The **param** column in the `trans_summ` summary table below refers to the probability of a tag moving *past* that site, or if the parameter ends in "_bb", the probability of falling into the black box above that site.
 
@@ -545,14 +545,14 @@ filter(sd > 0) %>%
         caption = 'Summary of movement parameters.')
 ```
 
-## Abundance estimates
-
-The next step is to multiply those transition probabilities by the total escapement at Prosser Dam. There is an additional R package, `STADEM` (*St*ate-space *A*dult *D*am *E*scapement *M*odel) that contains a function to query the window counts at a variety of dams within the Columbia River basin on a daily time-step. Those daily counts can be summed up for the season:
+# Abundance Estimates
 
 ```{r install-stadem, eval = F}
 # install STADEM
 devtools::install_github("KevinSee/STADEM")
 ```
+
+Finally, we want to generate estimates of abundance for nodes or groups of nodes (e.g. tributaries or populations). To accomplish this, the next step is to multiply the transition probabilities from `DABOM` by the total escapement at Prosser Dam. There is an additional R package, `STADEM` (*St*ate-space *A*dult *D*am *E*scapement *M*odel) that contains a function `getWindowCounts()` to query the window counts at a variety of dams within the Columbia River Basin, including Prosser Dam, on a daily time-step. Those daily counts can be summed up for the season:
 
 ```{r}
 # load STADEM
@@ -650,6 +650,8 @@ getWindowCounts(dam = 'ROZ',
 escape_summ %>%
   filter(location == 'ROZ')
 ```
+
+## Save Results
 
 Finally, we can save these results to an Excel spreadsheet, including the population estimates, estimates past each detection site, and the detection probabilities for each node.
 
