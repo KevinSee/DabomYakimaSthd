@@ -178,3 +178,37 @@ diag_plots(post = my_mod,
            p = param_chk,
            save = T,
            file = 'outgoing/LWC_diagnostics.pdf')
+
+# calculate Brooks-Gelman-Rubin Potential Scale Reduction Factor (Rhat)
+# if ratio is close to 1, the chains have converged to the same distribution
+# <1.10 is generally considered converged
+post_summ(my_mod,
+          '_p$',
+          ess = T, # effective sample size
+          Rhat = T)[c("Rhat", "ess"),] %>%
+  t()
+
+# find and remove params where Rhat == "NaN"
+post_summ_nas = post_summ(my_mod,
+                          '_p$',
+                          ess = T, # effective sample size
+                          Rhat = T)[c("Rhat", "ess"),] %>%
+                  t() %>%
+  as.data.frame() %>%
+  cbind(param = row.names(.)) %>%
+  filter(Rhat == "NaN") %>%
+  pull(param)
+
+param_chk = get_p(my_mod, type = 'base')[grep('_p$', get_p(my_mod, type = 'base'))]
+param_chk = param_chk[!param_chk %in% post_summ_nas]
+
+# diagnostic plots for remaining params
+diag_plots(post = my_mod,
+           p = param_chk,
+           ext_device = T)
+
+# save plots
+diag_plots(post = my_mod,
+           p = param_chk,
+           save = T,
+           file = 'outgoing/DABOM_trace_plots.pdf')

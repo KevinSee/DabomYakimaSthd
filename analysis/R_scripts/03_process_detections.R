@@ -8,6 +8,7 @@
 # load needed libraries
 library(PITcleanr)
 library(tidyverse)
+library(readxl)
 
 #-----------------------------------------------------------------
 # load configuration and site_df data

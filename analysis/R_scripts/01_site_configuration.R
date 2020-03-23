@@ -94,8 +94,8 @@ start_date = paste0(yr - 1, '0701')
 
 # build parent-child table
 par_ch_node = createParentChildDf(site_df,
-                                   configuration,
-                                   startDate = start_date)
+                                  configuration,
+                                  startDate = start_date)
 
 root_node = par_ch_node %>%
   filter(nodeOrder == 1) %>%
@@ -336,7 +336,8 @@ pro_sites = nplot(myGraph,
                   vertex.nsides = c(100, 3, 4, 4)[nodes$nodeType],
                   vertex.rot = c(0, 1.55, 0.78, 0.78)[nodes$nodeType],
                   vertex.label = nodes$label,
-                  # vertex.label = myLabs,
+
+                             # vertex.label = myLabs,
                   vertex.label.fontsize = 12,
                   # edge.curvature = 0)
                   edge.curvature = pi/6)
