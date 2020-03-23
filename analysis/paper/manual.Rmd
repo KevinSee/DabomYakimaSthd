@@ -549,9 +549,13 @@ filter(sd > 0) %>%
 
 The next step is to multiply those transition probabilities by the total escapement at Prosser Dam. There is an additional R package, `STADEM` (*St*ate-space *A*dult *D*am *E*scapement *M*odel) that contains a function to query the window counts at a variety of dams within the Columbia River basin on a daily time-step. Those daily counts can be summed up for the season:
 
-```{r, eval = F}
-# install and load STADEM
+```{r install-stadem, eval = F}
+# install STADEM
 devtools::install_github("KevinSee/STADEM")
+```
+
+```{r}
+# load STADEM
 library(STADEM)
 
 # window count
@@ -562,6 +566,7 @@ tot_win_cnt = getWindowCounts(dam = 'PRO',
   summarise_at(vars(win_cnt),
                list(sum)) %>%
   pull(win_cnt)
+
 ```
 
 However, for spawn year 2018-2019, the Yakima Nation provided a number that was slightly different from this query. We have used the number provided by Yakima Nation in our results.
