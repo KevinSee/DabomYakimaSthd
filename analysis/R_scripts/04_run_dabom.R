@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 3/4/20
+# Last Modified: 3/24/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -19,7 +19,7 @@ spp = "Steelhead"
 # Load required DABOM data
 #-----------------------------------------------------------------
 # set year
-yr = 2019
+yr = 2012
 
 load(paste0('analysis/data/derived_data/PITcleanr/PRO_', spp, '_', yr, '.rda'))
 
@@ -199,8 +199,8 @@ all_params = get_p(my_mod,
                    type = 'base')
 
 post_summ_nas = post_summ(my_mod,
-                          '_p$',
-                          # all_params[-grep('deviance', all_params)],
+                          # '_p$',
+                          all_params[-grep('deviance', all_params)],
                           ess = T, # effective sample size
                           Rhat = T)[c("Rhat", "ess"),] %>%
                   t() %>%
