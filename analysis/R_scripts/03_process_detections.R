@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: clean PTAGIS data with PITcleanr
 # Created: 2/21/20
-# Last Modified: 2/27/20
+# Last Modified: 3/24/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -9,13 +9,15 @@
 library(PITcleanr)
 library(tidyverse)
 library(readxl)
+library(magrittr)
 
 #-----------------------------------------------------------------
 # load configuration and site_df data
 load('analysis/data/derived_data/site_config.rda')
 
 # which spawn year are we dealing with?
-yr = 2019
+yr = 2012
+
 # start date is July 1 of the previous year
 start_date = paste0(yr - 1, '0701')
 
@@ -26,7 +28,27 @@ parent_child = createParentChildDf(site_df,
 
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
-observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+# observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr, '.csv'))
+
+# deal with some double tagged fish
+if(yr %in% 2012:2014) {
+  bio_df = read_rds('analysis/data/derived_data/Bio_2012_14.rds')
+  dbl_tag = bio_df %>%
+    filter(Year == yr,
+           !is.na(AltTag))
+
+  observations %<>%
+    left_join(dbl_tag %>%
+                select(`Tag Code` = AltTag,
+                       TagID)) %>%
+    # filter(!is.na(TagID))
+    mutate(`Tag Code` = if_else(!is.na(TagID),
+                                TagID,
+                                `Tag Code`)) %>%
+    select(-TagID)
+}
+
 
 # process those observations with PITcleanr, using Yakima-specific function
 proc_list = processCapHist_PRO(start_date,
@@ -64,6 +86,9 @@ save(yr, start_date, parent_child, proc_list,
 # tag summaries
 #-----------------------------------------------------------------
 bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds')
+
+bio_df = read_rds('analysis/data/derived_data/Bio_2012_14.rds') %>%
+  filter(Year == yr)
 
 # Fix UserProcStatus, and summarise tag data
 tag_summ = proc_list$ProcCapHist %>%
