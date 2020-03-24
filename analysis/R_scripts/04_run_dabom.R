@@ -221,4 +221,4 @@ diag_plots(post = my_mod,
 diag_plots(post = my_mod,
            p = param_chk,
            save = T,
-           file = 'outgoing/DABOM_trace_plots.pdf')
+           file = 'outgoing/figures/DABOM_trace_plots.pdf')
