@@ -11,6 +11,8 @@ library(tidyverse)
 library(jagsUI)
 library(STADEM)
 library(WriteXLS)
+library(moments)
+library(coda)
 
 #-----------------------------------------------------------------
 # set species
