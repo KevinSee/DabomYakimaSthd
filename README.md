@@ -7,7 +7,7 @@
 
 This repository contains the data and code for running the **D**am
 **A**dult **B**ranch **O**ccupancy **M**odel
-([DABOM](https://github.com/KevinSee/DABOM))for steelhead returning to
+([DABOM](https://github.com/KevinSee/DABOM)) for steelhead returning to
 the Yakima River.
 
 ### How to download or install
@@ -67,9 +67,11 @@ Can compare model estimates with dam counts at Roza dam in upper Yakima
 
 ## Site information
 
-TTN is due to go online next year There should be an array on Marza
-Drain (MD+) in summer of 2020 Fish can get into MD+ without going past
-TOP (but usually don’t?)
+TTN is due to go online next year
+
+There should be an array on Marza Drain (MD+) in summer of 2020
+
+Fish can get into MD+ without going past TOP (but usually don’t?)
 
 WNS: Yakima has the data for this site; not on PTAGIS. May not be
 available for every year
