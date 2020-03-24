@@ -48,7 +48,6 @@ output:
       - --lua-filter=../templates/author-info-blocks.lua
       - --lua-filter=../templates/pagebreak.lua
 bibliography:
-# - ../paper/packages.bib
 - ../paper/references.bib
 csl: "../templates/american-fisheries-society.csl" # Insert path for the bib-style
 abstract: |
@@ -70,6 +69,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(kableExtra)
 ```
 
 # Introduction
@@ -100,8 +100,8 @@ Next, install `PITcleanr` and `DABOM` from Kevin See's [GitHub](https://github.c
 
 ```{r install-github, eval = F}
 install.packages("devtools")
-devtools::install_github("KevinSee/PITcleanr", ref = "yakima")
-devtools::install_github("KevinSee/DABOM", ref = "yakima")
+devtools::install_github("KevinSee/PITcleanr")
+devtools::install_github("KevinSee/DABOM")
 ```
 
 Hint: We have experienced errors installing the `PITcleanr` and `DABOM` packages related to *"Error: (converted from warning) package 'packagenamehere' was built under R version x.x.x"*. Setting the following environment variable typically suppresses the error and allows you to successfully install the packages.
@@ -161,7 +161,6 @@ bio_df = read_excel('../data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
 
 # pull out PIT tag numbers and save as a text file
 bio_df %>%
-  filter(SppCode == 'wsth') %>%
   filter(!is.na(TagID)) %>%
   select(TagID) %>%
   write_delim(path = '../data/raw_data/tag_lists/Tags_test_year.txt',
@@ -303,7 +302,7 @@ First, use the `read_csv()` function to read in all of the detections we output 
 ```{r}
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
-observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
+observations = read_csv(paste0('../data/raw_data/PTAGIS/PTAGIS_', yr, '.csv'))
 
 # Alternative example...
 # observations = read_csv("C:/Users/yournamehere/Desktop/data/raw_data/PTAGIS/PTAGIS_2018_19.csv")
@@ -347,7 +346,9 @@ proc_list[[2]] %>%
               mutate(lastObsDate = ObsDate)) %>%
   arrange(ObsDate) %>%
   mutate(AutoProcStatus = c(TRUE, rep(FALSE, 2), rep(TRUE, 6))) %>%
-  kable(caption = "Example of PITcleanr output for one PIT tag.")
+  kable(booktabs = T,
+        caption = "Example of PITcleanr output for one PIT tag.") %>%
+  kable_styling()
   
 ```
 
@@ -369,7 +370,9 @@ tag_summ = proc_list$ProcCapHist %>%
 ```{r}
 tag_summ %>%
   slice(1:7) %>%
-  kable(caption = 'Example of tag summaries.')
+  kable(booktabs = T,
+        caption = 'Example of tag summaries.') %>%
+  kable_styling()
 ```
 
 Congratulations! You have now prepared all of your data and detections to build and run the DABOM model.
@@ -508,7 +511,9 @@ detect_summ %>%
   filter(sd > 0) %>%
   arrange(desc(sd)) %>%
   kable(digits = 3,
-        caption = 'Summary of detection parameters.')
+        booktabs = T,
+        caption = 'Summary of detection parameters.') %>%
+  kable_styling()
 ```
 
 ### Transition Probabilities
@@ -536,9 +541,11 @@ trans_summ = trans_df %>%
   ungroup()
 
 trans_summ %>%
-filter(sd > 0) %>%
+  filter(sd > 0) %>%
   kable(digits = 3,
-        caption = 'Summary of movement parameters.')
+        booktabs = T,
+        caption = 'Summary of movement parameters.') %>%
+  kable_styling()
 ```
 
 # Abundance Estimates
