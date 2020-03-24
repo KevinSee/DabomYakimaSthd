@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: summarise DABOM results
 # Created: 3/4/20
-# Last Modified: 3/4/20
+# Last Modified: 3/24/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -18,7 +18,7 @@ library(coda)
 # set species
 spp = "Steelhead"
 # set year
-yr = 2019
+yr = 2012
 
 #-----------------------------------------------------------------
 # load JAGS MCMC results
@@ -57,8 +57,6 @@ trans_summ = trans_df %>%
             list(~ if_else(. < 0, 0, .))) %>%
   ungroup()
 
-sum(trans_summ$mean)
-
 #-----------------------------------------------------------------
 # total escapement past Prosser
 # window count
@@ -70,9 +68,10 @@ tot_win_cnt = getWindowCounts(dam = 'PRO',
                list(sum)) %>%
   pull(win_cnt)
 
-# Chris Frederiksen says total count was 1132
-tot_win_cnt = 1132
-
+# Chris Frederiksen says total count was 1132 in 2019
+if(yr == 2019) {
+  tot_win_cnt = 1132
+}
 
 # translate movement estimates to escapement
 escape_summ = trans_df %>%
