@@ -113,6 +113,11 @@ save(dabom_mod, dabom_list, proc_list, parent_child,
 
 #------------------------------------------------------------------------------
 # diagnostics
+#------------------------------------------------------------------------------
+# load model run
+load(paste0("analysis/data/derived_data/model_fits/PRO_DABOM_", spp, '_', yr,'.rda'))
+
+# using mcmcr package
 library(mcmcr)
 
 # pull out mcmc.list object
@@ -167,8 +172,7 @@ get_p(my_mod,
 post_summ(my_mod,
           '_p$') %>%
   t() %>%
-  as_tibble(rownames = 'param') %>%
-  filter(!grepl('p_pop_main', param))
+  as_tibble(rownames = 'param')
 
 param_chk = c('LWCB0_p',
               'LWCA0_p',
@@ -186,16 +190,22 @@ post_summ(my_mod,
           '_p$',
           ess = T, # effective sample size
           Rhat = T)[c("Rhat", "ess"),] %>%
-  t()
+  t() %>%
+  as_tibble(rownames = 'param') %>%
+  filter(!is.na(Rhat))
 
 # find and remove params where Rhat == "NaN"
+all_params = get_p(my_mod,
+                   type = 'base')
+
 post_summ_nas = post_summ(my_mod,
                           '_p$',
+                          # all_params[-grep('deviance', all_params)],
                           ess = T, # effective sample size
                           Rhat = T)[c("Rhat", "ess"),] %>%
                   t() %>%
   as.data.frame() %>%
-  cbind(param = row.names(.)) %>%
+  as_tibble(rownames = 'param') %>%
   filter(Rhat == "NaN") %>%
   pull(param)
 
