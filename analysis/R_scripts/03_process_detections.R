@@ -72,8 +72,7 @@ load(paste0('analysis/data/derived_data/PITcleanr/PRO_Steelhead_', yr, '.rda'))
 
 proc_ch = read_excel(paste0('analysis/data/raw_data/YakimaNation/PRO_Steelhead_', yr, '.xlsx')) %>%
   mutate_at(vars(AutoProcStatus:ValidPath),
-            list(as.logical)) %>%
-  filter(UserProcStatus)
+            list(as.logical))
 
 proc_list$ProcCapHist = proc_ch
 
