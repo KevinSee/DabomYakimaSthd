@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 3/24/20
+# Last Modified: 3/25/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -24,7 +24,9 @@ yr = 2012
 load(paste0('analysis/data/derived_data/PITcleanr/PRO_', spp, '_', yr, '.rda'))
 
 proc_ch <- proc_list$ProcCapHist %>%
-  mutate(UserProcStatus = AutoProcStatus) %>%
+  mutate(UserProcStatus = if_else(UserProcStatus == '',
+                                  AutoProcStatus,
+                                  UserProcStatus)) %>%
   filter(UserProcStatus)
 
 
@@ -70,6 +72,11 @@ jags_data = createJAGSinputs_PRO(dabom_list,
                                  mod_path,
                                  parent_child)
 
+if(summarise(proc_ch,
+             n_distinct(TagID[SiteID %in% c('SUN', "LNR", "AH1")])) %>%
+   as.numeric() == 0) {
+  jags_data$SUN_dirch_vec[1,ncol(jags_data$SUN_dirch_vec)] = 0
+}
 
 #------------------------------------------------------------------------------
 # Tell JAGS which parameters in the model that it should save.
