@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: clean PTAGIS data with PITcleanr
 # Created: 2/21/20
-# Last Modified: 3/24/20
+# Last Modified: 3/27/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -16,7 +16,7 @@ library(magrittr)
 load('analysis/data/derived_data/site_config.rda')
 
 # which spawn year are we dealing with?
-yr = 2012
+yr = 2014
 
 # start date is July 1 of the previous year
 start_date = paste0(yr - 1, '0701')
