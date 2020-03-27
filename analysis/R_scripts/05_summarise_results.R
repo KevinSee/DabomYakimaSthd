@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: summarise DABOM results
 # Created: 3/4/20
-# Last Modified: 3/24/20
+# Last Modified: 3/27/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -18,7 +18,7 @@ library(coda)
 # set species
 spp = "Steelhead"
 # set year
-yr = 2012
+yr = 2014
 
 #-----------------------------------------------------------------
 # load JAGS MCMC results
@@ -68,9 +68,17 @@ tot_win_cnt = getWindowCounts(dam = 'PRO',
                list(sum)) %>%
   pull(win_cnt)
 
-# Chris Frederiksen says total count was 1132 in 2019
-if(yr == 2019) {
-  tot_win_cnt = 1132
+# total counts from Yakima Nation (use these)
+yak_cnts = tibble(year = c(2012:2014, 2019),
+                  tot_win_cnt = c(6359,
+                                  4787,
+                                  4143,
+                                  1132))
+
+if(yr %in% yak_cnts$year) {
+  tot_win_cnt = yak_cnts %>%
+    filter(year == yr) %>%
+    pull(tot_win_cnt)
 }
 
 # translate movement estimates to escapement
