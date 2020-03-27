@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 3/25/20
+# Last Modified: 3/27/20
 # Notes:
 
 #-----------------------------------------------------------------
@@ -19,7 +19,7 @@ spp = "Steelhead"
 # Load required DABOM data
 #-----------------------------------------------------------------
 # set year
-yr = 2012
+yr = 2014
 
 load(paste0('analysis/data/derived_data/PITcleanr/PRO_', spp, '_', yr, '.rda'))
 
