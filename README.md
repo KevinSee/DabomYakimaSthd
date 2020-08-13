@@ -3,7 +3,7 @@
 
 # DabomYakimaSthd
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/KevinSee/DabomYakimaSthd/master?urlpath=rstudio)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/BiomarkABS/DabomYakimaSthd/master?urlpath=rstudio)
 
 This repository contains the data and code for running the **D**am
 **A**dult **B**ranch **O**ccupancy **M**odel
@@ -13,14 +13,14 @@ the Yakima River.
 ### How to download or install
 
 You can download the compendium as a zip from from this URL:
-<https://github.com/KevinSee/DabomYakimaSthd/archive/master.zip>
+<https://github.com/BiomarkABS/DabomYakimaSthd/archive/master.zip>
 
 Or you can install this compendium as an R package, DabomYakimaSthd,
 from GitHub with:
 
 ``` r
 # install.packages("devtools")
-remotes::install_github("KevinSee/DabomYakimaSthd")
+remotes::install_github("BiomarkABS/DabomYakimaSthd")
 ```
 
 ### Licenses
