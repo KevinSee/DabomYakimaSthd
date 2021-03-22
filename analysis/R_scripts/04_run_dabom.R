@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 3/27/20
+# Last Modified: 3/22/21
 # Notes:
 
 #-----------------------------------------------------------------
@@ -19,14 +19,14 @@ spp = "Steelhead"
 # Load required DABOM data
 #-----------------------------------------------------------------
 # set year
-yr = 2014
+yr = 2020
 
 load(paste0('analysis/data/derived_data/PITcleanr/PRO_', spp, '_', yr, '.rda'))
 
 proc_ch <- proc_list$ProcCapHist %>%
   mutate(UserProcStatus = if_else(UserProcStatus == '',
                                   AutoProcStatus,
-                                  UserProcStatus)) %>%
+                                  as.logical(UserProcStatus))) %>%
   filter(UserProcStatus)
 
 

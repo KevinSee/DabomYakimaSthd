@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: clean PTAGIS data with PITcleanr
 # Created: 2/21/20
-# Last Modified: 3/27/20
+# Last Modified: 3/22/21
 # Notes:
 
 #-----------------------------------------------------------------
@@ -16,7 +16,7 @@ library(magrittr)
 load('analysis/data/derived_data/site_config.rda')
 
 # which spawn year are we dealing with?
-yr = 2014
+yr = 2020
 
 # start date is July 1 of the previous year
 start_date = paste0(yr - 1, '0701')
@@ -28,7 +28,6 @@ parent_child = createParentChildDf(site_df,
 
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
-# observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr-1, '_', str_sub(as.character(yr), 3, 4), '.csv'))
 observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr, '.csv'))
 
 # deal with some double tagged fish
@@ -58,7 +57,7 @@ proc_list = processCapHist_PRO(start_date,
                                # for earlier years, may want to use the code below
                                last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
                                site_df = site_df,
-                               save_file = T,
+                               save_file = F,
                                file_name = paste0('outgoing/PITcleanr/PRO_Steelhead_', yr, '.xlsx'))
 
 # save some stuff
@@ -84,10 +83,11 @@ save(yr, start_date, parent_child, proc_list,
 #-----------------------------------------------------------------
 # tag summaries
 #-----------------------------------------------------------------
-bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds')
-
-bio_df = read_rds('analysis/data/derived_data/Bio_2012_14.rds') %>%
-  filter(Year == yr)
+bio_df = read_rds('analysis/data/derived_data/Bio_2020.rds')
+# bio_df = read_rds('analysis/data/derived_data/Bio_2018_19.rds')
+#
+# bio_df = read_rds('analysis/data/derived_data/Bio_2012_14.rds') %>%
+#   filter(Year == yr)
 
 # Fix UserProcStatus, and summarise tag data
 tag_summ = proc_list$ProcCapHist %>%

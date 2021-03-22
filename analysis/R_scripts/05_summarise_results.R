@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: summarise DABOM results
 # Created: 3/4/20
-# Last Modified: 3/27/20
+# Last Modified: 3/22/21
 # Notes:
 
 #-----------------------------------------------------------------
@@ -18,7 +18,7 @@ library(coda)
 # set species
 spp = "Steelhead"
 # set year
-yr = 2014
+yr = 2020
 
 #-----------------------------------------------------------------
 # load JAGS MCMC results
@@ -69,11 +69,14 @@ tot_win_cnt = getWindowCounts(dam = 'PRO',
   pull(win_cnt)
 
 # total counts from Yakima Nation (use these)
-yak_cnts = tibble(year = c(2012:2014, 2019),
+yak_cnts = tibble(year = c(2012:2014,
+                           2019,
+                           2020),
                   tot_win_cnt = c(6359,
                                   4787,
                                   4143,
-                                  1132))
+                                  1132,
+                                  1657))
 
 if(yr %in% yak_cnts$year) {
   tot_win_cnt = yak_cnts %>%
