@@ -12,6 +12,43 @@ library(readxl)
 library(janitor)
 library(magrittr)
 
+
+#-----------------------------------------------------------------
+# for spawn year 2020
+# read in data from 2019-2020
+bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
+  rename(TagID = PitTag) %>%
+  mutate(across(PassTime,
+                as.numeric)) %>%
+  filter(!is.na(LadCode)) %>%
+  filter(!is.na(TagID)) %>%
+  # # fix one tag code
+  # mutate(TagID = if_else(TagID == "389.1C2E70563A",
+  #                        "3D9.1C2D70563A",
+  #                        TagID)) %>%
+  # filter out duplicate tags by keeping the first record
+  arrange(PassDate, TagID) %>%
+  group_by(TagID) %>%
+  slice(1) %>%
+  ungroup()
+
+# pull out PIT tag numbers
+tags = bio_df %>%
+  # filter(SppCode == 'wsth') %>%
+  select(TagID)
+
+# save tags to upload to PTAGIS
+write_delim(tags,
+            path = 'analysis/data/raw_data/tag_lists/Tags_2020.txt',
+            delim = '\n',
+            col_names = F)
+
+# save biological data for later
+write_rds(bio_df,
+          path = 'analysis/data/derived_data/Bio_2020.rds')
+
+
+
 #-----------------------------------------------------------------
 # read in biological data from trap
 bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
