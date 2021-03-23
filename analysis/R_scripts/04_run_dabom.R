@@ -154,6 +154,7 @@ rhat_df %>%
   facet_wrap(~ type,
              scales = 'free')
 
+
 # which parameters have converged and which haven't?
 convg_df = converged(my_mcmcr,
                      by = 'parameter',

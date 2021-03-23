@@ -57,7 +57,7 @@ proc_list = processCapHist_PRO(start_date,
                                # for earlier years, may want to use the code below
                                last_obs_date = format(lubridate::ymd(start_date) + lubridate::years(1), "%Y%m%d"),
                                site_df = site_df,
-                               save_file = F,
+                               save_file = T,
                                file_name = paste0('outgoing/PITcleanr/PRO_Steelhead_', yr, '.xlsx'))
 
 # save some stuff
