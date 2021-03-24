@@ -16,12 +16,17 @@ library(magrittr)
 #-----------------------------------------------------------------
 # for spawn year 2020
 # read in data from 2019-2020
-bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
-  rename(TagID = PitTag) %>%
+bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx',
+                    2,
+                    skip = 1,
+                    col_names = 'TagID') %>%
+  distinct() %>%
+  left_join(read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
+              mutate(TagID = if_else(!is.na(PitTag),
+                                     PitTag,
+                                     JvPitTag))) %>%
   mutate(across(PassTime,
                 as.numeric)) %>%
-  filter(!is.na(LadCode)) %>%
-  filter(!is.na(TagID)) %>%
   # fix a few tag codes
   mutate(TagID = str_replace(TagID, "\\.\\.", "\\.")) %>%
   left_join(read_csv("analysis/data/raw_data/YakimaNation/Tags_Not_In_PTAGIS_cf_corrections.csv") %>%
@@ -36,6 +41,28 @@ bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PI
   group_by(TagID) %>%
   slice(1) %>%
   ungroup()
+
+#
+# bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
+#   rename(TagID = PitTag) %>%
+#   mutate(across(PassTime,
+#                 as.numeric)) %>%
+#   filter(!is.na(LadCode)) %>%
+#   filter(!is.na(TagID)) %>%
+#   # fix a few tag codes
+#   mutate(TagID = str_replace(TagID, "\\.\\.", "\\.")) %>%
+#   left_join(read_csv("analysis/data/raw_data/YakimaNation/Tags_Not_In_PTAGIS_cf_corrections.csv") %>%
+#               select(TagID,
+#                      newTagID = `Corrected PITtag ID`)) %>%
+#   mutate(TagID = if_else(!is.na(newTagID),
+#                          newTagID,
+#                          TagID)) %>%
+#   select(-newTagID) %>%
+#   # filter out duplicate tags by keeping the first record
+#   arrange(PassDate, TagID) %>%
+#   group_by(TagID) %>%
+#   slice(1) %>%
+#   ungroup()
 
 # pull out PIT tag numbers
 tags = bio_df %>%

@@ -29,6 +29,7 @@ parent_child = createParentChildDf(site_df,
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 observations = read_csv(paste0('analysis/data/raw_data/PTAGIS/PTAGIS_', yr, '.csv'))
+observations = read_csv(paste0('~/Desktop/PTAGIS_', yr, '.csv'))
 
 # deal with some double tagged fish
 if(yr %in% 2012:2014) {
