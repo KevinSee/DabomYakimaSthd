@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: create tag lists to feed to PTAGIS query
 # Created: 2/19/20
-# Last Modified: 3/23/21
+# Last Modified: 3/24/21
 # Notes:
 
 #-----------------------------------------------------------------
@@ -42,28 +42,6 @@ bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PI
   slice(1) %>%
   ungroup()
 
-#
-# bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
-#   rename(TagID = PitTag) %>%
-#   mutate(across(PassTime,
-#                 as.numeric)) %>%
-#   filter(!is.na(LadCode)) %>%
-#   filter(!is.na(TagID)) %>%
-#   # fix a few tag codes
-#   mutate(TagID = str_replace(TagID, "\\.\\.", "\\.")) %>%
-#   left_join(read_csv("analysis/data/raw_data/YakimaNation/Tags_Not_In_PTAGIS_cf_corrections.csv") %>%
-#               select(TagID,
-#                      newTagID = `Corrected PITtag ID`)) %>%
-#   mutate(TagID = if_else(!is.na(newTagID),
-#                          newTagID,
-#                          TagID)) %>%
-#   select(-newTagID) %>%
-#   # filter out duplicate tags by keeping the first record
-#   arrange(PassDate, TagID) %>%
-#   group_by(TagID) %>%
-#   slice(1) %>%
-#   ungroup()
-
 # pull out PIT tag numbers
 tags = bio_df %>%
   # filter(SppCode == 'wsth') %>%
@@ -82,6 +60,7 @@ write_rds(bio_df,
 
 
 #-----------------------------------------------------------------
+# for spawn year 2019
 # read in biological data from trap
 bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
   rename(TagID = PitTag) %>%
