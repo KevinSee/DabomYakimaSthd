@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: create tag lists to feed to PTAGIS query
 # Created: 2/19/20
-# Last Modified: 3/24/21
+# Last Modified: 4/10/2023
 # Notes:
 
 #-----------------------------------------------------------------
@@ -9,96 +9,85 @@
 # library(PITcleanr)
 library(tidyverse)
 library(readxl)
+library(lubridate)
 library(janitor)
 library(magrittr)
+library(here)
 
 
 #-----------------------------------------------------------------
 # for spawn year 2020
 # read in data from 2019-2020
-bio_df = read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx',
+bio_2020 = read_excel(here('analysis/data/raw_data',
+                         'YakimaNation/2019_2020_sthd_denil_PITtag.xlsx'),
                     2,
                     skip = 1,
-                    col_names = 'TagID') %>%
+                    col_names = 'tag_code') %>%
   distinct() %>%
-  left_join(read_excel('analysis/data/raw_data/YakimaNation/2019_2020_sthd_denil_PITtag.xlsx') %>%
-              mutate(TagID = if_else(!is.na(PitTag),
-                                     PitTag,
-                                     JvPitTag))) %>%
-  mutate(across(PassTime,
-                as.numeric)) %>%
+  left_join(read_excel(here('analysis/data/raw_data/YakimaNation',
+                            '2019_2020_sthd_denil_PITtag.xlsx')) %>%
+              clean_names() %>%
+              mutate(tag_code = if_else(!is.na(pit_tag),
+                                        pit_tag,
+                                        jv_pit_tag)),
+            by = join_by(tag_code),
+            multiple = "all") %>%
+  mutate(pass_date_time = ymd_hms(paste(str_split(pass_date, " ", simplify = T)[,1],
+                                        str_split(pass_time, " ", simplify = T)[,2]))) %>%
+  relocate(pass_date_time,
+           .after = "pass_time") %>%
+  select(-pass_date,
+         -pass_time) %>%
   # fix a few tag codes
-  mutate(TagID = str_replace(TagID, "\\.\\.", "\\.")) %>%
-  left_join(read_csv("analysis/data/raw_data/YakimaNation/Tags_Not_In_PTAGIS_cf_corrections.csv") %>%
-              select(TagID,
-                     newTagID = `Corrected PITtag ID`)) %>%
-  mutate(TagID = if_else(!is.na(newTagID),
-                         newTagID,
-                         TagID)) %>%
-  select(-newTagID) %>%
+  mutate(across(tag_code,
+                ~ str_replace(.,
+                              "\\.\\.",
+                              "\\."))) %>%
+  left_join(read_csv(here("analysis/data/raw_data/YakimaNation",
+                          "Tags_Not_In_PTAGIS_cf_corrections.csv")) %>%
+              select(tag_code = TagID,
+                     new_tag_code = `Corrected PITtag ID`)) %>%
+  mutate(tag_code = if_else(!is.na(new_tag_code),
+                            new_tag_code,
+                            tag_code)) %>%
+  select(-new_tag_code) %>%
   # filter out duplicate tags by keeping the first record
-  arrange(PassDate, TagID) %>%
-  group_by(TagID) %>%
+  arrange(pass_date_time, tag_code) %>%
+  group_by(tag_code) %>%
   slice(1) %>%
-  ungroup()
+  ungroup() %>%
+  add_column(spawn_year = 2020,
+             .before = 0)
 
-# pull out PIT tag numbers
-tags = bio_df %>%
-  # filter(SppCode == 'wsth') %>%
-  select(TagID)
-
-# save tags to upload to PTAGIS
-write_delim(tags,
-            path = 'analysis/data/raw_data/tag_lists/Tags_2020.txt',
-            delim = '\n',
-            col_names = F)
-
-# save biological data for later
-write_rds(bio_df,
-          path = 'analysis/data/derived_data/Bio_2020.rds')
-
-
-
-#-----------------------------------------------------------------
 # for spawn year 2019
 # read in biological data from trap
-bio_df = read_excel('analysis/data/raw_data/YakimaNation/Denil 2018_19.xlsx') %>%
-  rename(TagID = PitTag) %>%
-  mutate_at(vars(PassTime),
-            list(as.numeric)) %>%
-  filter(!is.na(LadCode)) %>%
-  filter(!is.na(TagID)) %>%
+bio_2019 = read_excel(here('analysis/data/raw_data/YakimaNation',
+                         'Denil 2018_19.xlsx')) %>%
+  clean_names() %>%
+  rename(tag_code = pit_tag) %>%
+  mutate(across(pass_time,
+                as.numeric)) %>%
+  filter(!is.na(lad_code)) %>%
+  filter(!is.na(tag_code)) %>%
   # fix one tag code
-  mutate(TagID = if_else(TagID == "389.1C2E70563A",
-                         "3D9.1C2D70563A",
-                         TagID)) %>%
+  mutate(tag_code = if_else(tag_code == "389.1C2E70563A",
+                            "3D9.1C2D70563A",
+                            tag_code)) %>%
   # filter out duplicate tags by keeping the first record
-  arrange(PassDate, TagID) %>%
-  group_by(TagID) %>%
+  arrange(pass_date, tag_code) %>%
+  group_by(tag_code) %>%
   slice(1) %>%
-  ungroup()
+  ungroup() %>%
+  add_column(spawn_year = 2019,
+             .before = 0) %>%
+  select(any_of(names(bio_2020)),
+         everything())
 
-# pull out PIT tag numbers
-tags = bio_df %>%
-  # filter(SppCode == 'wsth') %>%
-  select(TagID)
-
-# save tags to upload to PTAGIS
-write_delim(tags,
-            path = 'analysis/data/raw_data/tag_lists/Tags_2018_19.txt',
-            delim = '\n',
-            col_names = F)
-
-# save biological data for later
-write_rds(bio_df,
-          path = 'analysis/data/derived_data/Bio_2018_19.rds')
-
-#-----------------------------------------------------------------
 # for older years
-bio_df = 2012:2014 %>%
+bio_old = 2012:2014 %>%
   as.list %>%
   rlang::set_names() %>%
-  map_df(.id = 'Year',
+  map_df(.id = 'spawn_year',
          .f = function(yr) {
 
            df = read_excel(paste0('analysis/data/raw_data/YakimaNation/Prosser_steelhead_', yr, '.xlsx'))
@@ -121,48 +110,76 @@ bio_df = 2012:2014 %>%
              mutate(alt_tag = if_else(!is.na(pittag) & !is.na(jvpittag),
                                       jvpittag,
                                       as.character(NA))) %>%
-             select(PassDate = ProsserDate,
-                    TagID,
+             select(pass_date = ProsserDate,
+                    tag_code = TagID,
                     alt_tag,
-                    SppCode,
-                    Status = status,
+                    spp_code = SppCode,
+                    status,
                     age,
                     sex,
                     forklgth,
                     mehlgth,
                     weight,
-                    AdiposeClip,
+                    ad_clip = AdiposeClip,
                     comments) %>%
-             clean_names(case = 'upper_camel') %>%
-             rename(TagID = TagId)
-         })
+             arrange(pass_date,
+                     tag_code) %>%
+             group_by(tag_code) %>%
+             slice(1) %>%
+             ungroup()
+         }) %>%
+  mutate(
+    across(
+      spawn_year,
+      as.numeric))
 
-tabyl(bio_df, Year)
-xtabs(~ Year + is.na(AltTag), bio_df)
+# put all years biological data together
+bio_df <- bio_2020 %>%
+  bind_rows(bio_2019) %>%
+  bind_rows(bio_old) %>%
+  arrange(spawn_year,
+          pass_date,
+          tag_code)
 
-bio_df %>%
-  filter(Year != 2012,
-         !is.na(AltTag))
+
+#-----------------------------------------------------------------
+# for tag lists
+#-----------------------------------------------------------------
+# put bounds around years
+min_yr = min(bio_df$spawn_year)
+max_yr = max(bio_df$spawn_year)
+
 
 # pull out PIT tag numbers
-tags = bio_df %>%
-  split(list(.$Year)) %>%
+tag_list = bio_df %>%
+  split(list(.$spawn_year)) %>%
   map(.f = function(x) {
     x %>%
-      select(TagID) %>%
-      bind_rows(x %>%
-                  filter(!is.na(AltTag)) %>%
-                  select(TagID = AltTag))
+      pivot_longer(cols = starts_with("tag"),
+                   names_to = "source",
+                   values_to = "tag_code") %>%
+      filter(!is.na(tag_code)) %>%
+      select(tag_code)
   })
 
 # save tags to upload to PTAGIS
-for(yr in names(tags)) {
-  write_delim(tags[[yr]],
-              path = paste0('analysis/data/raw_data/tag_lists/Tags_', yr, '.txt'),
-              delim = '\n',
-              col_names = F)
-}
+
+# for(yr in names(tag_list)) {
+#   write_delim(tag_list[[yr]],
+#               file = here('analysis/data/raw_data/tag_lists',
+#                           paste0('Prosser_Tags_', yr, '.txt')),
+#               delim = '\n',
+#               col_names = F)
+# }
+
+# just write the latest year
+write_delim(tag_list[[as.character(max_yr)]],
+            file = here('analysis/data/raw_data/tag_lists',
+                        paste0('Prosser_Tags_', max_yr, '.txt')),
+            delim = '\n',
+            col_names = F)
 
 # save biological data for later
 write_rds(bio_df,
-          path = 'analysis/data/derived_data/Bio_2012_14.rds')
+          file = here('analysis/data/derived_data',
+                      paste0('Bio_Data_', min_yr, '_', max_yr, '.rds')))

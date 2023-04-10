@@ -1,0 +1,537 @@
+site_code,node,site_name,site_type,site_description
+AH1,AH1A0,Ahtanum at Lasalle HS,INT,Ahtanum Creek site is located 3 KM from the mouth of Ahtanum Creek at the lower end of the Lasalle High School property.   The site layout consist of an upstream and downstream antenna spaced about 4 meters apart.   The antennas are arrainged in a pass through configuration.
+AH1,AH1B0,Ahtanum at Lasalle HS,INT,Ahtanum Creek site is located 3 KM from the mouth of Ahtanum Creek at the lower end of the Lasalle High School property.   The site layout consist of an upstream and downstream antenna spaced about 4 meters apart.   The antennas are arrainged in a pass through configuration.
+ICH,ICHB0,Ice Harbor Dam (Combined),INT,Ice Harbor Dam Adult Fishways (both) and Full Flow Bypass
+JD1,JD1B0,"John Day River, McDonald Ferry",INT,"John Day River in-stream detection, near McDonald Ferry at RM 20"
+158,JDA,Fifteenmile Ck at Eightmile Ck,INT,"Instream detection array at the confluence of Eightmile creek and Fifteenmile creeks, consisting of a FS1001M multiplexing transceiver, cell modem, and three antennas in each creek. antenna arrays for each creek consist of one antenna each that spans the normal high-water mark and is secured to the substrate for pass-over detection. Site is grid-powered and operates year-round. site is on private land."
+15D,JDA,Fifteenmile Ck at Dry Ck,INT,"INSTREAM DETECTION ARRAY AT THE CONFLUENCE OF FIFTEENMILE CREEK AND DRY CREEK. THE SITE CONSISTS OF A FS1001M MULTIPLEXING TRANCEIVER, CELL MODEM, AND SIX ANTENNAS. THE ANTENNA CONFIGURATION CONSISTS OF TWO ARRAYS EACH ON DRY AND FIFTEEN MILE CREEKS, SPANNING THE WIDTH OF THE CREEKS WITHIN THE NORMAL HIGH WATER MARKS. THE ANTENNA ARRAYS ON DRY CREEK CONSIST OF ONE ANTENNA EACH. THE ARRAYS ON FIFTEENMILE CREEK CONSIST OF TWO ANTENNAS EACH. ANTENNAS ARE SECURED TO THE SUBSTRATE FOR PASS-OVER DETECTION. SITE IS GRID-POWERED AND OPERATES YEAR-ROUND. SITE IS ON PRIVATE LAND. Site was removed June 2019."
+15MILC,JDA,"Fifteen Mile Creek, near The Dalles, Oregon",MRR,River
+15R,JDA,Fifteenmile Ck at Ramsey Ck,INT,"INSTREAM DETECTION ARRAY AT THE CONFLUENCE OF FIFTEENMILE CREEK AND RAMSEY CREEK, CONSISTING OF A FS1001M MULTIPLEXING TRANCEIVER, CELL MODEM, AND SIX ANTENNAS. THE ANTENNA CONFIGURATION FOR THIS SITE CONSISTS OF TWO ARRAYS EACH ON RAMSEY AND FIFTEENMILE CREEKS SPANNING THE WIDTH OF THE CREEKS WITHIN THE NORMAL HIGH WATER MARKS. THE ARRAYS ON RAMSEY CREEK CONSIST OF ONE ANTENNA EACH. THE ARRAYS ON FIFTEENMILE CREEK CONSIST OF TWO ANTENNAS EACH. ANTENNAS ARE SECURED TO THE SUBSTRATE FOR PASS-OVER DETECTION. SITE IS SOLAR-POWERED AND OPERATES YEAR-ROUND. LOCATED ON PRIVATE LAND. Site was removed in April 2018"
+3MIL2C,JDA,"Threemile Creek, The Dalles",MRR,River
+85M,JDA,Eightmile Ck at Fivemile Ck,INT,"INSTREAM DETECTION ARRAY AT THE CONFLUENCE OF EIGHTMILE CREEK AND FIVEMILE CREEK, CONSISTING OF A FS1001M MULTIPLEXING TRANCEIVER, CELL MODEM, AND SIX ANTENNAS. THE ANTENNA CONFIGURATION CONSISTS OF THREE ANTENNAS IN EACH CREEK. EACH ANTENNA SPANS THE CREEK WITHIN THE NORMAL HIGH WATER MARK AND IS SECURED TO THE SUBSTRATE FOR PASS-OVER DETECTION. SITE IS SOLAR-POWERED AND OPERATES YEAR-ROUND. SITE IS ON PRIVATE LAND. Site removed December 2018."
+AB1,JDA,Abernathy Creek FWS Tech Cntr.,INT,Bridge over Abernathy Creek (WA.) at Abernathy Fish Technology Center (AFTC) Site is no longer active.
+AB2,JDA,Abernathy Creek Farmers Bridge,INT,"Private bridge over Abernathy Creek (WA.) at rkm 3, 1.5 km downstream from Abernathy FTC"
+AB3,JDA,Lower Abernathy Creek,INT,"Interrogation site to monitor/research: salmon and steelhead life cycles, juvenile coho life history diversity, contributions of the various juvenile coho life histories (fall migrants, winter migrants, spring (smolt) migrants) to adult escapement, improve SARs for coho and steelhead in the lower Columbia. Originally operated by USFWS from 2009-2019, reinstalled in 2022 by WDFW."
+AB4,JDA,Abernathy Creek Hatch Channel,INT,An array of two antennas is located in the hatchery release channel on Abernathy Creek at the USFWS Abernathy Fish Technology Center. Site is no longer active.
+ABEH,JDA,Abernathy SCTC,MRR,Hatchery
+ABERC,JDA,"Abernathy Creek, Lower Columbia River, Washington",MRR,River
+ANTELC,JDA,Antelope Creek - tributary to Trout Creek (TROU2C) in the Deschutes River basin,MRR,River
+ASMEBR,JDA,Astoria-Megler Bridge ,MRR,AvianColony
+B1J,JDA,BONNEVILLE PH1 JUVENILE,INT,Flat Plate Detector in the Bonneville Dam PH1 Downstream Migrant Bypass Channel
+B2A,JDA,BONNEVILLE ADULT WA SHORE,INT,Adult Fish Facility in the WA Shore Fishway at Bonneville Dam; replaced by BO3
+B2J,JDA,Bonneville PH2 Juvenile,INT,This site monitors the juvenile bypass and sampling facility of the second powerhouse at Bonneville Dam. The site operates seasonally for juvenile outmigration and includes antennas in the full flow bypass flume that is often active before and after the sampling facility each year. Separation by Code is also available to allow researchers to selectively divert PIT-tagged fish to two separate sample tanks for additional sampling.
+BAD,JDA,Barrier Dam,MRR,Dam
+BAKEOC,JDA,"Bakeoven Creek, Deschutes River Basin",MRR,River
+BCC,JDA,BON PH2 Corner Collector,INT,This site monitors the Bonneville Dam second powerhouse corner collector outfall channel. It consists of one large antenna through which the channel flows. This site is operated seasonally when the corner collector is used to pass large debris.
+BCHINL,JDA,Lake Billy Chinook,MRR,Other
+BCL,JDA,Big Cliff Dam - North Santiam River,MRR,Dam
+BCLFBY,JDA,BCL - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+BCLTAL,JDA,BCL - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+BEAR3C,JDA,"Bear Creek, Columbia River Estuary, Oregon",MRR,River
+BERRYC,JDA,Berry Creek - Clackamas Subbasin,MRR,River
+BHL,JDA,Adult Fishway at BONH,INT,"In-stream detection system consisting of a tandem array located in Bonneville Hatchery Ladder. The array (BHL) located at river km 0.01 on Tanner Creek (N 45.632678  W -121.957909 ) consists of two arrays, deployed serially 3 m apart, of two 6 ft Biomark pass-through antennas each. BHL was initially installed on July 13, 2011 by WDFW and was re-deployed in 2012-2014 during the adult fish collection period (mid-August to early December) at Bonneville Hatchery.  WDFW served as the data steward for this site during 2011-2013, and ODFW assumed responsibility in 2014.  Electrical power for the site is provided by two 6v batteries which are changed out 1-2 times per week.  Detection records are downloaded approximately once per week."
+BIG1C,JDA,"Big Creek, lower Columbia River near Knappa, OR",MRR,River
+BIGC,JDA,Big Creek Hatchery (ODFW) near Knappa,MRR,Hatchery
+BIGWSP,JDA,Big White Salmon Ponds,MRR,AcclimationPond
+BLKBAS,JDA,"Blackberry Acc. Site, WF Hood River",MRR,AcclimationPond
+BLNDSL,JDA,Blind Slough Net Pens (Oregon side of Columbia River Estuary),MRR,AcclimationPond
+BLUEC,JDA,"Blue Creek, Klickitat River Basin",MRR,River
+BO1,JDA,Bonneville Bradford Is. Ladder,INT,"This site monitors the Bradford Island fish ladder at Bonneville Dam. The ladder has two branches, one from the northeast side of the island and one from the southwest side, that meet below the visitor center and exit above the first powerhouse. Weir antennas are installed in most weirs in both the A and B branches. These antennas detect fish that pass through the weir orifices, but likely miss fish that pass over the weirs. There are also four antennas in the vertical slots above the counting window, that provide 99% detection efficiency. In 2018, two antennas were added that monitor the lamprey passage structure."
+BO1BYP,JDA,BON - Release into PH1 Juvenile Facility Bypass Flume/Pipe,MRR,IntraDamReleaseSite
+BO1GWL,JDA,BON - Release into PH1 Gatewell(s),MRR,IntraDamReleaseSite
+BO2,JDA,Bonneville Cascades Is. Ladder,INT,"This site monitors the Cascades Island fish ladder at Bonneville Dam. Though this ladder has an exit above the dam into the forebay, picketed leads generally route traffic into the Upstream Migrant Transportation (UMT) channel that leads to the Washington Shore ladder. Fish detected at BO2 and heading upstream would be expected to be detected at BO3 and then BO4 afterwards, unless the UMT is closed, in which case they will exit into the forebay above Cascades Island. The original antennas were installed in the weir orifices below the UMT in 2002. In 2018, two antennas were installed in the lamprey passage structure that exits into the forebay above the island. Beginning in February 2022, the original weir orifice antennas were retired and four new antennas were installed; two antennas monitor the UMT entrance and two antennas at the counting window. The counting window antennas will only receive traffic if the UMT is closed and ascending fish pass by the counting window and exit into the forebay."
+BO2BCC,JDA,BON - Release into the PH2 Bypass Corner Collector,MRR,IntraDamReleaseSite
+BO2BYP,JDA,BON - Release into the PH2 Juvenile Facility Bypass Flume/Pipe,MRR,IntraDamReleaseSite
+BO2GAT,JDA,BON - Release into the PH2 Juvenile Facility Flume between the Separator Exit and the Primary PIT-Tag Diversion Gate,MRR,IntraDamReleaseSite
+BO2GWL,JDA,BON - Release into PH2 Gatewell(s),MRR,IntraDamReleaseSite
+BO2ORI,JDA,BON - Release into PH2 Orifice(s),MRR,IntraDamReleaseSite
+BO2RRR,JDA,BON - Release below the PH2 Juvenile Facility PIT-Tag Diversion System Gate with subsequent Return to the River,MRR,IntraDamReleaseSite
+BO3,JDA,Bonneville WA Shore Ladder/AFF,INT,This site monitors the Washington Shore fish ladder and the adult fish facility (AFF).  Antennas are installed in the weir orifices downstream and upstream of the AFF. There are also antennas installed in the two sample flumes in the AFF. Separation by Code is available at the AFF in the form of notification lights when designated PIT tags are detected in the sample flumes. Fish detected at BO3 and heading upstream are expected to be detected at BO4 afterwards.
+BO4,JDA,Bonneville WA Ladder Slots,INT,"This site monitors the vertical slot portion of the Washington Shore fish ladder above the adult fish facility (AFF) and the counting window. Fish detected at BO4 and travelling upstream are expected to have been detected at BO2 and/or BO3 before BO4. In 2018, two antennas were added the lamprey passage structure."
+BON,JDA,Bonneville Dam Complex,MRR,Dam
+BONAFF,JDA,BON - Adult Fish Facility,MRR,IntraDamReleaseSite
+BONH,JDA,Bonneville Hatchery,MRR,Hatchery
+BONLD1,JDA,BON - Release into the Bradford Island Adult Fish Ladder,MRR,IntraDamReleaseSite
+BONLD2,JDA,BON - Release into the Cascades Island Adult Fish Ladder,MRR,IntraDamReleaseSite
+BONLD3,JDA,BON - Release into the Washington Shore Adult Fish Ladder,MRR,IntraDamReleaseSite
+BONMRT,JDA,BON - Mortality Recovery,MRR,IntraDamReleaseSite
+BOWMNC,JDA,"Bowman Creek, tributary to Little Klickitat River",MRR,River
+BREITR,JDA,"Breitenbush River, North Santiam River Basin",MRR,River
+BRUS2C,JDA,"Brush Creek, Klickitat River Basin",MRR,River
+BUCK3C,JDA,"Buck Creek, White Salmon River Basin (WA)",MRR,River
+BUCKHC,JDA,"Buckhollow Creek, Deschutes River Basin",MRR,River
+BVJ,JDA,BONNEVILLE DAM DMS1 SUBSAMPLE,INT,Bonneville Dam PH1 Juvenile Bypass (DSM1) sub-sample
+BVX,JDA,Bonneville PH1 Juvenile (Exp.),INT,Flat Plate Detector (experimental) at Bonneville Dam PH1 DSM; replaced by B1J
+BWL,JDA,Bonneville WA Shore Ladder,INT,Washington Shore Adult Fishway at Bonneville Dam; replaced by BO3
+CAL,JDA,Carson NFH Adult Return Ladder,INT,Hatchery adult spring Chinook return ladder from the Wind River to Carson NFH.
+CALAPR,JDA,Calapooia River,MRR,River
+CAMPSL,JDA,"Campbell Slough, Lower Columbia",MRR,River
+CANDLC,JDA,"Candle Creek, tributary to the Metolius River",MRR,River
+CANY3C,JDA,"Canyon Creek, tributary to the Metolius River",MRR,River
+CARS,JDA,Carson National Fish Hatchery,MRR,Hatchery
+CBD,JDA,Clear Branch Dam,MRR,Dam
+CBDFBY,JDA,CBD - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+CBL,JDA,Clear Branch below the Dam,INT,The interrogation site is an instream array in lower Clear Branch located approximately 500m downstream of the Clear Branch Dam. The site uses a single 15 ft PVC cased antenna installed in a pass-over configuration in the tailout of a pool where Middle Fork Irrigation District has a stream gauge. The interrogation site may be operated seasonally or year round depending on winter access and specific needs for monitoring projects or passage studies occurring at Clear Branch Dam. The antenna is controlled by a Biomark IS1001 ACN reader. Power is provided by solar panel(s) charging a deep cycle battery bank. Interrogation data is manually downloaded periodically. Site is no longer active.
+CBS,JDA,Clear Branch Dam spillway,INT,The interrogation site is located at the spillway of Clear Branch Dam. The site uses a single 10 ft x 2 ft PVC cased antenna mounted on the entrance of the spillway in a pass-through configuration. During moderate to low spillway flows all water spilling from the reservoir passes through a notch in the spillway entrance which the antenna completely surrounds. At high spillway flows water may top the spillway retaining wall outside of the coverage of the antenna. The interrogation site will be operated seasonally depending on when the reservoir is at full pool and spill is occurring at Clear Branch Dam. The antenna is controlled by a Biomark IS1001 ACN reader. Power is provided by solar panel(s) charging a deep cycle battery bank. Interrogation data is manually downloaded periodically.
+CCC,JDA,"Carrolls Channel, Lwr Col Riv",INT,"The Upper Carrolls Channel site is located upstream of the Cowlitz River, near Longview, WA. The goal at this site is to detect juvenile fish that may take refuge in off channel areas during their migration.  There are three multiplexors at this site with each MUX driving two parallel arrays of three antennas each.  The 3' x 10' hybrid antennas are designed to allow fish to pass both through the antennas and over the top of them depending on tidal flux.  Because the antennas can pivot up and down with the tidal flux they are capable of sampling the entire water column. Each pair of antenna arrays is deployed approximately 60-90' offshore from its MUX at high water."
+CEDARC,JDA,"Cedar Creek, tributary to Lewis River",MRR,River
+CFD,JDA,Cowlitz Falls Dam,INT,"Upstream most dam on Cowlitz River. As of 2014 fish facilities include 3 sets of PIT tag readers. One associated with each of the spillway #2 and #3 flumes, and one downstream of the Cowlitz Falls Fish Facility following fish handling. In April 2017, 3 antennas were installed in the Cowlitz Falls North Shore Collector, and 2 sets of 2 antennas each were installed downstream of the separator to support sort by code operations. In 2023, transceiver 20 (previously used for antennas 20-26) was replaced and updated to four IS1001 standalone transceivers. Each new transceiver is associated with one exit route antenna. Antenna 31 is for the hopper. Antenna 32 is for the fry raceway. Antenna 33 is for the smolt raceways. Antenna 34 is for a new location, the transport tank."
+CFD,JDA,Cowlitz Falls Dam,MRR,Dam
+CFDNSC,JDA,CFD - Release into North Shore Collector Flume,MRR,IntraDamReleaseSite
+CFDSF2,JDA,CFD - Release directly into spillway flume 2,MRR,IntraDamReleaseSite
+CFDSF3,JDA,CFD - Release directly into spillway flume 3,MRR,IntraDamReleaseSite
+CFDTAL,JDA,CFD - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+CFF,JDA,Castile Falls Fishway,INT,This site monitors the Castile Falls fishway on the Klickitat River. There are three antennas installed in a vertical slot orientation and all fish passing through the fishway must pass through the antennas.
+CGJ,JDA,Cougar Dam PFFC,INT,This site contains one IS1001 PIT tag antenna. The antenna is located  in the U. S. Army Corps of Engineers Portable Floating Fish Collector(PFFC) located in front of the temperature control tower at Cougar Dam.  This PFFC was designed to collect juvenile migrating fish above Cougar Dam. Use of the trap was discontinued in 2016.
+CGR,JDA,Cougar Dam,MRR,Dam
+CGRTAL,JDA,CGR - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+CHENC,JDA,"Chenoweth Creek, The Dalles",MRR,River
+CHINOR,JDA,"Chinook River, Washington (Columbia River Estuary)",MRR,River
+CIC,JDA,"Cottonwood Island, Lwr Col Rvr",INT,"The Cottonwood Island site is located upstream of the Cowlitz River, near Longview, WA. The goal at this site is to detect juvenile fish that may take refuge in off channel areas during their migration.  There are three multiplexors at this site with each MUX driving two parallel arrays of three antennas each.  The 3' x 10' hybrid antennas are designed to allow fish to pass both through the antennas and over the top of them depending on tidal flux.  Because the antennas can pivot up and down with the tidal flux they are capable of sampling the entire water column. Each pair of antenna arrays is deployed approximately 60-90' offshore from its MUX at high water."
+CISPUR,JDA,Cispus River - tributary to Cowlitz River,MRR,River
+CLCKMS,JDA,Clackamas River,MRR,River
+CLEA3C,JDA,Clear Creek - tributary to Muddy River,MRR,River
+CLEARP,JDA,Clear Creek Acclimation Pond,MRR,AcclimationPond
+CLRBR,JDA,"Clear Branch, Middle Fork Hood River Watershed",MRR,River
+COLR,JDA,Columbia River (Archaic - replaced with reach-specific definitions),MRR,Archaic
+COLR1,JDA,"Columbia River - mouth to Three Tree Point, WA (km 0-49)",MRR,RiverSegment
+COLR10,JDA,Columbia River - East Arrow Park to Revelstoke (km 1359 - 1476),MRR,RiverSegment
+COLR2,JDA,"Columbia River - Three Tree Point, WA to Lewis River (km 49-140)",MRR,RiverSegment
+COLR3,JDA,Columbia River - Lewis River to Bonneville Dam (km 140-234),MRR,RiverSegment
+COLR4,JDA,Columbia River - Bonneville Dam to John Day Dam (km 234-347),MRR,RiverSegment
+COLR5,JDA,Columbia River - John Day Dam to Snake River (km 347-522),MRR,RiverSegment
+COLR6,JDA,Columbia River - Snake River to Lower Crab Creek (km 522-661),MRR,RiverSegment
+COLR7,JDA,"Columbia River - Lower Crab Creek to Chelan Falls, WA (km 661-809)",MRR,RiverSegment
+COLR8,JDA,"Columbia River - Chelan Falls, WA to Grand Coulee Dam (km 809-960)",MRR,RiverSegment
+COLR9,JDA,"Columbia River - Grand Coulee Dam to East Arrow Park, CAN (km 960-1359)",MRR,RiverSegment
+COWEAP,JDA,Coweeman Acclimation Pond,MRR,AcclimationPond
+COWEER,JDA,"Coweeman River, tributary to Cowlitz River",MRR,River
+COWLR1,JDA,Cowlitz River - mouth to Cispus River (km 0-135),MRR,RiverSegment
+COWLR2,JDA,Cowlitz River - Cispus River to Clear Fork (km 135-202),MRR,RiverSegment
+COWS,JDA,Cowlitz Salmon Hatchery,MRR,Hatchery
+COWT,JDA,Cowlitz Trout Hatchery,MRR,Hatchery
+CR1,JDA,Chinook River Sea Resources CF,INT,"This is an in-stream interrogation system located near the Sea Resources Hatchery adult fish facility, on the Chinook River in the Columbia River Estuary near Chinook, Washington."
+CRABP,JDA,Crab Creek Acclimation Pond,MRR,AcclimationPond
+CROOK1,JDA,Crooked River - Lake Billy Chinook to Prineville Reservoir (km 0-113),MRR,RiverSegment
+CSH,JDA,Cowlitz Salmon Hatchery Ladder,INT,The site is located at the Cowlitz Salmon Hatchery adult ladder and sorting table. Antenna 01 is a pass-through antenna on the ladder. Antenna 02 is a hand-held racket antenna at the hatchery adult sorting table that personnel wave over each fish. Each antenna is powered by an IS1001 reader. Data is downloaded and submitted to PTAGIS by Biomark every 4 hours via a cell modem.
+CUBC,JDA,Cub Creek - Clackamas Subbasin,MRR,River
+CUNNSL,JDA,Cunningham Slough,MRR,River
+DBH,JDA,Buck Hollow Ck Deschutes Trib,INT,"INSTREAM DETECTION ARRAY IN BUCK HOLLOW CREEK, A TRIBUTARY TO THE DESCHUTES RIVER. THE SITE IS APPROXIMATELY 1/4 MILE FROM THE MOUTH OF BUCK HOLLOW CREEK AND CONSISTS OF A FS1001M MULTIPLEXING TRANCEIVER, CELL MODEM, AND THREE ANTENNAS. THE ANTENNA CONFIGURATION CONSISTS OF THREE ANTENNAS, EACH OF WHICH SPAN THE NORMAL HIGH WATER MARK AND ARE SECURED TO THE SUBSTRATE FOR PASS-OVER DETECTION. SITE IS SOLAR AND WIND POWERED AND OPERATES YEAR-ROUND. SITE IS ON PRIVATE LAND."
+DBO,JDA,Bakeoven Ck Deschutes Trib,INT,"INSTREAM DETECTION ARRAY IN BAKEOVEN CREEK, A TRUBUTARY TO THE DESCHUTES RIVER. THE SITE IS APPROXIMATELY 1/4 MILE FROM THE MOUTH OF BAKEOVEN CREEK AND CONSISTS OF A FS1001M MULTIPLEXING TRANCEIVER, CELL MODEM, AND SIX ANTENNAS. THE ANTENNA CONFIGURATION CONSISTS OF THREE ARRAYS OF TWO ANTENNAS EACH. THE TWO ANTENNAS IN EACH ARRAY ARE PLACED SIDE-BY-SIDE TO SPAN THE CREEK FOR THE NORMAL HIGH WATER MARK AND ARE SECURED TO THE SUBSTRATE FOR PASS-OVER DETECTION. SITE IS GRID POWERED AND OPERATES YEAR-ROUND. SITE IS ON PRIVATE LAND."
+DEEPR,JDA,"Deep River, tributary to Columbia River",MRR,River
+DESCH1,JDA,Deschutes River - mouth to Round Butte Dam (0-177 km),MRR,RiverSegment
+DESCH2,JDA,Deschutes River - Round Butte Dam to headwaters (177-393 km),MRR,RiverSegment
+DET,JDA,"Detroit Dam (USACE), North Santiam River",MRR,Dam
+DETFBY,JDA,DET - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+DETTAL,JDA,DET - Release into the Tailrace within 0.5km downstream of Dam,MRR,IntraDamReleaseSite
+DEX,JDA,"Dexter Dam (USACE), Middle Fork Willamette River",MRR,Dam
+DEXTAL,JDA,DEX - Release into the Tailrace within 0.5km downstream of Dam,MRR,IntraDamReleaseSite
+DILACC,JDA,"Dillacort Creek, Klickitat River",MRR,River
+DOGRVR,JDA,"Dog River, tributary to EF Hood River (OR)",MRR,River
+DRANOL,JDA,Drano Lake,MRR,Other
+DRIFTC,JDA,Drift Creek - tributary to Lewis River,MRR,River
+DRM,JDA,Deschutes River mouth,INT,"In February-March 2013, two antenna arrays, arranged upstream- downstream from one another, were installed just upstream from the mouth of the Deschutes River in the west channel at Moody Island (rkm 0.46). This system is based on Biomark?s new IS1001-MTS Multiplexing Transceiver System. The arrays consist of 12-Biomark 20ft STOUT antennas, each controlled by a submersible IS1001 antenna control nodes. There are seven antennas in the upstream array and 60 feet downstream are five antennas in the downstream array. The IS1001 nodes are connected in series and they in turn are connected to an IS1001-Master Controller located adjacent to the array on the west bank of the Deschutes River. Diagnostic and tag detection data will be retrieved remotely using a Campbell Scientific CR1000 data logger and cell phone connection. The IS1001-MTS is capable of detecting FDX-B and HDX PIT tags. Site is no longer active."
+DRNP,JDA,"Deep River Net Pens (Deep River, Washington)",MRR,AcclimationPond
+DRYC,JDA,"Dry Creek, tributary to Fifteenmile Creek",MRR,River
+DSF,JDA,Deschutes Sherars Falls,INT,Site consists of two monitored weirs in the main fishway and two monitored weirs in the high flow fishway; one antenna per weir.
+DXP,JDA,Dexter Ponds Fish Ladder,INT,"Detection array located inside the fish ladder leading to Dexter Ponds Fish Hatchery on the north bank of the Middle Fork Willamette River below Dexter Dam. Array consists of two antennas operated by IS1001 nodes communicating through a cell modem. Antennas are placed in-line, with each antenna spanning the full width of the ladder, and designed for pass-through detection. Site is grid powered and operates year-round. Site is on ODFW property. Site is no longer active."
+EAG2NF,JDA,"North Fork Eagle Creek, Clackamas River Basin",MRR,River
+EAGH,JDA,"Eagle Creek National Fish Hatchery, Clackamas River Basin",MRR,Hatchery
+EAGL2C,JDA,"Eagle Creek, Clackamas River Basin",MRR,River
+ECH,JDA,Eagle Creek Hatchery Ladder,INT,"A single pass through antenna is located inside the fish ladder at Eagle Creek National Fish Hatchery in Estacada, OR Site was decommissioned March 2015.. Site was decommissioned March 2015."
+ECL,JDA,Eagle Creek Lower Fish Ladder,INT,"A single pass through antenna is located inside the lower fish ladder on Eagle Creek in Estacada, OR. Site was decommissioned May 2015."
+EFD,JDA,East Fork Diversion Fishway,INT,The interrogation site is located in a fish ladder at a irrigation diversion site for the East Fork Irrigation District on the East Fork of the Hood River. The ladder is a vertical slot type construction. Two antennas are installed in a pass through configuration at two of the vertical slots at the downstream end of the ladder. At the upstream terminus of the ladder there is an adult trap that is intermittently operated. The fish ladder and interrogation site is operated seasonally cooresponding to the irrigation season (March to October). The antennas are controlled by two synced Biomark IS1001 ACN readers. Power is provided by solar panel(s) charging a deep cycle battery bank. Interrogation data is manually downloaded periodically.
+EFHORC,JDA,"East Fork Horse Creek, McKenzie River Basin",MRR,River
+EIGH2C,JDA,"Eightmile Creek, Fifteenmile Creek Watershed",MRR,River
+ELRH,JDA,"Elochoman River Hatchery (Elochoman River, Washington)",MRR,Hatchery
+ESANIS,JDA,"East Sand Island, Columbia River",MRR,AvianColony
+FAL,JDA,"Fall Creek Dam (USACE), MF Willamette River",MRR,Dam
+FALL2C,JDA,"Fall Creek, MF Willamette River Basin",MRR,River
+FALTAL,JDA,FAL - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+FID,JDA,"Farmer's Diversion, Hood River",INT,The interrogation site is located in the channel that returns water from the Farmers Irrigation District main diversion and screen facility to the mainstem Hood River. The antenna is in a pass through configuration that encompases virtually the entire channel cross section.
+FIVE2C,JDA,"Fivemile Creek, Fifteen Mile Creek Watershed",MRR,River
+FOL,JDA,Foster Dam Ladder S Santiam R,INT,"Fish Ladder detection array at the Foster Dam Fish Collection Facility on the South Santiam River, a tributary to the Willamette River. The array is located in the fish ladder at the Foster Dam Collection facility near Sweet Home, Oregon. The site is monitored by an IS-1001-MC and five IS1001-ACNs. The hardware at the site includes the master controller, 5x ACNs, cell modem, power supply, and five antennas. The antennas are custom-built pass-thru antennas with ferrite shielding and 10 ga Litz-wire (the Flume Antennas are 12 ga ribbon wire). Two antennas are side by side in the collection flume, one antenna is near the midpoint of the ladder near the powerhouse, and two antennas are on the downstream end of the ladder. The site is powered by grid power, with battery back-up and a charging switch for alternating battery-banks. The site is on Federal property (Portland District US Army Corps of Engineers). The collection facility is managed by the Oregon Department of Fish and Wildlife. Site is no longer active."
+FOS,JDA,Foster Dam Weir,INT,"The Foster Dam Weir antenna is located in spillway #4 at Foster Dam on the South Santiam River just upstream from the town of Sweet Home, Oregon. The site consists of two ferrite shielded flat plate antennas. Each antenna housing measures 11-feet by 42-inches. One antenna is mounted on each side of the weir opening. Two IS1001-ACN transceivers are mounted on the rear of the weir and have a 6-foot antenna lead. CAN-Bus (+power) cable connects the ACNs to one another and to the IS1001 MTS-MC. Site was removed in January 2018"
+FOS,JDA,"Foster Dam, South Santiam River",MRR,Dam
+FOSFBY,JDA,FOS - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+FOSTAL,JDA,FOS - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+FRFH,JDA,Fall River Fish Hatchery,MRR,Hatchery
+GEECR,JDA,"Gee Creek, Washington, lower Columbia River",MRR,River
+GERMC,JDA,"Germany Creek, Lower Columbia River, Washington",MRR,River
+GPD,JDA,Green Peter Dam,MRR,Dam
+GRAYSR,JDA,"Grays River, Washington, lower Columbia River",MRR,River
+GREENR,JDA,"Green River, trib. to NF Toutle River",MRR,River
+GREEPC,JDA,Green Point Creek (tributary to West Fork Hood River),MRR,River
+HCR,JDA,"Hills Creek Dam, Middle Fork Willamette River",MRR,Dam
+HCRFBY,JDA,HCR - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+HCRREG,JDA,HCR - Release into the Regulating Channel of the Tailrace within 0.5 km of Dam,MRR,IntraDamReleaseSite
+HCRTUR,JDA,HCR - Release into the Turbine Channel of the Tailrace within 0.5 km of Dam,MRR,IntraDamReleaseSite
+HERMAC,JDA,"Herman Creek, Columbia River Gorge (OR)",MRR,River
+HLK,JDA,"Hemlock Dam, Wind River (WA) watershed",MRR,Dam
+HLKTAL,JDA,HLK - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+HLX,JDA,Hemlock Dam Fish Ladder Exp.,INT,"This experimental interrogation system was located in the adult fish passage ladder at Hemlock Dam, on Trout Creek in the Wind River (WA) Basin."
+HOODEF,JDA,East Fork Hood River,MRR,River
+HOODMF,JDA,Middle Fork Hood River,MRR,River
+HOODR,JDA,Hood River,MRR,River
+HOODWF,JDA,West Fork Hood River,MRR,River
+HORS2C,JDA,"Horse Creek, upper McKenzie River Basin",MRR,River
+HRM,JDA,Hood River Mouth,INT,An instream interrogation system consisting of 2 antenna arrays located at the mouth of the Hood River. The antennas are against the west side jetty just inside the bar where the Hood River meets the Columbia River. The upstream array is comprised of five 20 foot antennas covering a total of 100 feet from shore. The downstream array is comprised of two 20 foot antennas that extend 40 feet from shore. The antenna arrays cover approximately 3/4 the stream width at low water conditions and a half of the stream at bank full. The transceiver is a IS1001-MTS and power is provided by solar panels charging a battery bank. Interrogation data is submitted several times a week via cellular modem.
+JDA,JDA,John Day Dam,MRR,Dam
+JDABYP,JDA,JDA - Release into the Facility Bypass Flume/Pipe,MRR,IntraDamReleaseSite
+JDACOL,JDA,JDA - Release into the Collection Channel upstream of the Dewatering Facility,MRR,IntraDamReleaseSite
+JDAFBY,JDA,JDA - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+JDAGAT,JDA,JDA - Release into Flume between Separator Exit and the Primary PIT-Tag Diversion Gate,MRR,IntraDamReleaseSite
+JDAGWL,JDA,JDA - Release into Gatewell(s),MRR,IntraDamReleaseSite
+JDALD1,JDA,JDA - Release into south fish ladder,MRR,IntraDamReleaseSite
+JDALD2,JDA,JDA - Release into north fish ladder,MRR,IntraDamReleaseSite
+JDAMRT,JDA,JDA - Mortality Recovery,MRR,IntraDamReleaseSite
+JDARRR,JDA,JDA - Release below the PIT-Tag Diversion System Gate with subsequent Return to the River at the Facility,MRR,IntraDamReleaseSite
+JDATAL,JDA,JDA - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+JDJ,JDA,John Day Dam Juvenile,INT,This site monitors the John Day Dam smolt bypass and sampling facility.  The site operates seasonally for juvenile outmigration and includes antennas in the full flow bypass flume that is often active before and after the sampling facility each year. Separation by Code (SbyC) is also available to allow researchers to selectively divert PIT-tagged fish to two separate sample tanks for additional sampling.
+JDPI,JDA,Preacher's Island downstream of John Day Dam,MRR,AvianColony
+JNSCAS,JDA,"Jones Creek Acc. Site, WF Hood River",MRR,AcclimationPond
+JO1,JDA,John Day South Fish Ladder,INT,"This site monitors the south fish ladder at John Day Dam with antennas in the weir orifices and overflows of two weir walls. The antennas were installed February 2017 without dedicated communication and synchronization lines. Only the upstream weir antennas were active for the first year. During that time PIT tag detections were stored to the transceiver buffers and then submitted to PTAGIS as passive recaptures. The site became fully operational and began automated data submissions of interrogation data on February 14, 2018."
+JO2,JDA,John Day North Fish Ladder,INT,"This site monitors the north fish ladder at John day dam with antennas installed in the weir orifices and overflows of two weir walls. The antennas were installed February 2017 without dedicated communication and synchronization lines. Only the upstream weir antennas were active for the first year. During that time PIT tag detections were stored to the transceiver buffers and then submitted to PTAGIS as passive recaptures. The site became fully operational and began automated data submissions of interrogation data on February 14, 2018."
+KALA,JDA,"Kalama Falls Hatchery, WDFW",MRR,Hatchery
+KALAMR,JDA,Kalama River,MRR,River
+KLICKR,JDA,Klickitat River,MRR,River
+KLIH,JDA,Klickitat Hatchery,MRR,Hatchery
+KLR,JDA,Klickitat Riv. Floating Array,INT,"The Klickitat River Floating PIT tag array is located in the lower Klickitat River, Klickitat County, Washington.  The site consists of two arrays (upstream and downstream).  Three 10 foot antennas comprise each array.  Each array spans a width of approximately 32 feet.  Each array is fixed to a channel spanning cable that suspends the arrays on the water surface.  An MTS controller and six IS1001 ACN nodes are deployed to interrogate and record data of PIT tagged fish detected by the array."
+LAKE2C,JDA,"Lake Creek, Metolius River watershed",MRR,River
+LAKEBR,JDA,Lake Branch (tributary to West Fork Hood River),MRR,River
+LASTC,JDA,Last Creek - Clackamas Subbasin,MRR,River
+LAURLK,JDA,Laurance Lake Reservoir,MRR,Other
+LD1,JDA,Lebanon Dam South Ladder,INT,"Two instream arrays installed in the south fish ladder at Lebanon dam on the South Santiam River, a tributary to the Willamette River. The upstream array consists of three externally shielded pass-through antennas located at the ladder exit and the downstream array consists of two internally shielded pass-through antennas covering the ladder orifices of weir 7 and one unshielded cord antenna covering the center slot of weir 7. The antennas are powered by a Biomark Master Controller and IS1001 readers. The site is powered by AC power and data is collected using a cell modem. The site was originally operated by ODFW from 2015-2018 and was reinstalled in 2022."
+LD2,JDA,Lebanon Dam North Ladder,INT,"Instream array installed in the north fish ladder at Lebanon dam on the South Santiam River, a tributary to the Willamette River. A pass-through externally shielded antenna is located at the ladder exit on weir 7.  An externally shielded antenna is located at the overflow of weir 4 and an internally shielded antenna is located at the weir 4 orifice. The antennas are powered by a Biomark Master Controller and IS1001 readers. The site is powered by AC power and data is collected using a cell modem. The site was originally operated by ODFW from 2015-2018 and was reinstalled in 2022."
+LD3,JDA,Lebanon Dam Diversion Bypass,INT,"Two-antenna array mounted on the Lebanon dam diversion bypass pipe at Lebanon dam on the South Santiam River, a tributary to the Willamette River. The bypass pipe diverts fish around the dam and empties back into the river. Each antenna is connected to a Biomark IS1001 reader. The site is powered by four batteries connected to a battery switcher. The batteries are charged by on-site AC power. The data is collected with a cell modem. The site was originally operated by ODFW from 2015-2018 and was reinstalled in 2022."
+LD4,JDA,Lebanon Dam Spillway,INT,"Array is a single line of antennas attached to the spillway wall spanning the entire length of the Lebanon Dam on the South Santiam River, a tributary of the Willamette River. All antennas are pass-over HDPE pipe antennas mounted on aluminum plates on the spillway face below the Obermeyer weir and covered with a FRP cover plate. The site is monitored by three Biomark Master Controllers, each connected to ten IS1001 readers. The site is powered by AC power. Data is collected with a cell modem. The site was originally operated by ODFW from 2015-2018 and was reinstalled in 2022."
+LEA,JDA,Leaburg Dam Combined Fishways,INT,"Leaburg Dam is located at km 56 on the McKenzie River, east of Eugene, OR.  The screened bypass diverts downstream migrants from the turbine intakes.  Dual FDX/HDX PIT tag detectors were installed in the bypass exit in December 2009.  Smolts can also pass through the spillway.  There is a fish ladder located on each bank. The antennas in the fish ladders never reported data to PTAGIS. Site was upgraded from RM310 reader boards to IS1001s in May 2016. The IS1001s were set to read FDX tags only. A third antenna was added June 2017. Site is no longer active."
+LEA,JDA,Leaburg Dam,MRR,Dam
+LEAB,JDA,Leaburg Hatchery,MRR,Hatchery
+LEABYP,JDA,LEA - Release into the Facility Bypass Flume/Pipe,MRR,IntraDamReleaseSite
+LEAFBY,JDA,LEA - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+LEATAL,JDA,LEA - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+LEB,JDA,Lebanon Dam,MRR,Dam
+LEBFBY,JDA,LEB - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+LEBLDS,JDA,LEB - Release into the south ladder trap.,MRR,IntraDamReleaseSite
+LEL,JDA,Leaburg Dam Fish Ladders,INT,"Fish Ladder detection arrays at Leaburg Dam on the McKenzie R, a tributary to the Wilammette R.  The arrays are in the east and west ladders near the upstream ladder exits.  The site includes an IS-1001-MC and four IS1001-ACN’s, cell modem, power supply and four antennas.  The antenna configuration for the West ladder consists of two full spanning pass-thru antennas, one immediately adjacent to the other.  Detection for the MC is set at both HDX and FDX detection to enable detection of Salmon/Steelhead, Bull Trout, and Lamprey.  The East Ladder has a full-spanning pass-thru antenna and a ladder-window antenna that interrogates the volume of water immediately adjacent to the viewing window located in the fish ladder.  Each configuration allows for determining system efficiency.  The antennas are all custom-built with ferrite shielding and 10 ga Litz-wire.   The site is on grid power, with battery back-up.  The site is on EWEB property, and managed by the Eugene Water and Electric Board. Site is no longer active."
+LEWCLK,JDA,"Lewis and Clark River, tributary to Youngs Bay",MRR,River
+LEWH,JDA,Lewis River Hatchery,MRR,Hatchery
+LEWIEF,JDA,East Fork Lewis River,MRR,River
+LEWISP,JDA,Lewis River Release Pond,MRR,AcclimationPond
+LEWISR,JDA,Lewis River,MRR,River
+LFF,JDA,Lyle Falls Fishway,INT,This site monitors the Lyle Falls fishway and adult trap with three antennas in the fishway channel and 10 antennas in the wet lab associated with the fish trap.
+LILYSL,JDA,"Lily Slough, Lower Columbia",MRR,Other
+LKLICR,JDA,Little Klickitat River,MRR,River
+LKR,JDA,Little Klickitat River Array,INT,"The Little Klickitat River PIT tag interrogation array is located in the Little Klickitat River, a tributary to the Klickitat River, Klickitat County, Washington.  The PIT tag array is located approximately 0.4 kilometers upstream from the confluence with the Klickitat River. The site consists of two channel spanning arrays (2x2 antenna configuration). Each array spans a width of approximately 10 meters. Antennas are fixed to the substrate in a pass-over configuration.  An MTS controller and four IS1001 ACN nodes are deployed to interrogate and record data of PIT tagged fish detected by the array."
+LMEMIS,JDA,"Little Memaloose Island, Columbia River",MRR,AvianColony
+LMILIS,JDA,"Little Miller Island, Columbia River",MRR,AvianColony
+LNSANR,JDA,Little North Santiam River,MRR,River
+LOGCC,JDA,"Logging Camp Creek, Klickitat River",MRR,River
+LOP,JDA,"Lookout Point Dam (USACE), MF Willamette River",MRR,Dam
+LOPTAL,JDA,LOP - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+LRH,JDA,Lewis River Hatchery Returns,INT,"The Lewis River hatchery is located on the lower Lewis River at approximately river KM 25. The hatchery includes release structures, sort facilities, and multiple ponds/raceways. The interrogation site consists of a single flat plate antenna located on the adult sorting table."
+LWL,JDA,Ltl. White Salmon NFH returns,INT,Adult fish ladder allowing passage from the Little White Salmon River into the adult holding ponds at Little White Salmon NFH. All fish captured in the ponds are sorted and may either be surplused/spawned or returned to the river via an underground tube. The tube empties into the Little White Salmon River directly below the fish ladder entrance.
+LWSALR,JDA,Little White Salmon River,MRR,River
+LWSH,JDA,Little White Salmon National Fish Hatchery,MRR,Hatchery
+LYLFAT,JDA,"Lyle Falls Adult Fish Trap, Klickitat River",MRR,TraporWeir
+MARI,JDA,Marion Forks Fish Hatchery,MRR,Hatchery
+MARIOC,JDA,"Marion Creek, tributary to North Santiam River",MRR,River
+MASON,JDA,"Mason Creek, tributary to East Fork Lewis River",MRR,River
+MCKA2C,JDA,"McKay Creek, Crooked River",MRR,River
+MCKE,JDA,McKenzie Hatchery,MRR,Hatchery
+MCKER,JDA,McKenzie River,MRR,River
+MCKESF,JDA,South Fork McKenzie River,MRR,River
+MEG,JDA,Megler Cr.-Col. R. Estuary,INT,"Megler Creek is a 2nd order stream that flows south out of the Willapa Hills into the Lower Columbia River (RKM 13) Estuary. Tidal influence extends approximately 300ft into Megler Creek from the Columbia River. The antennas span the wetted width of the channel, and are configured as separate nodes to provide directional detection/movement of tagged fish. The property is owned by the National Park Service, part of the Lewis and Clark National Historical Park. A transformer and power outlet with a meter was installed to power the set up. The site is manually downloaded monthly to a USB drive; files are stored on the CREST server."
+MEGC,JDA,"Megler Creek, tributary to Columbia River",MRR,River
+METOLR,JDA,Metolius River,MRR,River
+MFD,JDA,Mayfield Dam,MRR,Dam
+MFDFTF,JDA,Mayfield Dam Entrance to Counting House Raceways,MRR,IntraDamReleaseSite
+MFDLBN,JDA,Mayfield Dam North Louver Bay,MRR,IntraDamReleaseSite
+MFDLBS,JDA,Mayfield Dam South Louver Bay,MRR,IntraDamReleaseSite
+MFDSEP,JDA,Mayfield Dam Secondary Separator Downwell,MRR,IntraDamReleaseSite
+MHP,JDA,Merwin Hydroeletric Project,INT,"The Merwin Adult Collection Facility is located at Merwin Dam.  Adult fish enter the facility through the adult fish ladder where they are trapped and hoisted via an elevator into the sorting facility.  Fish pass through the CWT and PIT tag readers before being discharged onto a sorting table where they are examined, possibly tagged, and sorted to one of four different destinations: downstream, hatchery surplus, hatchery broodstock, upstream of Swift reservoir."
+MHP,JDA,Merwin Hydroelectric Project,MRR,Dam
+MHPFBY,JDA,MHP - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+MHPTAL,JDA,MHP - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+MILL3C,JDA,"Mill Creek, Columbia River at The Dalles, OR",MRR,River
+MILL4C,JDA,"Mill Creek, Lower Columbia River, Washington",MRR,River
+MIN,JDA,"Mine Reach of Wind River, WA",INT,"An instream interrogation system in the Wind River, WA. The system consists of a IS1001 MTS with two individual IS1001 Nodes. The two antennas are each 17 feet long and arranged in one cross-channel array. Power is provided by solar panels charging a battery bank. Downloads are manual and typically done during weekly site visits, though that interval may be longer during winter due to snow."
+MINTO,JDA,Minto Fish Facility,MRR,Hatchery
+MLAK2C,JDA,"Middle Fork Lake Creek, Metolius River watershed",MRR,River
+MLRSNI,JDA,"Miller Sands Island, Columbia River Estuary",MRR,AvianColony
+MOLALR,JDA,Molalla River,MRR,River
+MOLRNF,JDA,North Fork Molalla River,MRR,River
+MSANTR,JDA,"Middle Santiam River, Oregon",MRR,River
+MSLA2C,JDA,"Middle Fk South Fk Lake Creek, Metolius River watershed",MRR,River
+MTD,JDA,Mill Creek at The Dalles,INT,"Instream detection array approximately 2.5 km upstream of the mouth of Mill Creek and the confluence with the Columbia River.  Consisting of a Bioprobe Board connected to a FS1001M multiplexing receiver, two antennas, on grid power and a battery backup.  Antenna array consists of two antennas that span the normal high water mark and are secured to the substrate for pass-over detection.  Site operates year round.  Site is on private land."
+MUDDYP,JDA,Muddy River Acclimation Pond,MRR,AcclimationPond
+MUDDYR,JDA,Muddy River - tributary to Lewis River,MRR,River
+MULTCH,JDA,"Multnomah Channel, Columbia River",MRR,River
+MULTMA,JDA,"Multnomah Channel Marsh, Lower Wilamette",MRR,Other
+MVF,JDA,Moving Falls Fish Ladder,INT,The interrogation site is located in a fish ladder at a site known as Moving Falls on the West Fork of the Hood River. The ladder is a vertical slot type construction. Two antennas are installed in a pass through configuration at two of the vertical slots at the upstream end of the ladder. At the upstream terminus of the ladder there is an adult trap. The trap is operated most of the year but is closed seasonally in the winter months. When the trap is not operated fish passage in the ladder is maintained except during extreme high water events. The antennas are controlled by two synced Biomark IS1001 ACN readers. Power is provided by solar panel(s) charging a deep cycle battery bank. Interrogation data is manually downloaded periodically.
+MVFLAP,JDA,"Moving Falls Acc. Ponds, WF Hood River",MRR,AcclimationPond
+NEALC,JDA,"Neal Creek, tributary to Hood River (OR)",MRR,River
+NSANTR,JDA,"North Santiam River, Oregon",MRR,River
+NSB,JDA,N Santiam at Upper Bennett Dam,INT,"Instream detection array on the North Santiam River, a tributary to the Wilammette River. The array is located in the fish ladder at Upper Bennet Dam near the town of Stayton. The site is monitored by an IS-1001-MC and two IS1001-ACNs. The hardware at the site includes the master controller, two ACNs, cell modem, power supply and two antennas. The antenna configuration consists of two arrays of one antenna each. The antennas are each pass-thru anteannas located outside the only ladder exit and within the ladder in the only slot available for passage. One antenna is approximately 4.5ft x 10ft x 2in, and fixed to the outside exit of the fish ladder. This antenna is ferrite-tile shielded low profile pass-thru antenna. The other antenna is an unshielded flexible antenna secured to the downstream side of a 10ft x 2ft ladder slot, located within the ladder. It is also a pass thru antenna, approximately 8ft x 2ft x 1in, made of unshielded flexible hose. The site is powered by generator and operates year-round. The site is on the City of Salem property. Site is no longer active."
+NSCAPC,JDA,North Scappoose Creek,MRR,River
+NSM,JDA,Minto Dam Ladder N Santiam R,INT,"Fish Ladder detection array at the Minto Dam Fish Collection Facility on the North Santiam River, a tributary to the Wilammette River near the town of Gates, OR. The site is monitored by an IS-1001-MC and five IS1001-ACN’s. The hardware at the site includes the master controller, 5x ACN’s, cell modem, power supply and five antennas. The antennas are all custom-built pass-thru antennas with ferrite shielding and 10 ga Litz-wire (the Flume Antennas are 12 ga ribbon wire). Two antennas are side by side located within the collection flume, one antenna is near the midpoint of the ladder near the powerhouse, and two antennas are on the downstream end of the ladder near the entrance at the North Santiam River. The site is powered by grid power, with battery back-up and a charging switch for alternating battery-banks. The site is on Federal property managed by the Portland District US Army Corps of Engineers.  The collection facility is managed by the Oregon Department of Fish and Wildlife. Site is no longer active."
+NSS,JDA,North Santiam at Stayton Canal,INT,"Instream detection array on the North Santiam River, a tributary to the Wilammette River. The array is located in the screened diversion canal located near the town of Stayton, and downstream of Upper Bennet Dam and Lower Bennet Dam. The site is monitored by an IS-1001-MC and two IS1001-ACNs. The hardware at the site includes the master controller, two ACNs, cell modem, power supply and two antennas. The antenna configuration consists of two arrays of one antenna each. The antennas are each pass-thru anteannas located in the head-box at the apex of the screened diversion channel. One antenna is approximately 3ft x 3ft x 2in, and fixed in the canal as a ferrite-tile shielded low profile pass-thru antenna. The other antenna is removable, and placed in the stop-log slot for the head-box. It is also a pass thru antenna, approximately 3ft x 3ft x 3in, made of unshielded conduit.  The site is grid powered and operates year-round. The site is on the City of Salem property, fenced and monitored by video. Site is no longer active."
+OCHOCC,JDA,"Ochoco Creek, Crooked River",MRR,River
+ONTAC,JDA,"Oneonta Creek, Lower Columbia",MRR,River
+PANT2C,JDA,"Panther Creek (trib. to Wind River, Wash.)",MRR,River
+PARK,JDA,Parkdale Hatchery,MRR,Hatchery
+PD5,JDA,Columbia River Estuary rkm 62,INT,"In-river detection system located at river km 62 in the Columbia River Estuary. The array (PD5) consists of four 8ft x 20ft antennas (3 upstream, 1 downstream of the dike) and two 8ft x 10 ft stacked antennas (upstream of dike) and is operated by NOAA Fisheries, targeting detections of migrating juvenile and adult salmonids. The array (PD5 was installed on 3/20/2023 for continuous monitoring.  The array includes a Biomark IS1001 transceiver, with an individual IS1001 reader assigned to each antenna. A solar panel array is affixed to a king piling along the dike to charge a battery bank. Remote communication will be provided via a cellular modem.  All electronics are contained to a floating barge, moored downstream of the pile dike. Antenna groups are based on orientation relative to the pile dike, with numbering starting at the downstream terminal king piling of the structure. We intend to operate this site annually from March through September."
+PD6,JDA,Columbia River Estuary rkm 68,INT,"In-river detection system consisting of seven 8ft x 20ft antennas in the Columbia River Estuary. The array is located at river km 68, is operated by NOAA Fisheries, and was installed on April 29, 2022 for continuous monitoring, targeting detections of migrating juvenile salmonids. The array includes a Biomark  IS1001 master controller, with an individual IS1001 reader assigned to each antenna. A solar panel array is affixed below USCG navigation marker 57 to charge a battery bank. Remote communication will be provided via a cellular modem.  All electronics are contained to a floating barge, moored downstream of the pile dike. Antenna groups are based on orientation relative to the pile dike, starting with the terminal king piling of the structure. We intend to operate this site annually from March through September."
+PD7,JDA,Columbia River Estuary rkm 70,INT,"In-river detection system consisting of four 8ft x 20ft antennas in the Columbia River Estuary. The array (PD7) is located at river km 70 (46.14661N, -123.379867W), is operated by NOAA Fisheries, and was installed for testing on 8 August, 2011 and later modified for continuous monitoring on 11 August, 2011. The array includes an IS1001 transceiver (firmware v1.7.1) and individual IS1001 readers. Electrical power is provided by a solar panel array with backup battery power, and remote communication is provided by a cellular modem. Antenna groups are named based on their orientation relative to the pile dike starting with Configuration Sequence 180. Prior configurations were named based on orientation relative to flow."
+PD8,JDA,Columbia River Estuary rkm 82,INT,"In-river detection system located at river km 82 in the Columbia River Estuary. The array (PD8) consists of four 8ft x 20ft antennas (3 upstream and 1 downstream of the dike) and two 8ft x 10 ft antennas (upstream of dike) and is operated by NOAA Fisheries, targeting detections of migrating juvenile and adult salmonids. The array (PD8) was installed on 3/23/2023 for continuous monitoring, and includes a Biomark IS1001 transceiver with an individual IS1001 reader assigned to each antenna. A solar panel array is affixed to a piling along the dike to charge a battery bank. Remote communication will be provided via a cellular modem.  All electronics are contained to a floating barge, moored downstream of the pile dike. Antenna groups are based on orientation relative to the pile dike, with numbering starting at the downstream terminal king piling of the structure. We intend to operate this site annually from March through September."
+PEL,JDA,Pelton Dam Ladder - Deschutes,INT,"The ladder at PGE's Pelton Dam on the Deschutes River (rkm 328.161) is used as a rearing pond for spring Chinook salmon, and as a trapping facility for returning adults. This interrogation site monitors the volitional release from the ladder as well as the weirs downstream of the trap for adult trap collection of broodstock and trap-and-haul operations. It consists of two antennas located on adjacent weirs in the lower part of the ladder (for juvenile/smolt detections), and two antennas on a ladder-weir that monitor adult returns.  Each antenna is a custom built loop that monitors passage at the concrete weir. The antennas for juvenile detection cover 100% of the flow as there is no flow over the top of the weir.  In addition, the antennas downstream of the trap also cover 100% of the flow on one weir. The transceiver at the site is a IS-1001-MC that is networked to individual IS-1001s located near each weir. The site is operated on grid power with automated downloads daily. Typical times of operation for the juvenile antennas (Antennas 1 and 2) are from April 1 to May 30th.  While the adult ladder antennas (Antennas 3 and 4) operate year-round."
+PELTON,JDA,Pelton Ladder (Deschutes River) Acclimation Pond,MRR,AcclimationPond
+PER,JDA,Pelton Reregulating Dam,MRR,Dam
+PERAFT,JDA,PER - Adult Fish Trap,MRR,IntraDamReleaseSite
+PERTAL,JDA,PER - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+PIER3,JDA,"Pier 3 boat yard, Port of Astoria, OR ",MRR,AvianColony
+PINHC,JDA,Pinhead Creek - Clackamas Subbasin,MRR,River
+PWD,JDA,"Powerdale Dam, Hood River",MRR,Dam
+PWDFBY,JDA,PWD - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+RAMSYC,JDA,"Ramsey Creek, Fifteen Mile Creek Watershed",MRR,River
+RATTLC,JDA,Rattlesnake Creek,MRR,River
+RBF,JDA,Round Butte Fish Xfer Facility,INT,Round Butte Dam Fish Transfer Facility
+RCX,JDA,Rattlesnake Creek Flat Plates,INT,"This in-stream interrogation system is located on Rattlesnake Creek, in the White Salmon River Basin on the Lower Columbia River above Bonneville Dam."
+RGRSPC,JDA,"Roger's Spring Creek, Middle Fork Hood River",MRR,River
+RICEIS,JDA,Rice Island,MRR,AvianColony
+ROCKC,JDA,"Rock Creek, tributary to East Fork Lewis River",MRR,River
+ROU,JDA,Round Butte Dam,MRR,Dam
+ROUFTF,JDA,ROU - Release into the Fish Transfer Facility,MRR,IntraDamReleaseSite
+ROUTAL,JDA,ROU - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+RSSNIS,JDA,"Russian Island, Columbia River Estuary",MRR,Other
+SANTIR,JDA,"Santiam River, Oregon",MRR,River
+SBSLMA,JDA,"Steamboat Slough Marsh, Lower Columbia",MRR,Other
+SCAPPB,JDA,"Scappoose Bay, Oregon",MRR,River
+SCAPPC,JDA,Scappoose Creek,MRR,River
+SCHAFC,JDA,"Schafer Creek, Klickitat River Basin",MRR,River
+SCL,JDA,Spring Creek NFH Adult Ladder,INT,Fish ladder allowing passage from the Columbia River into the adult holding ponds at Spring Creek NFH.  The adult fish ladder at Spring Creek NFH is operational from late August through early October annually.  The detector is approximately 60 meters up the adult ladder and is comprised of three antennas located in separate ladder cells.  All fish entering the facility from the Columbia pass through the antennas and after ladder navigation are sorted and may either be either surplused or spawned.  Some captured adults are returned to the river from the spawn collections (adults with adipose fin present and no coded wire tag).  Released fish are passed through a tube that empties into the Columbia River directly upstream the fish ladder entrance.
+SERH,JDA,"Sea Resources Hatchery (Chinook River, Washington)",MRR,Hatchery
+SFL,JDA,Shipherd Falls Ladder,INT,"This site is located at Shipherd Falls adult fish ladder, on the Wind River near Carson, WA. The PIT tag interrogation antennas are installed in series in the second and third slots below the adult fish trap. Antenna F1 is upstream of antenna F2. All fish migrating up the fishway pass through these antennas prior to reaching the adult fish trap. When both the interrogation site and trap are in operation, tagged fish that successfully pass the antennas and enter the trap will therefore be logged as interrogations and recaptures in the trap. When the trap is out of operation (May-early June), the tagged fish will be interrogated only. During the winter, when the trap is in operation but the antennas are not, PIT-tagged fish will be reported as recaptured only."
+SHERFT,JDA,"Sherars Falls Fishway Trap, Deschutes River",MRR,TraporWeir
+SHK,JDA,Shitike Creek PIT Array,INT,"The Shitike Creek PIT tag array is a fifty foot array, consisting of three flat panel antenna (one 10 foot and two 20 foot) installed end to end across the entire stream channel. The array was installed during the week of February 24, 2014 by BIOMARK and CTWSRO personnel. The array is located across the tailout of a pool created by a bridge (known as the Scale Bridge) that is used by logging truck to deliver lumber to the Warm Springs Mill."
+SHP,JDA,Swift Hydroelectric Project,INT,"Fish enter the facility via a floating surface collector where they are sorted by size.  Juvenile fish are either shunted directly to a holding tank to await transport downstream of Merwin Dam or they are sent to a sampling table where they are examined, possibly tagged, and sorted to either upstream of the Swift reservoir or downstream of Merwin Dam. All fish diverted to either tank pass through a PIT tag detector.  There are two identical holding and sampling areas on the collector in which fish can travel.  These areas are referred to the Port Side and Starboard Side. The port antenna was identified as 01 and the starboard antenna was 02. In February 2018 a third antenna was installed just above the sorting rack with an antenna ID of 01, and the port and starboard antennas were changed to 03 and 02, respectively."
+SHP,JDA,Swift Hydroelectric Project,MRR,Dam
+SHPFBY,JDA,SHP - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+SHPTAL,JDA,SHP - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+SHTIKC,JDA,"Shitike Creek, Deschutes River Basin",MRR,River
+SID,JDA,Sauvie Island Dairy Creek,INT,"Instream detection array in Dairy Creek, an offchannel feeder to Sturgeon Lake, on Sauvie Island of the Columbia River. Array consists of a master controller and eight antennas, each with Biomark 24v-IS1001s. Three antenna arrays span the creek up to the normal high water mark. Five antennas are secured to the substrate for pass-over detection.  Three sail antennas in the downstream most array are secured to the substrate for vertical interrogation of the water column (to 10 ft deep), and can pivot in 360 degrees for tide cycle changes.  The combined antennas provide three separate arrays.  Site is grid powered and operates year-round. Site is on private land."
+SKAM,JDA,"Skamania Hatchery, WDFW",MRR,Hatchery
+SKIPAR,JDA,Skipanon River,MRR,River
+SKIPAW,JDA,Skipanon Waterway,MRR,River
+SND,JDA,Sandtrap Acclimation Site,INT,"Three antennas are installed in the outflow channel of the East Fork Irrigation District’s Sandtrap facility, which returns water and fish bypassed at irrigation ditch screens to the East Fork Hood River. The Sandtrap is also used as an acclimation and release site for hatchery winter steelhead smolts."
+SNDTAP,JDA,"Sandtrap Acc. Ponds, EF Hood River",MRR,AcclimationPond
+SNYDEC,JDA,"Snyder Creek, Klickitat River",MRR,River
+SPRC,JDA,Spring Creek National Fish Hatchery,MRR,Hatchery
+SSANTR,JDA,"South Santiam River, Oregon",MRR,River
+SUC,JDA,"Summit Creek, Klickitat",INT,"The Summit Creek PIT tag interrogation array is located in Summit Creek, a tributary to the Klickitat River, Klickitat County, Washington.  The PIT tag array is located approximately 400 m upstream from the confluence with the Klickitat River.  The site consists of two channel spanning arrays (2 x 1 antenna configuration).  Each array spans a width of 4.5 m.  Two IS1001 ACN nodes (in a master/slave configuration) were deployed to interrogate and record data of PIT tagged fish detected by the array.  Directions to the site from Glenwood, WA are as follows.  Head east on the Glenwood Hwy from Division St. 11.7 mile and turn left onto Trout Creek Rd.  Drive 3.4 miles and turn turn right onto BIA Road 207.  Drive 0.20 miles and park at the shoulder along the right side of the road.  Take trail approximately 150 feet to Summit Creek."
+SUJ,JDA,Sullivan Dam Juvenile,INT,The Sullivan Dam smolt bypass trap is located in the Sullivan Dam powerhouse (operated by PGE) at Willamette Falls on the Willamette River. Site is no longer active.
+SUL,JDA,"Sullivan Hydroelectric Plant, Willamette Falls",MRR,Dam
+SULBPS,JDA,SUL - Release into the PIT-Tag Diversion System between the Diversion Gate and the furthest downstream PIT-Tag Detector,MRR,IntraDamReleaseSite
+SULBYP,JDA,SUL - Release into the Facility Bypass Flume/Pipe,MRR,IntraDamReleaseSite
+SULFBY,JDA,SUL - Release into the Forebay within 0.5 km upstream of Dam,MRR,IntraDamReleaseSite
+SULFDS,JDA,SUL - Release above the Fish Diversion Screen,MRR,IntraDamReleaseSite
+SULSEP,JDA,SUL - Release into the Flume downsteam of the Collection/Bypass Gate or into the Separator,MRR,IntraDamReleaseSite
+SULTRB,JDA,SUL - Release into Turbine(s),MRR,IntraDamReleaseSite
+SUMI3C,JDA,"Summit Creek, Klickitat River Basin",MRR,River
+SWALEC,JDA,Swale Creek - tributary to Klickitat River,MRR,River
+SWC,JDA,Swale Creek Array,INT,"The Swale Creek PIT tag interrogation array is located in Swale Creek, a tributary to the Klickitat River, Klickitat County, Washington.  The PIT tag array is located approximately 100 m upstream from the confluence with the Klickitat River.  The site consists of three channel spanning arrays (3 x 2 antenna configuration).  Each array spans a width of 12 m.  An MTS controller and 6 IS1001 ACN nodes were deployed to interrogate and record data of PIT tagged fish detected by the array.  Directions to the site from the Columbia River are as follows.  Turn onto Hwy 142 from Hwy 14.  Turn right onto Horseshoe Bend Rd. from Hwy 142 at road mile 16.5.  Drive a 0.10 miles and turn left on to Wahkiakus Park Rd.  Park at the end of the road (approximately 150 m).  Site is located approximately 60 m upstream from parking area."
+SYC,JDA,Snyder Creek PIT Tag Array,INT,"The Snyder Creek PIT tag interrogation array is located in Snyder Creek, a tributary to the Klickitat River (RKM 22.8) (Klickitat County, Washington). The PIT tag array is located approximately 1.3 kilometers upstream from the confluence with the Klickitat River. The site consists of two 6.1 meter channel spanning arrays (one upstream and one downstream). The antennas are fixed to the substrate in a pass-over configuration. Two IS 1001 Antenna Control Nodes (ACN’s) in master/secondary master configuration, operate two antennas and record PIT tagged fish detected by the array. The site is powered by 6 12 volt batteries and has no charging infrastructure. Directions to the PIT array site from the mouth of the Klickitat at the Columbia River are as follows: Turn north onto HWY 142 from HWY 14. Proceed north on HWY 142 14 miles to an unmarked gravel road on the left side of the HWY just passed the 14 mile marker. From this point, proceed 0.2 miles to a gate. From this gate, proceed another 0.7 miles to another gate. From this gate, proceed 0.2 miles to arrive at the PIT array site."
+TANNEC,JDA,"Tanner Creek, Columbia River below Bonneville Dam",MRR,River
+TBRKFK,JDA,"Table Rock Fork, tributary to Molalla River",MRR,River
+TC4,JDA,Trout Creek at 43 Road Bridge,INT,"An instream interrogation system consisting of two antenna arrays at rkm 11.0 of Trout Creek, a tributary of the Wind River, WA. The site is at the bridge where Forest Road 43 crosses Trout Creek. Each antenna array has three 20-foot antennas covering a total of 60 feet, which spans the wetted area of the stream at most flows. The transceiver is a FS1001M. Power is provided by solar panels charging a battery bank. Downloads are manual and typically done during weekly site visits, though that interval may be longer during winter due to snow."
+TCM,JDA,Tryon Creek Mouth,INT,TCM is an in-stream detection system consisting of four PIT arrays about 25 meters apart located near the mouth of Tryon Creek in Lake Oswego. Each array consists of one antenna that spans the creek width during normal flows. All arrays are oriented as pass through antennas except for F2 which is a pass over. Site is no longer active.
+TD1,JDA,The Dalles East Fish Ladder,INT,This site monitors the east fish ladder at The Dalles Dam. Two antennas are installed at the counting window where the channel is narrowed to allow fish to be seen through the counting window.
+TD2,JDA,The Dalles North Fish Ladder,INT,This site monitors the north fish ladder at The Dalles Dam. Two antennas are installed at the counting window where the channel is narrowed to allow fish to be seen through the counting window.
+TDA,JDA,The Dalles Dam,MRR,Dam
+TDAICE,JDA,TDA - Release into the Ice/Trash Sluiceway,MRR,IntraDamReleaseSite
+TDAMRT,JDA,TDA - Mortality Recovery,MRR,IntraDamReleaseSite
+TDASPF,JDA,TDA - Release into the Forebay within 0.5 km upstream of Spillway,MRR,IntraDamReleaseSite
+TDASPL,JDA,TDA - Release directly into Spill Bay(s),MRR,IntraDamReleaseSite
+TDASPT,JDA,TDA - Release into the Tailrace within 0.5 km downstream of Spillway,MRR,IntraDamReleaseSite
+TDATAL,JDA,TDA - Release into the Tailrace within 0.5 km downstream of Dam,MRR,IntraDamReleaseSite
+TDATRB,JDA,TDA - Release into Turbine(s),MRR,IntraDamReleaseSite
+TDBPAT,JDA,BPA towers in The Dalles Dam forebay,MRR,AvianColony
+TDLPI,JDA,Lone Pine Island and associated unnamed islands near The Dalles Dam,MRR,AvianColony
+TDTMI,JDA,Three Mile Island group near The Dalles Dam,MRR,AvianColony
+TENNAI,JDA,"Tenasillahe Island, lower Columbia River",MRR,Other
+TEPEEC,JDA,"Tepee Creek, Klickitat River Basin",MRR,River
+TEPEEF,JDA,"East Fork Tepee Creek, Klickitat River Basin",MRR,River
+TOUT,JDA,"North Toutle Hatchery, WDFW",MRR,Hatchery
+TOUTLR,JDA,Toutle River,MRR,River
+TOUTNF,JDA,North Fork Toutle River,MRR,River
+TR1,JDA,Lower Trout Cr - Deschutes,INT,Lower Trout Creek PIT tag array is located at RKM 0.7 upstream from the confluence with the Deschutes River on privately owned land.  This site consists of six 20ft long lay flat antennas. The antennas are orientated with 2 antennas orientated end to end to make up three 40 foot wide antenna rows spaced 10 feet apart to ascertain directionality of fish. Antenna number orientation is based on facing upstream. The furthest upstream antenna on the left is antenna number 1 the furthest upstream antenna on the right is number 2. Middle row left antenna is number 3 Middle row right antenna is number 4. Bottom (furthest downstream) row left antenna is number 5 and bottom right antenna is number 6.
+TR2,JDA,Trout/Antelope Cr - Deschutes,INT,Trout and Antelope Creek PIT tag array is located at RKM 20.7 upstream from the confluence with the Deschutes River on privately owned land. This site consists of six 20ft long lay flat antennas. The antennas are orientated with 3 antennas in Trout Creek and 3 antennas in Antelope Creek. In each creek the antennas are staggered in the active channel about 10 feet apart to ascertain directionality of fish. Antenna number 1 is the furthest upstream antenna and number 3 the bottom antenna on Trout Creek. On Antelope Creek the upstream antenna is number 4 and the downstream is number 6.
+TRA,JDA,Trout Creek Auxillary Site,INT,"An instream interrogation site in Trout Creek, WA at rkm 2. This system has one 20 ft antenna that spans the thalweg and an IS1001 transceiver on grid power. Transceiver ID is A1.  This site is in close proximity to TRC (about 150 m downstream) and its primary purpose is to provide additional data to estimate detection efficiency of downstream moving Steelhead parr at TRC. This site will also provide additional detections of both juvenile and adult Steelhead for life history and population studies."
+TRC,JDA,"Trout Creek, Wind River",INT,"The Trout Creek interrogation system is located at river km 2 on Trout Creek, in the Wind River (WA.) Basin above Hemlock Lake. The site was originally installed and maintained by USGS and located at river km 4; operational responsibilities were transferred to WDFW in December, 2009. USGS resumed operational responsibilities and moved the site 2 km downstream in October 2012. The antenna configuration remained the same, with three arrays of two 20-ft antennas each."
+TROU2C,JDA,"Trout Creek, Deschutes River Watershed",MRR,River
+TROUTC,JDA,"Trout Creek (trib. to Wind River, Wash.)",MRR,River
+TRYOC,JDA,"Tryon Creek, tributary to Willamette River",MRR,River
+TSUGCR,JDA,"Tusgawa Creek, tributary to Mason Creek",MRR,River
+TTOWER,JDA,"Transmission towers near Troutdale, OR",MRR,AvianColony
+TURNCR,JDA,"Turner Creek, tributary to Coweeman River",MRR,River
+TWX,JDA,Estuary Towed Array (Exp.),INT,"The TWX site is located in the upper Columbia River estuary, between Eagle Cliff (rkm 84) and the west end of Puget Island (rkm 66). This site is sampled annually by NOAA Fisheries during the spring and summer outmigration of juvenile salmonids. There are currently two detection systems in use. The trawl, operated since 1995, is a surface pair-trawl with a matrix of six rectangular antennas fitted into the cod end of the net. The matrix is configured with three parallel antennas in front and three in the rear, forming a corridor that allows fish to pass through while being detected by the antennas. The flexible antenna system was developed in 2015 and is a modular array, consisting of up to twelve rectangular antennas, connected side-by-side in a vertical orientation. These are constructed of manufactured antenna cable and are also towed between two vessels. These two systems operate 3-7 days per week from mid March to mid June. An experimental barge system consisting of 12 vertical FIN antennas was tested in 2018, but removed for the 2019 season."
+VIENTC,JDA,"Viento Creek, Columbia River Gorge (OR)",MRR,River
+WAHA,JDA,"Washougal Hatchery, WDFW",MRR,Hatchery
+WALLIS,JDA,"Wallace Island, lower Columbia River near Clatskanie, OR",MRR,Other
+WARMSR,JDA,"Warm Springs River, Deschutes River Watershed",MRR,River
+WASHOR,JDA,Washougal River,MRR,River
+WASHWF,JDA,West Fork Washougal River,MRR,River
+WFF,JDA,Willamette Falls Fishway,INT,Willamette Falls Adult Fishway Site is no longer active.
+WHC,JDA,"Lwr White Creek, Klickitat Bsn",INT,"This is an instream interrogation system in White Creek (Klickitat River Basin) approximately 150 meters upstream from the mouth, consisting of six pass-over antennas (2 upstream, 2 midstream, and 2 downstream) spanning the normal stream channel."
+WHEELC,JDA,"Wheeler Canyon, tributary to Klickitat River",MRR,River
+WHITEC,JDA,"White Creek, Klickitat River Basin",MRR,River
+WHITSR,JDA,White Salmon River,MRR,River
+WHITWF,JDA,"West Fork White Creek, Klickitat River Basin",MRR,River
+WILL,JDA,Willard National Fish Hatchery,MRR,Hatchery
+WILLR,JDA,Willamette River (Archaic - replaced with reach-specific definitions),MRR,Archaic
+WILLR1,JDA,Willamette River - mouth to Willamette Falls (km 0-43),MRR,RiverSegment
+WILLR2,JDA,Willamette River - Willamette Falls to Santiam River (km 43-175),MRR,RiverSegment
+WILLR3,JDA,Willamette River - Santiam River to the confluence of the Middle and Coast forks of the Willamette River (km 175-301),MRR,RiverSegment
+WILRMF,JDA,Middle Fork Willamette River,MRR,River
+WIND2R,JDA,"Wind River, Washington",MRR,River
+WLCHIS,JDA,"Welch Island, Lower Columbia",MRR,Other
+WLT,JDA,Walterville Fish Bypass Exit,INT,The screened Walterville Fish Bypass is located 17 miles east of Eugene on the McKenzie River. The bypass is owned by Eugene Water & Electric Board and is used to divert fish before the water goes through the Walterville Dam. The site consists of pass-through antennas at the end of the exit pipe where the fish are returned to the McKenzie River. Site is no longer active.
+WOODIS,JDA,"Woody Island, Columbia River Estuary",MRR,Other
+WRA,JDA,Upper Wind River Auxillary,INT,"An instream interrogation site in the Wind River, WA at rkm 27. This system has one array comprised of one 11 ft antenna and one 20 ft antenna that span the thalweg and an IS1001 transceiver on grid power. Transceiver ID is 0B. This site is in close proximity to WRU (about 150 m downstream) and its primary purpose is to provide additional data to estimate detection efficiency of downstream moving Steelhead parr at WRU. This site will also provide additional detections of both juvenile and adult Steelhead for life history and population studies."
+WRNFMF,JDA,"North Fork, Middle Fork Willamette River",MRR,River
+WRP,JDA,Woodland Release Ponds,INT,The Woodland Release Ponds have four raceways paired in two ponds. Each pond has a single PIT tag antenna located in one of the last two (moveable) dam board slots. This site will be in operation to monitor volitional releases from the pond.
+WRU,JDA,Upper Wind River (WA) rkm 30,INT,"An instream interrogation system on the Wind River, WA. In its original configuration the site was located at river kilometer 30 near the FR3065 bridge over the Wind River and had 6 antennas in two arrays. After a flood event in December 2015 damaged all but one of the antennas, the site operated sporadically until it was relocated in October 2016 to a location 2 km downstream of its original location and reinstalled with three 20ft antennas. In September 2017, a 2nd array of three antennas was added to the site. In September of 2022, the three antennas in the downstream array were replaced with four 10ft and one 20ft antenna."
+WSH,JDA,Warm Springs Hatchery,INT,"Originally installed in 2008 with two antennas powered by an FS1001M multiplexor, this site monitors the adult fishway at Warm Springs National Fish Hatchery. In April 2018, the mux was replaced with an IS1001 master controller and dual detection mode was enabled. In June 2018, a third antenna was added to the site to monitor the lamprey passage system."
+WSPH,JDA,Warm Springs National Fish Hatchery,MRR,Hatchery
+WSR,JDA,Warm Springs River PIT Array,INT,"The Warm Springs River PIT tag array is a ninety foot array, consisting of four 20-foot and one 10-foot flat panel array installed end-to-end across the entire river channel. The array was installed during the week of August 4, 2014 by BIOMARK and CTWSRO personnel. The array is powered by a propane fueled thermo-electric generator."
+WSRAHT,JDA,Warm Springs River Rotary Screw Trap Above Hatchery,MRR,TraporWeir
+WSRMKN,JDA,Warm Springs River McKinley Arthur Screw Trap,MRR,TraporWeir
+WYCHUC,JDA,"Wychus Creek, Upper Deschutes River Basin",MRR,River
+WZDF,JDA,"Wizard Falls Hatchery, ODFW",MRR,Hatchery
+YOUNGB,JDA,"Youngs Bay, tributary to the Columbia River",MRR,River
+LMC,LMCA0,Lower Manastash Creek,INT,"LMC is located in Manastash creek 1.4 miles above the confluence to the Yakima river, 80M above the bridge at Barnes Rd. All equipment was purchased by the Kittitas County Conservation District directly from Biomark. Site was installed and will be managed by WDFW personnel. Initial configuration of the site included 3-20ft, Biomark Lite antennas, each spanning the wetted width of the creek. Antenna 1 is upstream, 2 middle, and 3 is the downstream antenna. Antennas 2 and 3 were damaged February 2016 and were replaced in February 2017 with 24 x 8 ft quadrilaterlas constructed with 1 inch PEX. Ten inch posts were used on the bottom of the creek to create a backbone for the antennas.  The posts are secured to the substrate with MR-4 anchors.  The sides of the antennas are secured using anchors on an exposed bank, clamps on trees and one t-post for antenna 3.  Antennas 2 and 3 have a complete field of detection with 24 inches of read range off the coil.  Each antenna is connected to a submersible IS1001 antenna control node which are anchored to the bank. The exciter cable runs 120ft upstream along the left bank to the IS1001-MTS, secured in an enclosure. Grid power is being used to charge the 4-12V batteries located in a Jo-Box under the enclosure."
+LMC,LMCB0,Lower Manastash Creek,INT,"LMC is located in Manastash creek 1.4 miles above the confluence to the Yakima river, 80M above the bridge at Barnes Rd. All equipment was purchased by the Kittitas County Conservation District directly from Biomark. Site was installed and will be managed by WDFW personnel. Initial configuration of the site included 3-20ft, Biomark Lite antennas, each spanning the wetted width of the creek. Antenna 1 is upstream, 2 middle, and 3 is the downstream antenna. Antennas 2 and 3 were damaged February 2016 and were replaced in February 2017 with 24 x 8 ft quadrilaterlas constructed with 1 inch PEX. Ten inch posts were used on the bottom of the creek to create a backbone for the antennas.  The posts are secured to the substrate with MR-4 anchors.  The sides of the antennas are secured using anchors on an exposed bank, clamps on trees and one t-post for antenna 3.  Antennas 2 and 3 have a complete field of detection with 24 inches of read range off the coil.  Each antenna is connected to a submersible IS1001 antenna control node which are anchored to the bank. The exciter cable runs 120ft upstream along the left bank to the IS1001-MTS, secured in an enclosure. Grid power is being used to charge the 4-12V batteries located in a Jo-Box under the enclosure."
+LMT,LMTA0,Lower Mainstem Teanaway River,INT,"The lower Teanaway pit tag array was installed in 2010 near the mouth of the Teanaway river, under the HWY 10 bridge .  The site had MUX with 2 rows of 3-20’ schedule 80 PVC antennas and used solar panels to generate power.  After an historic flow event in the fall of 2015 the decision was made to relocate the site to a more stable location and upgrade the equipment with more durable HDPE antennas and IS1001 readers and controller.  In October of 2018, the site was relocated 200’ below Lambert bridge, 5 miles east of Cle Elum Washington (47.174326, -120.836400).  The IS1001 MTS is powered by a 200 Ah 24V battery bank charged with a 24V, 8A Interacter charger which is connected to grid power.  There are two CAN bus trunk lines ~60’ long that are connected to the upper and lower rows of ACNs.  The submersible enclosures for the IS1001s were constructed by Yakama Nation Fisheries and consist of schedule 40 PVC with various fittings.  The submersibles were pressure tested to ensure a water tight enclosure.  They are located 8’ below each antenna and are daisy chained together.  Hydrovolt plugs are located between each submersible for the CAN bus cabling  and from submersible to antenna allowing each component to detatch under extreme flow conditions.  The CAN bus cabling is routed in a straight line 8’ below each row of antennas and is secured to 3/8” stainless steel cable using zip ties.  The stainless steel cable is secured to the substrate with MR-4 anchors, ~10’ apart.  Both rows of antennas consist of 3, 25’X30” HDPE flat plates constructed by Yakama Nation spanning the entire channel under most flow conditions.  The antennas are secured to the substrate using MR-4 anchors and a combination of NRS and ratchet straps. The site was installed in July 2018 by WDFW and Yakama Nation staff and started collecting data on 10/15/2018 at 13:15."
+NFTEAN,LMTA0,North Fork Teanaway River,MRR,River
+TEANAR,LMTA0,Teanaway River,MRR,River
+TEANWF,LMTA0,West Fork Teanaway River,MRR,River
+LMT,LMTB0,Lower Mainstem Teanaway River,INT,"The lower Teanaway pit tag array was installed in 2010 near the mouth of the Teanaway river, under the HWY 10 bridge .  The site had MUX with 2 rows of 3-20’ schedule 80 PVC antennas and used solar panels to generate power.  After an historic flow event in the fall of 2015 the decision was made to relocate the site to a more stable location and upgrade the equipment with more durable HDPE antennas and IS1001 readers and controller.  In October of 2018, the site was relocated 200’ below Lambert bridge, 5 miles east of Cle Elum Washington (47.174326, -120.836400).  The IS1001 MTS is powered by a 200 Ah 24V battery bank charged with a 24V, 8A Interacter charger which is connected to grid power.  There are two CAN bus trunk lines ~60’ long that are connected to the upper and lower rows of ACNs.  The submersible enclosures for the IS1001s were constructed by Yakama Nation Fisheries and consist of schedule 40 PVC with various fittings.  The submersibles were pressure tested to ensure a water tight enclosure.  They are located 8’ below each antenna and are daisy chained together.  Hydrovolt plugs are located between each submersible for the CAN bus cabling  and from submersible to antenna allowing each component to detatch under extreme flow conditions.  The CAN bus cabling is routed in a straight line 8’ below each row of antennas and is secured to 3/8” stainless steel cable using zip ties.  The stainless steel cable is secured to the substrate with MR-4 anchors, ~10’ apart.  Both rows of antennas consist of 3, 25’X30” HDPE flat plates constructed by Yakama Nation spanning the entire channel under most flow conditions.  The antennas are secured to the substrate using MR-4 anchors and a combination of NRS and ratchet straps. The site was installed in July 2018 by WDFW and Yakama Nation staff and started collecting data on 10/15/2018 at 13:15."
+LNR,LNR,Lower Naches River,INT,"This site is a permanent instream PIT tag detection system located at rkm 5.3 on the lower Naches river, 700 meters below Nelson dam. Prior to 10/29/2018, the site consisted of one row of five 28 ft x 3 ft flexible antennas mounted to wooden 2 X 4 backbones and anchored to the riverbed with MR-4 anchors.  Due to extreme flow conditions in the Naches river, 3 inch HDPE antennas were constructed by Yakama Nation Fisheries to replace the flexible antennas. An IS1001 MTS was installed to replace the Qube.  The 3-wire cable was replaced with CAN bus with a 100 ft trunk line running to ACN #5.  All IS1001s are daisy chained together with hydrovolt plugs to allow removal/replacement of individual submersible enclosures and antennas.  Five 25 ft x 31 inch HDPE antennas were installed using the existing MR-4 anchors. Additional anchors were installed to secure the IS1001 enclosures that are anchored 8 ft below the row of antennas.  The site is powered with a 5060 Thermo-electric generator fueled with portable propane tanks."
+LWC,LWCA0,Lower Wenas Creek,INT,"LWC is located in Wenas Creek about 2 RKMs upstream of the confluence with the Yakima River on property owned by the Bureau of Reclamation.  The site was constructed,  installed and  maintained by a collaborative effort between Yakama Nation Fisheries, Bureau of Reclamation and USFWS.  The site consists of three 20 ftx 8ft pass-through antennas that span the entire channel under most flow conditions.  Antennas and IS1001s are separated 8 ft and are connected using hydrovolt plugs. Pelican cases secure each IS1001 ACN on the left bank.  IS1001s are daisy chained together with CAN bus cable and hydrovolt plugs.  One CAN bus cable is connected to ACN #3 and is ~60 ft in length.  An IS1001 MTS is used to receive data from ACNs and is housed inside of a metal job box.  Solar panels and a 210 Ah battery bank are used to power the site."
+LWC,LWCB0,Lower Wenas Creek,INT,"LWC is located in Wenas Creek about 2 RKMs upstream of the confluence with the Yakima River on property owned by the Bureau of Reclamation.  The site was constructed,  installed and  maintained by a collaborative effort between Yakama Nation Fisheries, Bureau of Reclamation and USFWS.  The site consists of three 20 ftx 8ft pass-through antennas that span the entire channel under most flow conditions.  Antennas and IS1001s are separated 8 ft and are connected using hydrovolt plugs. Pelican cases secure each IS1001 ACN on the left bank.  IS1001s are daisy chained together with CAN bus cable and hydrovolt plugs.  One CAN bus cable is connected to ACN #3 and is ~60 ft in length.  An IS1001 MTS is used to receive data from ACNs and is housed inside of a metal job box.  Solar panels and a 210 Ah battery bank are used to power the site."
+MC1,MCN,McNary Oregon Shore Ladder,INT,This site monitors the Oregon shore fish ladder at McNary Dam with antennas in weir orifices below the counting window and two antennas at the counting window.
+MC2,MCN,McNary Washington Shore Ladder,INT,This site monitors the Washington shore fish ladder at McNary Dam with antennas in weir orifices below the counting window and two antennas at the counting window.
+MCJ,MCN,McNary Dam Juvenile,INT,"This site monitors the McNary Dam smolt bypass and sampling facility. The site operates seasonally for juvenile outmigration and includes antennas in the full flow bypass flume that is often active before and after the sampling facility each year. McNary was a transportation site until 2013. Separation by Code (SbyC) is available to allow researchers to selectively divert PIT-tagged fish. When transportation was conducted from McNary Dam, SbyC acted on all PIT-tagged fish by default to return them to the river, rather than be collected for transportation with untagged run-of-river fish. Researchers could use SbyC to override that default action and instead allow PIT-tagged fish to be treated like the untagged population."
+MCN,MCN,McNary Dam,MRR,Dam
+PRA,PRAB0,Priest Rapids Adult,INT,Priest Rapids Dam Adult Fishways (both)
+PRO,PRO,Prosser Diversion Dam Combined,INT,This site monitors the (three) fish ladders and juvenile sampling facility at Prosser Dam. Each ladder has two antennas installed at the counting window. The juvenile sampling facility has antennas installed downstream of the separator and at the exit from the sample room.
+PRO,PRO,"Prosser Diversion Dam, Yakima River",MRR,Dam
+ROZ,ROZA0,Roza Diversion Dam (Combined),INT,"This site monitors the fish ladder and part of the west roller-gate spillway at Roza Dam. Three antennas are in notched weirs of the fish ladder, which was previously monitored under site code RZF. One 5ft by 2ft flat plate antenna is installed on the overflow drum of the spillway."
+ROZ,ROZB0,Roza Diversion Dam (Combined),INT,"This site monitors the fish ladder and part of the west roller-gate spillway at Roza Dam. Three antennas are in notched weirs of the fish ladder, which was previously monitored under site code RZF. One 5ft by 2ft flat plate antenna is installed on the overflow drum of the spillway."
+SAT,SATA0,Lower Satus Creek,INT,"SAT is a passive in-stream interrogation system consisting of one row of 3 antennas and a second row of 2 antennas spanning the width of Satus Creek. The site is located approximately 1700 meters upstream from the confluence of Satus Creek with the Yakima River. The location is 900 meters east and 500 meters north of the intersection of State Route 22 and Satus Longhouse Road in Yakima County, Washington, within the Yakama Reservation. Antennas and enclosures were built and installed by Yakama Nation staff.  The antennas were secured to the substrate using MR4 anchors, NRS straps and ratchet straps.  IS1001 readers were placed inside of submersible enclosures and anchored to the substate 6-8ft below each antenna. The IS1001 ACNs are daisy chained together with CAN bus and routed back to a metal job box where the IS1001 MTS is located. The site is powered by a 5060 TEG."
+SAT,SATB0,Lower Satus Creek,INT,"SAT is a passive in-stream interrogation system consisting of one row of 3 antennas and a second row of 2 antennas spanning the width of Satus Creek. The site is located approximately 1700 meters upstream from the confluence of Satus Creek with the Yakima River. The location is 900 meters east and 500 meters north of the intersection of State Route 22 and Satus Longhouse Road in Yakima County, Washington, within the Yakama Reservation. Antennas and enclosures were built and installed by Yakama Nation staff.  The antennas were secured to the substrate using MR4 anchors, NRS straps and ratchet straps.  IS1001 readers were placed inside of submersible enclosures and anchored to the substate 6-8ft below each antenna. The IS1001 ACNs are daisy chained together with CAN bus and routed back to a metal job box where the IS1001 MTS is located. The site is powered by a 5060 TEG."
+SM1,SM1A0,Simcoe Creek at Stephensen Rd,INT,Simcoe Creek at Stephensen road is located on Simcoe Creek the largest tributary to Toppenish Creek.  This tributary converges with Toppenish Creek at about River km 50.  The site is located about 100 meters downstream from the Stephensen Rd. bridge about 12 KM upstream from the mouth.  The array includes 2 (upstream and downstream) 20ft long Biomark Lite pass by antennas each spanning the entire width of the creek.  100 foot cables connect the antennas to the IS1001 readers.
+SM1,SM1B0,Simcoe Creek at Stephensen Rd,INT,Simcoe Creek at Stephensen road is located on Simcoe Creek the largest tributary to Toppenish Creek.  This tributary converges with Toppenish Creek at about River km 50.  The site is located about 100 meters downstream from the Stephensen Rd. bridge about 12 KM upstream from the mouth.  The array includes 2 (upstream and downstream) 20ft long Biomark Lite pass by antennas each spanning the entire width of the creek.  100 foot cables connect the antennas to the IS1001 readers.
+SUN,SUNA0,Sunnyside Instream Array,INT,"The Sunnyside instream PIT tag array is located 600M below Sunnyside dam on the Yakima river. The instream portion of the array consists of 16, 20ft PVC and HDPE flat plate antennas anchored to the substrate using M4 earth anchors. Antennas and enclosures were constructed by WDFW and Yakama Nation Fisheries. The upstream row has 8 antennas spanning the wetted width of the river during most flow conditions. The downstream row was initially installed with 3 antennas (09, 0A and 0B); the remaining 5 antennas were installed October 2016.  In July of 2018, all 8 antennas on the upper row were replaced with 4 inch, 20 ft HDPE flat plate antennas. The antennas are powered using ACN readers located just below the antennas in submersible enclosures. The Qube lite is located in a job box adjacent to a BOR building used for monitoring river conditions.  On 10/22/2018, the Qube was upgraded to a Qube 2.0. Grid power is used to run the site."
+SUN,SUNB0,Sunnyside Instream Array,INT,"The Sunnyside instream PIT tag array is located 600M below Sunnyside dam on the Yakima river. The instream portion of the array consists of 16, 20ft PVC and HDPE flat plate antennas anchored to the substrate using M4 earth anchors. Antennas and enclosures were constructed by WDFW and Yakama Nation Fisheries. The upstream row has 8 antennas spanning the wetted width of the river during most flow conditions. The downstream row was initially installed with 3 antennas (09, 0A and 0B); the remaining 5 antennas were installed October 2016.  In July of 2018, all 8 antennas on the upper row were replaced with 4 inch, 20 ft HDPE flat plate antennas. The antennas are powered using ACN readers located just below the antennas in submersible enclosures. The Qube lite is located in a job box adjacent to a BOR building used for monitoring river conditions.  On 10/22/2018, the Qube was upgraded to a Qube 2.0. Grid power is used to run the site."
+SWK,SWKA0,Lower Swauk Creek,INT,"SWK is a permanent instream PIT tag detection system located at rkm 1.8 on lower Swauk creek.  SWK was originally installed at rkm 0.5 and was operational from August of 2011-February of 2016.  The site has been relocated to reduce the number of “dip in” detections as well as alleviating antenna noise issues.  The site now consists of four rows of antennas, two 20ft HDPE flat plates and two 20ft X 8ft PEX pass-through antennas separated by ~25ft.  All four rows of antennas span the wetted width of the channel during most flow conditions.   The antennas were built by Yakama Nation and WDFW staff and installed using Manta ray MR4 anchors and NRS straps.  The antennas are powered by Biomark IS1001 ACNs daisy chained to a Biomark IS1001 MTS.  The site is connected to grid power."
+SWK,SWKB0,Lower Swauk Creek,INT,"SWK is a permanent instream PIT tag detection system located at rkm 1.8 on lower Swauk creek.  SWK was originally installed at rkm 0.5 and was operational from August of 2011-February of 2016.  The site has been relocated to reduce the number of “dip in” detections as well as alleviating antenna noise issues.  The site now consists of four rows of antennas, two 20ft HDPE flat plates and two 20ft X 8ft PEX pass-through antennas separated by ~25ft.  All four rows of antennas span the wetted width of the channel during most flow conditions.   The antennas were built by Yakama Nation and WDFW staff and installed using Manta ray MR4 anchors and NRS straps.  The antennas are powered by Biomark IS1001 ACNs daisy chained to a Biomark IS1001 MTS.  The site is connected to grid power."
+TAN,TANA0,Taneum Creek Instream,INT,"TThe interrogation site is located on Taneum Creek. From 2010 through 2016, it was located near the mouth of the creek. In 2017, the site was relocated approximately 3 km upstream near the Taneum Canal Company diversion dam and fish screen. The site is currently operating two stream-width antennas in a pass over configuration, synchronized by a Biomark IS1001 Master Controller. Each antenna is approximately 8.5 meters (28 ft) in length and 1 m (3 ft) wide. Previous configurations used a Destron-Fearing FS1001M transceiver and had from 1 to 6 antennas."
+TAN,TANB0,Taneum Creek Instream,INT,"TThe interrogation site is located on Taneum Creek. From 2010 through 2016, it was located near the mouth of the creek. In 2017, the site was relocated approximately 3 km upstream near the Taneum Canal Company diversion dam and fish screen. The site is currently operating two stream-width antennas in a pass over configuration, synchronized by a Biomark IS1001 Master Controller. Each antenna is approximately 8.5 meters (28 ft) in length and 1 m (3 ft) wide. Previous configurations used a Destron-Fearing FS1001M transceiver and had from 1 to 6 antennas."
+TOP,TOPA0,Lower Toppenish Creek,INT,"This is a passive in-stream interrogation system consisting of two rows of 3 antennas spanning the width of Toppenish Creek (see plan view below). The site is located approximately 1700 meters upstream from the confluence of Toppenish Creek with the Yakima River at rkm 130, based on 2011 aerial photography. The location is 1350 meters east and 200 meters south of the intersection of Chausee Road and Indian Church Road in Yakima County, Washington, within the Yakama Reservation."
+TOP,TOPB0,Lower Toppenish Creek,INT,"This is a passive in-stream interrogation system consisting of two rows of 3 antennas spanning the width of Toppenish Creek (see plan view below). The site is located approximately 1700 meters upstream from the confluence of Toppenish Creek with the Yakima River at rkm 130, based on 2011 aerial photography. The location is 1350 meters east and 200 meters south of the intersection of Chausee Road and Indian Church Road in Yakima County, Washington, within the Yakama Reservation."
+TP2,TP2A0,Toppenish Creek at Simcoe Ck,INT,Toppenish Creek upstream from Simcoe Creek.  Simcoe Creek is the largest tributary to Toppenish Creek at River km 50.  The PIT tag antenna array is located about 0.75 km upstream from the confluence of Toppenish Creek and Simcoe Creek.  There are a total of 4 antennas in this array with 2 crossing the creek in an upstream location and 2 crossing the stream about 10 meters downstream.  Each antenna is 25 feet long.  The generator and master controller are located on the right bank.  The IS1001 are located near the antennas in submersible pods.
+TP2,TP2B0,Toppenish Creek at Simcoe Ck,INT,Toppenish Creek upstream from Simcoe Creek.  Simcoe Creek is the largest tributary to Toppenish Creek at River km 50.  The PIT tag antenna array is located about 0.75 km upstream from the confluence of Toppenish Creek and Simcoe Creek.  There are a total of 4 antennas in this array with 2 crossing the creek in an upstream location and 2 crossing the stream about 10 meters downstream.  Each antenna is 25 feet long.  The generator and master controller are located on the right bank.  The IS1001 are located near the antennas in submersible pods.
+UMC,UMCA0,Upper Manastash Creek,INT,"The Upper Manastash in-stream pit tag array is located at 46.967935, -120.683865, just below the county bridge near the mouth of Manastash canyon. The site has two 20 ft X 24 in Biomark lite flat plate antennas both spanning the wetted width of the creek. The antennas are anchored to the substrate with MR-4 anchors. Each antenna has an IS1001 in a Biomark submersible enclosure. The enclosures are daisy-chained with 1 cable running 100 ft to the enclosure holding the IS1001 MTS. The site is hooked up to grid power and was installed by Yakama Nation and WDFW."
+UMC,UMCB0,Upper Manastash Creek,INT,"The Upper Manastash in-stream pit tag array is located at 46.967935, -120.683865, just below the county bridge near the mouth of Manastash canyon. The site has two 20 ft X 24 in Biomark lite flat plate antennas both spanning the wetted width of the creek. The antennas are anchored to the substrate with MR-4 anchors. Each antenna has an IS1001 in a Biomark submersible enclosure. The enclosures are daisy-chained with 1 cable running 100 ft to the enclosure holding the IS1001 MTS. The site is hooked up to grid power and was installed by Yakama Nation and WDFW."
+AHSH,NA,Astoria High School Hatchery,MRR,Hatchery
+BANKSL,NA,"Banks Lake, Grant County, Washington",MRR,Other
+BBC,NA,Big Beef Creek,MRR,Hatchery
+BCTRAP,NA,"Lake Washington, Bear Creek Trap",MRR,TraporWeir
+BO1,NA,Bonneville Dam PH1 (Archaic - replaced with generic BON designation),MRR,Archaic
+BO2,NA,Bonneville Dam PH2 (Archaic - replaced with generic BON designation),MRR,Archaic
+BULLC,NA,"Bull Creek, no outlet, Lemhi Subbasin",MRR,River
+BURBSL,NA,"Burbank Slough near Burbank, WA ",MRR,AvianColony
+BURL,NA,"Burley Creek Hatchery, Puget Sound",MRR,Hatchery
+CASC,NA,Cascade Hatchery (ODFW) near Cascade Locks,MRR,Hatchery
+CASS,NA,Cassimer Bar Hatchery,MRR,Hatchery
+CDP,NA,Cushman Dam Project,INT,"The Cushman Hydroelectric Project consists of two high-head dams on the North Fork Skokomish River.  Cushman Dam #1 is the upstream most dam and impounds Lake Cushman.  Cushman Dam #2 is about two miles downstream and impounds Lake Kokanee.  Initial configuration included 2 sets of PIT tag readers: one associated with a juvenile fish passage floating surface collector at Cushman Dam #1 and one in the Cushman Dam fish facility at Cushman Dam #2 following fish handling. In 2017, two antennas were installed in the net transition structure upstream of the floating surface collector.  Out migrating smolts are collected at the floating surface collector and transported to the fish facilities from where they are  released downstream of Cushman Dam #2. There is no fish passage between the two dams other than through the floating surface collector at Cushman Dam #1. Returning adults are also scanned at the fish facility at Cushman Dam #2."
+CDP,NA,Cushman Dam Project,MRR,Dam
+CHEL,NA,Chelan PUD Hatchery,MRR,Hatchery
+CHN,NA,CHALLIS DIVERSION NORTH,INT,Challis Diversion North (Diversion 27)
+CHS,NA,CHALLIS DIVERSION SOUTH,INT,Challis Diversion South (Diversion 29)
+CLRBIS,NA,Clear Lake Reservoir Bird Island,MRR,AvianColony
+CLWH,NA,Clearwater Hatchery,MRR,Hatchery
+CR2,NA,Chinook River HWY 101 Bridge,INT,"This is an in-stream interrogation system located near the tidal gates at the Hwy. 101 bridge over the Chinook River in the Columbia River Estuary near Chinook, Washington."
+CR3,NA,Chinook River at Culvert,INT,"This is an in-stream interrogation system located at a road culvert on the Chinook River in the Columbia River Estuary near Chinook, Washington."
+CRTRAP,NA,"Lake Washington, Cedar River Trap",MRR,TraporWeir
+DISOWN,NA,Original mark event information has been removed.,MRR,Programmatic
+DUWAMR,NA,"Duwamish River/Waterway, flows into Puget Sound",MRR,River
+DWOR,NA,Dworshak National Fish Hatchery,MRR,Hatchery
+EAGL,NA,Eagle Hatchery,MRR,Hatchery
+EBNK,NA,East Bank Hatchery,MRR,Hatchery
+ESX,NA,Estuary Saltwater Experiment,INT,"Salt Water & Estuary Trawl Detector. The ESX experimental saltwater trawl detector was typically deployed in the lower Columbia River estuary, downsteam of the Highway 101 bridge."
+GRAYH,NA,"Grays Harbor, WA",MRR,Other
+GRB,NA,Lower Green River Barge Puget,INT,"The purpose of this interrogation site is to detect all outmigrating juvenile salmonids leaving the Green River prior to entering the tidally influenced Duwamish. The interrogation site is a West Fork Environmental (WFE) barge array, anchored to the overhead bridge piers of Southcenter Blvd (Tukwila, WA). The barge array consists of six, 8ft WFE FINs (Fish Interrogation Nodes) suspended vertically from the barge, 4ft apart. The six FINs are grouped into two antennas, with each individual antenna containing three FINs. Two IS1001 transceivers power each antenna and are connected to a Biomark MTS-MC. Power is delivered by a 500W solar array and battery bank stored on the barge. The site is connected to a cellular modem and can be remotely downloaded. The site is operated seasonally from February through July as grant funding allows."
+GREN2R,NA,"Green River, tributary to Duwamish River, Puget Sound",MRR,River
+GRTP,NA,"Green River WDFW Screw Trap, Puget Sound",MRR,TraporWeir
+HAGE,NA,Hagerman NFH,MRR,Hatchery
+ICTRAP,NA,"Lake Washington, Issaquah Creek Trap",MRR,TraporWeir
+IRRI,NA,Irrigon Hatchery,MRR,Hatchery
+KLMTHR,NA,Klamath River,MRR,River
+KOTH,NA,Kootenay Trout Hatchery (British Columba),MRR,Hatchery
+LENLKE,NA,"Lenore Lake, WA",MRR,AvianColony
+LUNION,NA,Lake Union,MRR,Other
+LWBEAR,NA,"Bear Creek, Lake Washington below Redmond Way Bridge",MRR,Other
+LWCEDR,NA,"Cedar River, Lake Washington at Logan Street Bridge",MRR,Other
+LWISSQ,NA,"Lake Washington, Issaquah Creek at SE 56th Street Bridge",MRR,Other
+LWSCCL,NA,Ballard Locks,MRR,Other
+LWSCFC,NA,"Ship Canal, Lake Washington at Fremont Cut/Bridge",MRR,Other
+LWSCMC,NA,"Ship Canal, Lake Washington at Montlake Cut/Bridge",MRR,Other
+LWSCML,NA,"Ship Canal, Lake Washington at King County/Metro Environmental Lab",MRR,Other
+MANCRS,NA,"Manchester Research Station, Puget Sound",MRR,Other
+MAVA,NA,Magic Valley Hatchery,MRR,Hatchery
+MCCA,NA,McCall Hatchery,MRR,Hatchery
+MDSH,NA,Marion Drain Sturgeon Hatchery,MRR,Hatchery
+MERH,NA,Merwin Hatchery (WDFW),MRR,Hatchery
+METRO,NA,King County/Metro Environmental Lab,MRR,Other
+MIDWC,NA,"Midway Creek, tributary to Green River, Puget Sound",MRR,River
+MILL6C,NA,"Mill Creek, tributary to Green River, Puget Sound",MRR,River
+MONT,NA,Montlake Hatchery,MRR,Hatchery
+MRB,NA,Methow River Basin,INT,"In-stream detectors deployed at 10 sites in tributaries to the lower Methow River below Twisp, WA."
+MULLS,NA,"Mullen Slough, tributary to Green River, Puget Sound",MRR,River
+NISP,NA,Niagara Springs Hatchery,MRR,Hatchery
+NONE,NA,Deprecated null value used only to support legacy data.,MRR,Other
+OASP,NA,Oak Springs Hatchery,MRR,Hatchery
+OCEAN,NA,Ocean Recovery,MRR,Other
+ORPHAN,NA,Mark information has not been submitted.,MRR,Programmatic
+OXBH,NA,"Oxbox Hatchery, Cascade Locks, OR (ODFW)",MRR,Hatchery
+OXBO,NA,Oxbow Hatchery (IDFG),MRR,Hatchery
+POTHOL,NA,"Potholes Reservoir, Grant County, Washington",MRR,AvianColony
+RFA,NA,REDFISH LK CR TRAP JUVENILE A,INT,NA
+RFB,NA,REDFISH LK CR TRAP JUVENILE B,INT,NA
+ROBU,NA,Round Butte Hatchery,MRR,Hatchery
+ROGUER,NA,Rogue River,MRR,River
+ROZ,NA,Roza Diversion Dam (Combined),INT,"This site monitors the fish ladder and part of the west roller-gate spillway at Roza Dam. Three antennas are in notched weirs of the fish ladder, which was previously monitored under site code RZF. One 5ft by 2ft flat plate antenna is installed on the overflow drum of the spillway."
+ROZ,NA,Roza Dam,MRR,Dam
+SACRMR,NA,Sacramento River,MRR,River
+SIP,NA,Similkameen Acc. Pond,INT,NA
+SKOKNF,NA,North Fork Skokomish River,MRR,River
+SLFTIS,NA,Sheepy Lake Floating Tern Island,MRR,AvianColony
+SPRAGL,NA,"Sprague Lake, Washington",MRR,AvianColony
+SPRF,NA,Springfield Fish Hatchery,MRR,Hatchery
+SWSP,NA,Sweetwater Springs Rearing Facility,MRR,AcclimationPond
+TRB,NA,Tucannon Railroad Bridge,INT,NA
+TRINR,NA,"Trinity River, tributary to Klamath River",MRR,River
+TST,NA,Test Site,INT,NA
+UKNWRC,NA,Upper Klamath National Wildlife Refuge Avian Colonies,MRR,AvianColony
+UMAH,NA,Umatilla Hatchery,MRR,Hatchery
+UMPQAR,NA,Umpqua River,MRR,River
+UWH,NA,University of Washington Hatchery,MRR,Hatchery
+WE1,NA,WELLS LEFT LADDER TEMPORARY,INT,NA
+WE2,NA,WELLS RIGHT LADDER TEMPORARY,INT,NA
+WHSH,NA,Warrenton (OR) High School Hatchery,MRR,Hatchery
+WILH,NA,Willamette Hatchery (ODFW) at Oakridge,MRR,Hatchery
+WILPB,NA,"Willapa Bay, WA",MRR,Other
+ZZ1,NA,Noise Test Site 1,INT,NA
