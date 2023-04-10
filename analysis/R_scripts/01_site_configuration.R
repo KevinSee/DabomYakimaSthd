@@ -225,6 +225,17 @@ st_write(flowlines,
          dsn = here("analysis/data/derived_data",
                     "PRO_flowlines.gpkg"))
 
+# save parent child table
+parent_child %>%
+  write_csv(file = here("analysis/data/derived_data",
+                        "PRO_DABOM_ParentChild.csv"))
+
+# save relevant parts of configuration file
+configuration %>%
+  filter(site_code %in% sites_sf$site_code) %>%
+  write_csv(file = here("analysis/data/derived_data",
+                        "PRO_DABOM_Configuration.csv"))
+
 
 #-----------------------------------------------------------------
 # Build network diagram
