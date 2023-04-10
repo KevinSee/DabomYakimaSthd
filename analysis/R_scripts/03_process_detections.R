@@ -28,6 +28,7 @@ yr = 2020
 # start date is July 1 of previous year
 start_date = paste0(yr - 1, '0701')
 # when is the last possible observation date?
+# we chose one entire year from the start date
 max_obs_date = as.character(ymd(start_date) + years(1) - days(1))
 
 # get raw observations from PTAGIS
