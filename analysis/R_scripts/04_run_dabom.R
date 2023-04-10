@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: prep and run DABOM
 # Created: 2/27/20
-# Last Modified: 3/22/21
+# Last Modified: 4/10/23
 # Notes:
 
 #-----------------------------------------------------------------
@@ -9,11 +9,14 @@
 library(PITcleanr)
 library(DABOM)
 library(tidyverse)
-library(jagsUI)
+library(rjags)
+library(magrittr)
+library(lubridate)
+library(here)
 
-spp = "Steelhead"
 #-----------------------------------------------------------------
 # load configuration and site_df data
+load(here('analysis/data/derived_data/site_config.rda'))
 
 #-----------------------------------------------------------------
 # Load required DABOM data
@@ -21,19 +24,41 @@ spp = "Steelhead"
 # set year
 yr = 2020
 
-load(paste0('analysis/data/derived_data/PITcleanr/PRO_', spp, '_', yr, '.rda'))
+# for(yr in 2011:2019) {
+#   cat(paste("Working on", yr, "\n\n"))
 
-proc_ch <- proc_list$ProcCapHist %>%
-  mutate(UserProcStatus = if_else(UserProcStatus == '',
-                                  AutoProcStatus,
-                                  as.logical(UserProcStatus))) %>%
-  filter(UserProcStatus)
+# load processed detection histories
+load(here('analysis/data/derived_data/PITcleanr',
+          paste0('PRO_Steelhead_', yr, '.rda')))
 
+# filter to keep only the observations you want to keep
+filter_obs = prepped_ch %>%
+  mutate(user_keep_obs = if_else(is.na(user_keep_obs),
+                                 auto_keep_obs,
+                                 user_keep_obs)) %>%
+  filter(user_keep_obs)
+
+
+# determine origin of each fish
+fish_origin = bio_df %>%
+  filter(tag_code %in% unique(filter_obs$tag_code)) %>%
+  mutate(origin = if_else(spp_code == "wsth",
+                          "W",
+                          "H")) %>%
+  select(tag_code, origin) %>%
+  distinct()
+
+# fix all origins to wild
+fish_origin <- fish_origin %>%
+  mutate(origin = "W")
 
 # file path to the default and initial model
-basic_modNm = 'analysis/model_files/PRO_DABOM.txt'
+basic_modNm = here('analysis/model_files', "PRO_DABOM.txt")
 
-writeDABOM_PRO(file_name = basic_modNm)
+writeDABOM(file_name = basic_modNm,
+           parent_child = parent_child,
+           configuration = configuration,
+           time_varying = F)
 
 #------------------------------------------------------------------------------
 # Alter default model code for species and year of
@@ -42,87 +67,67 @@ writeDABOM_PRO(file_name = basic_modNm)
 #------------------------------------------------------------------------------
 
 # filepath for specific JAGS model code for species and year
-mod_path = paste0('analysis/model_files/PRO_', spp, '_', yr, '.txt')
+mod_path = here('analysis/model_files',
+                paste0('PRO_Steelhead_', yr, '.txt'))
 
 # writes species and year specific jags code
-fixNoFishNodes(basic_modNm,
-               mod_path,
-               proc_ch,
-               proc_list$NodeOrder)
+fixNoFishNodes(init_file = basic_modNm,
+               file_name = mod_path,
+               filter_ch = filter_obs,
+               parent_child = parent_child,
+               configuration = configuration,
+               fish_origin = fish_origin)
 
 #------------------------------------------------------------------------------
-# Create capture history matrices for each main branch to be used in
-# the JAGS data list
-#------------------------------------------------------------------------------
-dabom_list = createDABOMcapHist(proc_ch,
-                                proc_list$NodeOrder,
-                                split_matrices = T)
-
-# add fish origin
-# call them all wild for now
-dabom_list$fishOrigin = rep(1, nrow(dabom_list[[1]]))
-
 # Creates a function to spit out initial values for MCMC chains
-init_fnc = setInitialValues_PRO(dabom_list,
-                                mod_path,
-                                parent_child)
+init_fnc = setInitialValues(filter_obs,
+                            parent_child,
+                            configuration)
 
 # Create all the input data for the JAGS model
-jags_data = createJAGSinputs_PRO(dabom_list,
-                                 mod_path,
-                                 parent_child)
+jags_data = createJAGSinputs(filter_ch = filter_obs,
+                             parent_child = parent_child,
+                             configuration = configuration,
+                             fish_origin = fish_origin)
 
-if(summarise(proc_ch,
-             n_distinct(TagID[SiteID %in% c('SUN', "LNR", "AH1")])) %>%
-   as.numeric() == 0) {
-  jags_data$SUN_dirch_vec[1,ncol(jags_data$SUN_dirch_vec)] = 0
-}
-
-#------------------------------------------------------------------------------
 # Tell JAGS which parameters in the model that it should save.
-# the fnc is hard coded and needs to be updated if there are changes!
-#------------------------------------------------------------------------------
-
-jags_params = setSavedParams(model_file = mod_path)
+jags_params = setSavedParams(model_file = mod_path,
+                             time_varying = F)
 
 
-#------------------------------------------------------------------------------
-# Run the model
-
-# Recommended MCMC parameters are:
-# * `n.chains`: 4
-# * `n.iter`: 5,000
-# * `n.burnin`: 2,500
-# * `n.thin`: 10
-# ( 4*(5000-2500) ) / 10 = 1000 samples
-
-set.seed(12)
-dabom_mod <- jags.basic(data = jags_data,
-                        inits = init_fnc,
-                        parameters.to.save = jags_params,
-                        model.file = mod_path,
-                        n.chains = 4,
-                        n.iter = 5000,
-                        n.burnin = 2500,
-                        n.thin = 10,
-                        # n.chains = 1,
-                        # n.iter = 2,
-                        # n.burnin = 1,
-                        DIC = T)
-
-# save some stuff
-proc_list[["proc_ch"]] <- proc_ch
-
-save(dabom_mod, dabom_list, proc_list, parent_child,
-     file = paste0("analysis/data/derived_data/model_fits/PRO_DABOM_", spp, '_', yr,'.rda'))
+# run the model
+set.seed(5)
+jags = jags.model(mod_path,
+                  data = jags_data,
+                  inits = init_fnc,
+                  # n.chains = 1,
+                  # n.adapt = 5)
+                  n.chains = 4,
+                  n.adapt = 5000)
 
 
+#--------------------------------------
+# test the MCMC outcome and summary functions
+dabom_mod = coda.samples(jags,
+                         jags_params,
+                         # n.iter = 10)
+                         n.iter = 5000,
+                         thin = 10)
+
+
+save(dabom_mod, jags_data, filter_obs, bio_df,
+     file = here("analysis/data/derived_data/model_fits",
+                 paste0('PRO_DABOM_Steelhead_', yr,'.rda')))
+
+# rm(dabom_mod, jags_data, filter_obs)
+# }
 
 #------------------------------------------------------------------------------
 # diagnostics
 #------------------------------------------------------------------------------
 # load model run
-load(paste0("analysis/data/derived_data/model_fits/PRO_DABOM_", spp, '_', yr,'.rda'))
+load(here("analysis/data/derived_data/model_fits",
+          paste0('PRO_DABOM_Steelhead_', yr,'.rda')))
 
 # using mcmcr package
 library(mcmcr)
@@ -139,9 +144,12 @@ my_mcmcr = as.mcmcr(my_mod)
 rhat_df = rhat(my_mcmcr,
                by = 'parameter',
                as_df = T) %>%
+  full_join(esr(my_mcmcr,
+                by = 'parameter',
+                as_df = T)) %>%
   mutate(type = if_else(grepl('_p$', parameter),
                         'Detection',
-                        if_else(grepl('^p_pop', parameter) |
+                        if_else(grepl('^psi', parameter) |
                                   grepl('^phi', parameter),
                                 'Movement',
                                 'Other')))
@@ -150,10 +158,10 @@ rhat_df = rhat(my_mcmcr,
 rhat_df %>%
   ggplot(aes(x = rhat)) +
   geom_histogram(fill = 'blue',
-                 bins = 40) +
+                 # bins = 40) +
+                 binwidth = 0.001) +
   facet_wrap(~ type,
              scales = 'free')
-
 
 # which parameters have converged and which haven't?
 convg_df = converged(my_mcmcr,
@@ -165,16 +173,17 @@ janitor::tabyl(convg_df,
 
 # look at parameters that have not converged
 convg_df %>%
-  filter(!converged) %>%
-  left_join(rhat_df)
+  # filter(!converged) %>%
+  left_join(rhat_df) %>%
+  arrange(esr)
 
 #---------------------------------------
 # using postpack
 library(postpack)
 
 # what parameters were tracked?
-get_p(my_mod,
-      type = 'base')
+get_params(my_mod,
+           type = 'base_only')
 
 # some summary statistics
 post_summ(my_mod,
@@ -182,51 +191,74 @@ post_summ(my_mod,
   t() %>%
   as_tibble(rownames = 'param')
 
-param_chk = c('LWCB0_p',
-              'LWCA0_p',
-              'p_pop_SUN[1,3]')
+post_summ(my_mod,
+          '^phi') %>%
+  t() %>%
+  as_tibble(rownames = 'param') %>%
+  filter(mean > 0)
+
+post_summ(my_mod,
+          '^psi') %>%
+  t() %>%
+  as_tibble(rownames = 'param') %>%
+  filter(mean > 0)
+
+
+
+
+param_chk = c('psi_ROZ')
+param_chk = convg_df %>%
+  filter(!converged) %>%
+  pull(parameter)
+
+post_summ(my_mod,
+          param_chk) %>%
+  t() %>%
+  as_tibble(rownames = 'param') %>%
+  mutate(cv = sd / mean) %>%
+  arrange(desc(cv))
+
 
 diag_plots(post = my_mod,
            p = param_chk,
-           save = T,
-           file = 'outgoing/LWC_diagnostics.pdf')
+           save = F,
+           file = here('outgoing/PRO_diagnostics.pdf'))
 
 # calculate Brooks-Gelman-Rubin Potential Scale Reduction Factor (Rhat)
 # if ratio is close to 1, the chains have converged to the same distribution
 # <1.10 is generally considered converged
 post_summ(my_mod,
-          '_p$',
-          ess = T, # effective sample size
-          Rhat = T)[c("Rhat", "ess"),] %>%
+          # '_p$',
+          get_params(my_mod,
+                     type = 'base_only'),
+          neff = T, # effective sample size
+          Rhat = T)[c("Rhat", "neff"),] %>%
   t() %>%
   as_tibble(rownames = 'param') %>%
-  filter(!is.na(Rhat))
+  filter(!is.na(Rhat)) %>%
+  arrange(neff)
 
 # find and remove params where Rhat == "NaN"
-all_params = get_p(my_mod,
-                   type = 'base')
+all_params = get_params(my_mod,
+                        type = 'base_only')
+
 
 post_summ_nas = post_summ(my_mod,
                           # '_p$',
-                          all_params[-grep('deviance', all_params)],
-                          ess = T, # effective sample size
-                          Rhat = T)[c("Rhat", "ess"),] %>%
-                  t() %>%
+                          all_params,
+                          neff = T, # effective sample size
+                          Rhat = T)[c("Rhat", "neff"),] %>%
+  t() %>%
   as.data.frame() %>%
   as_tibble(rownames = 'param') %>%
   filter(Rhat == "NaN") %>%
   pull(param)
 
-param_chk = get_p(my_mod, type = 'base')[grep('_p$', get_p(my_mod, type = 'base'))]
+param_chk = get_params(my_mod,
+                       type = 'base_only')[grep('_p$', get_params(my_mod, type = 'base_only'))]
 param_chk = param_chk[!param_chk %in% post_summ_nas]
 
 # diagnostic plots for remaining params
 diag_plots(post = my_mod,
            p = param_chk,
            ext_device = T)
-
-# save plots
-diag_plots(post = my_mod,
-           p = param_chk,
-           save = T,
-           file = 'outgoing/figures/DABOM_trace_plots.pdf')
