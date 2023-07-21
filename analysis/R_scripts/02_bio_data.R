@@ -133,10 +133,30 @@ bio_old = 2012:2014 %>%
       spawn_year,
       as.numeric))
 
+# add 2022 data
+bio_2022 <- read_excel(here('analysis/data/raw_data/YakimaNation',
+                            'Prosser sampled steelhead 2021_22 run.xlsx')) %>%
+  clean_names() %>%
+  rename(tag_code = pit_tag) %>%
+  mutate(across(pass_time,
+                as.numeric)) %>%
+  filter(!is.na(lad_code)) %>%
+  filter(!is.na(tag_code)) %>%
+  mutate(pass_date_time = pass_date) %>%
+  arrange(pass_date, tag_code) %>%
+  group_by(tag_code) %>%
+  slice(1) %>%
+  ungroup() %>%
+  add_column(spawn_year = 2022,
+             .before = 0)
+
+
+
 # put all years biological data together
 bio_df <- bio_2020 %>%
   bind_rows(bio_2019) %>%
   bind_rows(bio_old) %>%
+  bind_rows(bio_2022) %>%
   arrange(spawn_year,
           pass_date,
           tag_code)

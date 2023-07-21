@@ -39,7 +39,8 @@ configuration = org_config %>%
          node = if_else(site_code == 'ICH',
                        'ICHB0',
                        node),
-         node = if_else(grepl('522\\.', rkm) & rkm_total > 538,
+         node = if_else(grepl('^522\\.', rkm) &
+                          rkm_total > 538,
                        'ICHA0',
                        node),
          node = if_else(site_code == 'JD1',
@@ -48,13 +49,17 @@ configuration = org_config %>%
          node = if_else(site_code %in% c('30M', 'BR0', 'JDM', 'SJ1', 'SJ2', 'MJ1'),
                        'JD1A0',
                        node),
-         node = if_else(site_code != 'JD1' & as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) < 351,
+         node = if_else(site_code != 'JD1' &
+                          !is.na(as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1])) &
+                          as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) < 351,
                        'JDA',
                        node),
          node = if_else(site_code == 'PRA',
                         'PRAB0',
                         node),
-         node = if_else(site_code != 'PRA' & as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) >= 639,
+         node = if_else(site_code != 'PRA' &
+                          !is.na(as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1])) &
+                          as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) >= 639,
                         'PRAA0',
                         node),
          latitude = if_else(site_code == "SWK" & is.na(latitude),

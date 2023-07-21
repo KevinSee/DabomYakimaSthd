@@ -20,7 +20,7 @@ load(here('analysis/data/derived_data',
           'site_config.rda'))
 
 # which spawn year are we dealing with?
-yr = 2020
+yr = 2022
 
 # for(yr in c(2012:2014, 2019, 2020)) {
 
@@ -51,7 +51,7 @@ prepped_ch = PITcleanr::prepWrapper(ptagis_file = ptagis_obs,
                                     max_obs_date = max_obs_date,
                                     ignore_event_vs_release = F,
                                     add_tag_detects = T,
-                                    save_file = T,
+                                    save_file = F,
                                     file_name = here('outgoing/PITcleanr',
                                                      paste0('PRO_Steelhead_', yr, '.xlsx')))
 
