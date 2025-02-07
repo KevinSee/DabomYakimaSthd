@@ -20,9 +20,10 @@ load(here('analysis/data/derived_data',
           'site_config.rda'))
 
 # which spawn year are we dealing with?
-yr = 2022
+yr = 2012
 
-# for(yr in c(2012:2014, 2019, 2020)) {
+for(yr in c(2012:2022)) {
+  cat(paste("Working on", yr, "\n"))
 
 #-----------------------------------------------------------------
 # start date is July 1 of previous year
@@ -34,39 +35,52 @@ max_obs_date = as.character(ymd(start_date) + years(1) - days(1))
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 ptagis_file = here("analysis/data/raw_data/PTAGIS",
-                   paste0("PTAGIS_", yr, ".csv"))
+                   paste0("PRO_Sthd_", yr, "_CTH.csv"))
 
 # recode the PTAGIS observations of double tagged fish so that the tag code matches the TagID (not TagOther)
 ptagis_obs = readCTH(ptagis_file)
 
 # any orphaned or disowned tags?
-qcTagHistory(ptagis_obs, T)
+qcTagHistory(ptagis_obs,
+             ignore_event_vs_release = T)
 
 # compress and process those observations with PITcleanr
-prepped_ch = PITcleanr::prepWrapper(ptagis_file = ptagis_obs,
+prepped_ch = PITcleanr::prepWrapper(cth_file = ptagis_obs,
+                                    file_type = "PTAGIS",
                                     configuration = configuration,
                                     parent_child = parent_child %>%
                                       addParentChildNodes(configuration = configuration),
                                     min_obs_date = start_date,
                                     max_obs_date = max_obs_date,
                                     ignore_event_vs_release = F,
+                                    filter_orphan_disown_tags = FALSE,
                                     add_tag_detects = T,
-                                    save_file = F,
+                                    save_file = T,
                                     file_name = here('outgoing/PITcleanr',
                                                      paste0('PRO_Steelhead_', yr, '.xlsx')))
 
 
 
 # load and filter biological data by spawn year
-bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2020.rds')) %>%
+# bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2020.rds')) %>%
+bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2022.rds')) |>
   filter(spawn_year == yr)
+
 
 # save some stuff
 save(parent_child, configuration, start_date, bio_df, prepped_ch,
      file = here('analysis/data/derived_data/PITcleanr',
                  paste0('PRO_Steelhead_', yr, '.rda')))
 
-# }
+rm(prepped_ch,
+   bio_df,
+   start_date,
+   ptagis_obs,
+   ptagis_file)
+
+}
+
+
 
 #-------------------------------------------
 # NEXT STEPS
@@ -75,6 +89,24 @@ save(parent_child, configuration, start_date, bio_df, prepped_ch,
 
 load(here('analysis/data/derived_data/PITcleanr',
           paste0('PRO_Steelhead_', yr, '.rda')))
+
+# how many tags to look at and "fix"
+prepped_ch |>
+  summarize(n_tags = n_distinct(tag_code),
+            n_fix = n_distinct(tag_code[is.na(user_keep_obs)]),
+            n_weird = n_distinct(tag_code[direction == "unknown"]),
+            perc_fix = n_fix / n_tags,
+            n_weird = n_weird / n_tags)
+
+# an example
+prepped_ch |>
+  filter(is.na(user_keep_obs)) |>
+  select(tag_code) |>
+  distinct() |>
+  slice_sample(n = 1) |>
+  left_join(prepped_ch)
+
+
 
 # read in the updated version of the PITcleanr output Excel file
 yn_df = read_excel(here('analysis/data/derived_data/YakimaNation',

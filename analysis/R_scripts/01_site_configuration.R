@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: Develop configuration file for DABOM
 # Created: 2/14/20
-# Last Modified: 4/10/2023
+# Last Modified: 2/4/2025
 # Notes:
 
 #-----------------------------------------------------------------
@@ -16,76 +16,80 @@ library(here)
 # set starting point
 root_site = "PRO"
 
+# #-----------------------------------------------------------------
+# # grab configuration data from PITcleanr package
+# load("O:/Documents/Git/MyProjects/PITcleanr/inst/extdata/PRO_site_config.Rdata")
+#
+# flowlines <-
+#   flowlines |>
+#   rename(Dnhydroseq = DnHydroseq) |>
+#   janitor::clean_names()
+
 #-----------------------------------------------------------------
 # build configuration table (requires internet connection)
 org_config = buildConfig()
 
 # customize some nodes based on DABOM framework
-configuration = org_config %>%
-  mutate(node = if_else(site_code %in% c('PRO'),
-                        'PRO',
-                        node),
-         node = if_else(site_code %in% c("NFTEAN", "TEANAR", "TEANM", "TEANWF"),
-                       "LMTA0",
-                       node),
-         node = if_else(site_code == 'ROZ',
-                        if_else(antenna_id %in% c('01', '02', '03'),
-                                node,
-                                as.character(NA)),
-                        node),
-         node = if_else(site_code %in% c('MC1', 'MC2', 'MCJ', 'MCN'),
-                       'MCN',
-                       node),
-         node = if_else(site_code == 'ICH',
-                       'ICHB0',
-                       node),
-         node = if_else(grepl('^522\\.', rkm) &
-                          rkm_total > 538,
-                       'ICHA0',
-                       node),
-         node = if_else(site_code == 'JD1',
-                       'JD1B0',
-                       node),
-         node = if_else(site_code %in% c('30M', 'BR0', 'JDM', 'SJ1', 'SJ2', 'MJ1'),
-                       'JD1A0',
-                       node),
-         node = if_else(site_code != 'JD1' &
-                          !is.na(as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1])) &
-                          as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) < 351,
-                       'JDA',
-                       node),
-         node = if_else(site_code == 'PRA',
-                        'PRAB0',
-                        node),
-         node = if_else(site_code != 'PRA' &
-                          !is.na(as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1])) &
-                          as.integer(stringr::str_split(rkm, '\\.', simplify = T)[,1]) >= 639,
-                        'PRAA0',
-                        node),
-         latitude = if_else(site_code == "SWK" & is.na(latitude),
-                            unique(latitude[site_code == "SWAUKC"]),
-                            latitude),
-         longitude = if_else(site_code == "SWK" & is.na(longitude),
-                            unique(longitude[site_code == "SWAUKC"]),
-                            longitude))
+configuration <-
+  org_config |>
+  mutate(across(node,
+                ~ case_when(site_code %in% c("PRO") ~ "PRO",
+                            site_code %in% c("NFTEAN",
+                                             "TEANAR",
+                                             "TEANM",
+                                             "TEANWF",
+                                             "NFT",
+                                             "UMT") ~ "LMTA0",
+                            site_code %in% c("ROZ",
+                                             "RZF") &
+                              antenna_id %in% c('01', '02', '03') ~ "ROZ",
+                            site_code == "ROZ" &
+                              antenna_id %in% c('A1', 'A2', 'C0') ~ NA_character_,
+                            site_code == "ROZ" &
+                              site_type == "MRR" ~ "ROZ",
+                            site_code %in% c('MC1',
+                                             'MC2',
+                                             'MCJ',
+                                             'MCN') ~ 'MCN',
+                            site_code == 'ICH' ~ "ICH_D",
+                            str_detect(rkm, '^522\\.') &
+                              rkm_total > 538 ~ 'ICH_U',
+                            as.integer(stringr::str_split_i(rkm, '\\.', 1)) == 351 &
+                              site_code != "JD1" ~ "JD1_U",
+                            site_code == 'JD1' ~ 'JD1_D',
+                            site_code != 'JD1' &
+                              as.integer(stringr::str_split_i(rkm, '\\.', 1)) < 351 &
+                              str_detect(site_code, "^COLR", negate = T) ~ 'JDA',
+                            site_code %in% c("PRA",
+                                             "PRDLDR") ~ "PRA_D",
+                            site_code != "PRA" &
+                              as.integer(stringr::str_split_i(rkm, '\\.', 1)) >= 639 ~ "PRA_U",
+                            .default = .)),
+         across(c(latitude,
+                  longitude),
+                ~ case_when(site_code == "SWK" &
+                              is.na(.) ~ unique(.[site_code == "SWAUKC"]),
+                            .default = .)))
 
 
 # Node network for DABOM
 
 # get spatial object of sites used in model
-sites_sf = writeOldNetworks()$Prosser %>%
-  mutate(
-    across(
-      c(SiteID, Step2),
-      ~ recode(.,
-               "BelowJD1" = "JDA")),
-    path = str_replace(path, "BelowJD1", "JDA")) %>%
-  rename(site_code = SiteID) %>%
-  left_join(configuration %>%
-              group_by(site_code) %>%
-              filter(config_id == max(config_id)) %>%
-              ungroup(),
-            multiple = "all") %>%
+sites_sf <-
+  writeOldNetworks()$Prosser %>%
+  mutate(across(c(SiteID,
+                  Step2,
+                  Step3),
+                ~ case_match(.,
+                             "BelowJD1" ~ "JDA",
+                             .default = .)),
+         path = str_replace(path, "BelowJD1", "JDA")) %>%
+  rename(site_code = SiteID) |>
+  left_join(configuration,
+            by = join_by(site_code)) %>%
+  group_by(site_code) %>%
+  filter(config_id == max(config_id)) %>%
+  ungroup() %>%
   select(site_code,
          site_name,
          site_type = site_type_name,
@@ -109,36 +113,28 @@ sites_sf = writeOldNetworks()$Prosser %>%
 
 #-----------------------------------------------------------------
 # download the NHDPlus v2 flowlines
-# do you want flowlines downstream of root site? Set to TRUE if you have downstream sites
-dwn_flw = T
 nhd_list = queryFlowlines(sites_sf = sites_sf,
                           root_site_code = root_site,
-                          min_strm_order = 2,
-                          dwnstrm_sites = dwn_flw,
-                          dwn_min_stream_order_diff = 4)
+                          min_strm_order = 2)
 
 # compile the upstream and downstream flowlines
 flowlines = nhd_list$flowlines
-if(dwn_flw) {
-  flowlines %<>%
-    rbind(nhd_list$dwn_flowlines)
-}
 
 #-----------------------------------------------------------------
 # plot the flowlines and the sites
 ggplot() +
   geom_sf(data = flowlines,
-          aes(color = as.factor(StreamOrde),
-              size = StreamOrde)) +
+          aes(color = as.factor(streamorde),
+              linewidth = streamorde)) +
   scale_color_viridis_d(direction = -1,
                         option = "D",
                         name = "Stream\nOrder",
-                        end = 0.8) +
-  scale_size_continuous(range = c(0.2, 1.2),
-                        guide = 'none') +
-  geom_sf(data = nhd_list$basin,
-          fill = NA,
-          lwd = 2) +
+                        end = 0.9) +
+  scale_linewidth_continuous(range = c(0.2, 2),
+                             name = "Stream\nOrder") +
+  # geom_sf(data = nhd_list$basin,
+  #         fill = NA,
+  #         lwd = 2) +
   geom_sf(data = sites_sf,
           size = 4,
           color = "black") +
@@ -154,7 +150,8 @@ ggplot() +
 
 #-----------------------------------------------------------------
 # build parent child table
-parent_child = sites_sf |>
+parent_child <-
+  sites_sf |>
   buildParentChild(flowlines,
                    # rm_na_parent = T,
                    add_rkm = F) |>
@@ -168,7 +165,8 @@ parent_child = sites_sf |>
                     list(c("MCN", "PRO")))
 
 # add RKMs from configuration file (since we had to fix at least one from PTAGIS)
-parent_child %<>%
+parent_child <-
+  parent_child |>
   left_join(configuration %>%
               select(parent = site_code,
                      parent_rkm = rkm) %>%
@@ -254,18 +252,15 @@ pc_nodes_graph
 library(ggraph)
 
 # assign branch names to each site
-node_order = buildNodeOrder(parent_child) %>%
-  mutate(branch_nm = if_else(node == "PRO",
-                             "Start",
-                             if_else(str_detect(path, "TOP"),
-                                     "Toppenish",
-                                     if_else(str_detect(path, "SUN") & str_detect(path, "ROZ", negate = T),
-                                             "Naches",
-                                             if_else(str_detect(path, "ROZ"),
-                                                     "UpperYakima",
-                                                     if_else(str_detect(path, "SAT"),
-                                                             "Satus",
-                                                             "Downstream")))))) %>%
+node_order <-
+  buildNodeOrder(parent_child) %>%
+  mutate(branch_nm = case_when(node == "PRO" ~ "Start",
+                               str_detect(path, "TOP") ~ "Toppenish",
+                               str_detect(path, "SUN") &
+                                 str_detect(path, "ROZ", negate = T) ~ "Naches",
+                               str_detect(path, "ROZ") ~ "Upper Yakima",
+                               str_detect(path, "SAT") ~ "Satus",
+                               .default = "Downstream")) |>
   mutate(
     across(
       branch_nm,
@@ -274,7 +269,7 @@ node_order = buildNodeOrder(parent_child) %>%
                           "Satus",
                           "Toppenish",
                           "Naches",
-                          "UpperYakima",
+                          "Upper Yakima",
                           "Downstream"))
     )
   )
