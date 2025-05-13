@@ -20,7 +20,7 @@ load(here('analysis/data/derived_data',
           'site_config.rda'))
 
 # which spawn year are we dealing with?
-yr = 2012
+yr = 2024
 
 for(yr in c(2012:2022)) {
   cat(paste("Working on", yr, "\n"))
@@ -35,7 +35,8 @@ max_obs_date = as.character(ymd(start_date) + years(1) - days(1))
 # get raw observations from PTAGIS
 # These come from running a saved query on the list of tags to be used
 ptagis_file = here("analysis/data/raw_data/PTAGIS",
-                   paste0("PRO_Sthd_", yr, "_CTH.csv"))
+                   # paste0("PRO_Sthd_", yr, "_CTH.csv"))
+                   paste0("PTAGIS_", yr, ".csv"))
 
 # recode the PTAGIS observations of double tagged fish so that the tag code matches the TagID (not TagOther)
 ptagis_obs = readCTH(ptagis_file)
@@ -63,7 +64,8 @@ prepped_ch = PITcleanr::prepWrapper(cth_file = ptagis_obs,
 
 # load and filter biological data by spawn year
 # bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2020.rds')) %>%
-bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2022.rds')) |>
+# bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2022.rds')) |>
+bio_df = read_rds(here('analysis/data/derived_data/Bio_Data_2012_2024.rds')) |>
   filter(spawn_year == yr)
 
 
@@ -109,8 +111,11 @@ prepped_ch |>
 
 
 # read in the updated version of the PITcleanr output Excel file
-yn_df = read_excel(here('analysis/data/derived_data/YakimaNation',
-                          paste0('PRO_Steelhead_', yr, '.xlsx')))
+yn_df = read_excel(here('analysis',
+                        "data",
+                        "raw_data",
+                        "YakimaNation",
+                        paste0('PRO_Steelhead_', yr, '.xlsx')))
 
 filter_obs = yn_df %>%
   mutate(user_keep_obs = if_else(is.na(user_keep_obs),
