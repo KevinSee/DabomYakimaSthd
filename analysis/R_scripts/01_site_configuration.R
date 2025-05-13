@@ -39,7 +39,7 @@ configuration <-
                                              "TEANM",
                                              "TEANWF",
                                              "NFT",
-                                             "UMT") ~ "LMTA0",
+                                             "UMT") ~ "LMT_U",
                             site_code %in% c("ROZ",
                                              "RZF") &
                               antenna_id %in% c('01', '02', '03') ~ "ROZ",
@@ -132,9 +132,9 @@ ggplot() +
                         end = 0.9) +
   scale_linewidth_continuous(range = c(0.2, 2),
                              name = "Stream\nOrder") +
-  # geom_sf(data = nhd_list$basin,
-  #         fill = NA,
-  #         lwd = 2) +
+  geom_sf(data = nhd_list$basin,
+          fill = NA,
+          lwd = 2) +
   geom_sf(data = sites_sf,
           size = 4,
           color = "black") +
