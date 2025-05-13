@@ -26,6 +26,17 @@ trap_data <-
                            rep("text", 8),
                            rep("numeric", 4))) |>
   clean_names() |>
+  bind_rows(read_excel(here("analysis/data/raw_data",
+                            "YakimaNation",
+                            "y23_24InputData.xlsx"),
+                       1,
+                       col_types = c(rep("guess", 2),
+                                     rep("date", 2),
+                                     rep("text", 7),
+                                     rep("numeric", 4),
+                                     rep("text", 1))) |>
+              clean_names() |>
+              rename(tagged = pit_tag)) |>
   mutate(trap_date =
            case_when(!is.na(pass_time) ~ pass_date +
                        hours(hour(pass_time)) +
@@ -56,7 +67,11 @@ trap_data <-
          across(origin,
                 ~ case_when(spp_code == "hsth" ~ "H",
                             spp_code == "wsth" ~ "W",
-                            .default = NA_character_)))
+                            .default = NA_character_))) |>
+  distinct() |>
+  arrange(spawn_year,
+          trap_date)
+
 trap_data <-
   trap_data |>
   filter(spawn_year < year(today()))
