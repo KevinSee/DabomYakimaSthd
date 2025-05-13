@@ -1,226 +1,199 @@
+model {
 
-model{
+# Priors for detection probabilities 
 
-  # Set up array detection efficiency priors
-  BelowJD1_p ~ dbeta(1,1)
-  JD1B0_p ~ dbeta(1,1)
-  JD1A0_p ~ dbeta(1,1)
-  MCN_p ~ dbeta(1,1)
-  ICHB0_p ~ dbeta(1,1)
-  ICHA0_p ~ dbeta(1,1)
+	 JDA_p ~ dbeta(1, 1);
+	 JD1B0_p ~ dbeta(1, 1);
+	 JD1A0_p ~ dbeta(1, 1);
+	 MCN_p ~ dbeta(1, 1);
+	 ICHB0_p ~ dbeta(1, 1);
+	 ICHA0_p ~ dbeta(1, 1);
+	 PRAB0_p ~ dbeta(1, 1);
+	 PRAA0_p ~ dbeta(1, 1);
+	 SATB0_p ~ dbeta(1, 1);
+	 SATA0_p ~ dbeta(1, 1);
+	 TOPB0_p ~ dbeta(1, 1);
+	 TOPA0_p ~ dbeta(1, 1);
+	 SM1B0_p ~ dbeta(1, 1);
+	 SM1A0_p ~ dbeta(1, 1);
+	 TP2B0_p ~ dbeta(1, 1);
+	 TP2A0_p ~ dbeta(1, 1);
+	 SUNB0_p ~ dbeta(1, 1);
+	 SUNA0_p ~ dbeta(1, 1);
+	 AH1B0_p ~ dbeta(1, 1);
+	 AH1A0_p ~ dbeta(1, 1);
+	 LNR_p ~ dbeta(1, 1);
+	 LWCB0_p ~ dbeta(1, 1);
+	 LWCA0_p ~ dbeta(1, 1);
+	 ROZB0_p ~ dbeta(1, 1);
+	 ROZA0_p ~ dbeta(1, 1);
+	 LMCB0_p ~ dbeta(1, 1);
+	 LMCA0_p ~ dbeta(1, 1);
+	 UMCB0_p ~ dbeta(1, 1);
+	 UMCA0_p ~ dbeta(1, 1);
+	 TANB0_p ~ dbeta(1, 1);
+	 TANA0_p ~ dbeta(1, 1);
+	 SWKB0_p ~ dbeta(1, 1);
+	 SWKA0_p ~ dbeta(1, 1);
+	 LMTB0_p ~ dbeta(1, 1);
+	 LMTA0_p ~ dbeta(1, 1);
 
-  SATB0_p ~ dbeta(1,1)
-  SATA0_p ~ dbeta(1,1)
+# Priors for transition probabilities 
 
-  TOPB0_p ~ dbeta(1,1)
-  TOPA0_p ~ dbeta(1,1)
-  SM1B0_p ~ dbeta(1,1)
-  SM1A0_p ~ dbeta(1,1)
-  TP2B0_p ~ dbeta(1,1)
-  TP2A0_p ~ dbeta(1,1)
+	 psi_PRO[1, 1:n_branch_PRO] ~ ddirch(PRO_dirch_vec[1,]); 
+	 psi_PRO[2, 1:n_branch_PRO] ~ ddirch(PRO_dirch_vec[2,]); 
 
-  SUNB0_p ~ dbeta(1,1)
-  SUNA0_p ~ dbeta(1,1)
-  AH1B0_p ~ dbeta(1,1)
-  AH1A0_p ~ dbeta(1,1)
-  LNR_p ~ dbeta(1,1)
+	 omega_PRO[1, 1:n_branch_PRO] <- zero_vec[1:(n_branch_PRO)]; 
+	 omega_PRO[1, (n_branch_PRO + 1)] <- 1; 
 
-  LWCB0_p ~ dbeta(1,1)
-  LWCA0_p ~ dbeta(1,1)
-  ROZB0_p ~ dbeta(1,1)
-  ROZA0_p ~ dbeta(1,1)
-  LMCB0_p ~ dbeta(1,1)
-  LMCA0_p ~ dbeta(1,1)
-  UMCB0_p ~ dbeta(1,1)
-  UMCA0_p ~ dbeta(1,1)
-  TANB0_p ~ dbeta(1,1)
-  TANA0_p ~ dbeta(1,1)
-  SWKB0_p ~ dbeta(1,1)
-  SWKA0_p ~ dbeta(1,1)
-  LMTB0_p ~ dbeta(1,1)
-  LMTA0_p ~ dbeta(1,1)
-  PRAB0_p ~ dbeta(1,1)
-  PRAA0_p ~ dbeta(1,1)
+	 omega_PRO[2, 1:n_branch_PRO] <- psi_PRO[1,]; 
+	 omega_PRO[2, (n_branch_PRO + 1)] <- 0; 
 
+	 omega_PRO[3, 1:n_branch_PRO] <- psi_PRO[2,]; 
+	 omega_PRO[3, (n_branch_PRO + 1)] <- 0; 
 
-  #---------------------------------------------
-  # Main branches after Prosser
-  # first row is wild fish, second row is hatchery fish
-  p_pop_PRO[1, 1:n_pops_PRO] ~ ddirch(PRO_dirch_vec[1,]); # uninformed Dirichlet for probs for going to PRO bins
-  p_pop_PRO[2, 1:n_pops_PRO] ~ ddirch(PRO_dirch_vec[2,]); # uninformed Dirichlet for probs for going to PRO bins
+	 psi_SUN[1, 1:n_branch_SUN] ~ ddirch(SUN_dirch_vec[1,]); 
+	 psi_SUN[2, 1:n_branch_SUN] ~ ddirch(SUN_dirch_vec[2,]); 
 
-  # possible values for each branch
-  # 1 = Below JD1, 2 = JD1, 3 = MCN, 4 = ICH, 5 = SAT, 6 = TOP, 7 = SUN, 8 = PRA, 9 = Black box
+	 omega_SUN[1, 1:n_branch_SUN] <- zero_vec[1:(n_branch_SUN)]; 
+	 omega_SUN[1, (n_branch_SUN + 1)] <- 1; 
 
-  for (i in 1:(n_fish)) {
-   a_PRO[i] ~ dcat( p_pop_PRO[fishOrigin[i], 1:n_pops_PRO] )
-  }
-  # expand the dcat variable into a matrix of zeros and ones
-  for (i in 1:(n_fish)) {
-   for (j in 1:n_pops_PRO)	{
-    catexp_PRO[i,j] <- equals(a_PRO[i],j) #equals(x,y) is a test for equality, returns [1,0]
-   }
-  }
+	 omega_SUN[2, 1:n_branch_SUN] <- psi_SUN[1,]; 
+	 omega_SUN[2, (n_branch_SUN + 1)] <- 0; 
 
-  #---------------------------------------------
-  # Downstream
-  #---------------------------------------------
-  for (i in 1:n_fish) {
-    Downstream[i,1] ~ dbern( BelowJD1_p * catexp_PRO[i,1] )
+	 omega_SUN[3, 1:n_branch_SUN] <- psi_SUN[2,]; 
+	 omega_SUN[3, (n_branch_SUN + 1)] <- 0; 
 
-    Downstream[i,2] ~ dbern( JD1B0_p * catexp_PRO[i,2] )
-    Downstream[i,3] ~ dbern( JD1A0_p * catexp_PRO[i,2] )
+	 psi_ROZ[1, 1:n_branch_ROZ] ~ ddirch(ROZ_dirch_vec[1,]); 
+	 psi_ROZ[2, 1:n_branch_ROZ] ~ ddirch(ROZ_dirch_vec[2,]); 
 
-    Downstream[i,4] ~ dbern( MCN_p * catexp_PRO[i,3] )
+	 omega_ROZ[1, 1:n_branch_ROZ] <- zero_vec[1:(n_branch_ROZ)]; 
+	 omega_ROZ[1, (n_branch_ROZ + 1)] <- 1; 
 
-    Downstream[i,5] ~ dbern( ICHB0_p * catexp_PRO[i,4] )
-    Downstream[i,6] ~ dbern( ICHA0_p * catexp_PRO[i,4] )
+	 omega_ROZ[2, 1:n_branch_ROZ] <- psi_ROZ[1,]; 
+	 omega_ROZ[2, (n_branch_ROZ + 1)] <- 0; 
 
-    Downstream[i,7] ~ dbern( PRAB0_p * catexp_PRO[i,8] )
-    Downstream[i,8] ~ dbern( PRAA0_p * catexp_PRO[i,8] )
-  }
+	 omega_ROZ[3, 1:n_branch_ROZ] <- psi_ROZ[2,]; 
+	 omega_ROZ[3, (n_branch_ROZ + 1)] <- 0; 
 
-  #---------------------------------------------
-  # Status
-  #---------------------------------------------
-  for (i in 1:n_fish) {
-    Status[i,1] ~ dbern( SATB0_p * catexp_PRO[i,5] )
-    Status[i,2] ~ dbern( SATA0_p * catexp_PRO[i,5] )
-  }
+	 psi_TOP[1, 1:n_branch_TOP] ~ ddirch(TOP_dirch_vec[1,]); 
+	 psi_TOP[2, 1:n_branch_TOP] ~ ddirch(TOP_dirch_vec[2,]); 
 
-  #---------------------------------------------
-  # Toppenish
-  #---------------------------------------------
-  for (i in 1:n_fish) {
-    Toppenish[i,1] ~ dbern( TOPB0_p * catexp_PRO[i,6] )
-    Toppenish[i,2] ~ dbern( TOPA0_p * catexp_PRO[i,6] )
-  }
+	 omega_TOP[1, 1:n_branch_TOP] <- zero_vec[1:(n_branch_TOP)]; 
+	 omega_TOP[1, (n_branch_TOP + 1)] <- 1; 
 
-  # branch after TOP
+	 omega_TOP[2, 1:n_branch_TOP] <- psi_TOP[1,]; 
+	 omega_TOP[2, (n_branch_TOP + 1)] <- 0; 
 
-  # first row is wild fish, second row is hatchery fish
-  p_pop_TOP[1, 1:n_pops_TOP] ~ ddirch(TOP_dirch_vec[1,]); # uninformed Dirichlet for probs for going to TOP bins
-  p_pop_TOP[2, 1:n_pops_TOP] ~ ddirch(TOP_dirch_vec[2,]); # uninformed Dirichlet for probs for going to TOP bins
+	 omega_TOP[3, 1:n_branch_TOP] <- psi_TOP[2,]; 
+	 omega_TOP[3, (n_branch_TOP + 1)] <- 0; 
 
-  # set up a matrix that deals with yes/no in the tributary or not
-  pMatTOP[1,1:n_pops_TOP] <- zero_vec[1:(n_pops_TOP)] # when not in trib, 0 prob of being in sub areas
-  pMatTOP[1,(n_pops_TOP+1)] <- 1 #set the "not there" bin to prob = 1
+	 phi_LMC[1] ~ dbeta(1, 1); 
+	 phi_LMC[2] ~ dbeta(1, 1); 
 
-  # 2nd row is wild fish, 3rd row is hatchery
-  pMatTOP[2,1:n_pops_TOP] <- p_pop_TOP[1,] # when in trib, >0 probs of being in sub areas
-  pMatTOP[2,(n_pops_TOP+1)] <- 0 #set the "not there" bin to prob = 0
-  pMatTOP[3,1:n_pops_TOP] <- p_pop_TOP[2,] # when in trib, >0 probs of being in sub areas
-  pMatTOP[3,(n_pops_TOP+1)] <- 0 #set the "not there" bin to prob = 0
+# Where is each fish? 
 
-  # possible values for each branch
-  # 1 = SM1, 2 = TP2, 3 = Black box
-
-  for (i in 1:n_fish) {
-   a_TOP[i] ~ dcat( pMatTOP[(catexp_PRO[i,6] * fishOrigin[i] + 1), 1:(n_pops_TOP+1)] )
-     for (j in 1:n_pops_TOP)	{
-      catexp_TOP[i,j] <- equals(a_TOP[i],j) # equals(x,y) is a test for equality, returns [1,0]
-     }
-
-    Toppenish[i,3] ~ dbern( SM1B0_p * catexp_TOP[i,1] )
-    Toppenish[i,4] ~ dbern( SM1A0_p * catexp_TOP[i,1] )
-
-    Toppenish[i,5] ~ dbern( TP2B0_p * catexp_TOP[i,2] )
-    Toppenish[i,6] ~ dbern( TP2A0_p * catexp_TOP[i,2] )
-
-  }
-
-  #---------------------------------------------
-  # Sunnyside
-  #---------------------------------------------
-
-  for (i in 1:n_fish) {
-    Sunnyside[i,1] ~ dbern( SUNB0_p * catexp_PRO[i,7] )
-    Sunnyside[i,2] ~ dbern( SUNA0_p * catexp_PRO[i,7] )
-  }
-
-  # branch after SUN
-
-  # first row is wild fish, second row is hatchery fish
-  p_pop_SUN[1, 1:n_pops_SUN] ~ ddirch(SUN_dirch_vec[1,]); # uninformed Dirichlet for probs for going to SUN bins
-  p_pop_SUN[2, 1:n_pops_SUN] ~ ddirch(SUN_dirch_vec[2,]); # uninformed Dirichlet for probs for going to SUN bins
-
-  # set up a matrix that deals with yes/no in the tributary or not
-  pMatSUN[1,1:n_pops_SUN] <- zero_vec[1:(n_pops_SUN)] # when not in trib, 0 prob of being in sub areas
-  pMatSUN[1,(n_pops_SUN+1)] <- 1 #set the "not there" bin to prob = 1
-
-  # 2nd row is wild fish, 3rd row is hatchery
-  pMatSUN[2,1:n_pops_SUN] <- p_pop_SUN[1,] # when in trib, >0 probs of being in sub areas
-  pMatSUN[2,(n_pops_SUN+1)] <- 0 #set the "not there" bin to prob = 0
-  pMatSUN[3,1:n_pops_SUN] <- p_pop_SUN[2,] # when in trib, >0 probs of being in sub areas
-  pMatSUN[3,(n_pops_SUN+1)] <- 0 #set the "not there" bin to prob = 0
-
-  # possible values for each branch
-  # 1 = AH1, 2 = LNR, 3 = LWC, 4 = ROZ, 5 = Black box
-
-  for (i in 1:n_fish) {
-   a_SUN[i] ~ dcat( pMatSUN[(catexp_PRO[i,7] * fishOrigin[i] + 1), 1:(n_pops_SUN+1)] )
-     for (j in 1:n_pops_SUN)	{
-      catexp_SUN[i,j] <- equals(a_SUN[i],j) # equals(x,y) is a test for equality, returns [1,0]
-     }
-
-    Sunnyside[i,3] ~ dbern( AH1B0_p * catexp_SUN[i,1] )
-    Sunnyside[i,4] ~ dbern( AH1A0_p * catexp_SUN[i,1] )
-
-    Sunnyside[i,5] ~ dbern( LNR_p * catexp_SUN[i,2] )
-
-    Sunnyside[i,6] ~ dbern( LWCB0_p * catexp_SUN[i,3] )
-    Sunnyside[i,7] ~ dbern( LWCA0_p * catexp_SUN[i,3] )
-
-    Sunnyside[i,8] ~ dbern( ROZB0_p * catexp_SUN[i,4] )
-    Sunnyside[i,9] ~ dbern( ROZA0_p * catexp_SUN[i,4] )
-  }
+	 for(i in 1:n_fish) { 
 
 
-  # branch after ROZ
+		 a_PRO[i] ~ dcat( omega_PRO[fish_type[i] + 1, 1:(n_branch_PRO+1)] ) 
+			 for (j in 1:n_branch_PRO)	{ 
+				 eta_PRO[i,j] <- equals(a_PRO[i],j) # equals(x,y) is a test for equality, returns [1,0] 
+			 }
 
-  # first row is wild fish, second row is hatchery fish
-  p_pop_ROZ[1, 1:n_pops_ROZ] ~ ddirch(ROZ_dirch_vec[1,]); # uninformed Dirichlet for probs for going to ROZ bins
-  p_pop_ROZ[2, 1:n_pops_ROZ] ~ ddirch(ROZ_dirch_vec[2,]); # uninformed Dirichlet for probs for going to ROZ bins
+		 a_SUN[i] ~ dcat( omega_SUN[(eta_PRO[i,7] * fish_type[i] + 1), 1:(n_branch_SUN+1)] ) 
+			 for (j in 1:n_branch_SUN)	{ 
+				 eta_SUN[i,j] <- equals(a_SUN[i],j) # equals(x,y) is a test for equality, returns [1,0] 
+			 }
 
-  # set up a matrix that deals with yes/no in the tributary or not
-  pMatROZ[1,1:n_pops_ROZ] <- zero_vec[1:(n_pops_ROZ)] # when not in trib, 0 prob of being in sub areas
-  pMatROZ[1,(n_pops_ROZ+1)] <- 1 #set the "not there" bin to prob = 1
+		 a_ROZ[i] ~ dcat( omega_ROZ[(eta_SUN[i,4] * fish_type[i] + 1), 1:(n_branch_ROZ+1)] ) 
+			 for (j in 1:n_branch_ROZ)	{ 
+				 eta_ROZ[i,j] <- equals(a_ROZ[i],j) # equals(x,y) is a test for equality, returns [1,0] 
+			 }
 
-  # 2nd row is wild fish, 3rd row is hatchery
-  pMatROZ[2,1:n_pops_ROZ] <- p_pop_ROZ[1,] # when in trib, >0 probs of being in sub areas
-  pMatROZ[2,(n_pops_ROZ+1)] <- 0 #set the "not there" bin to prob = 0
-  pMatROZ[3,1:n_pops_ROZ] <- p_pop_ROZ[2,] # when in trib, >0 probs of being in sub areas
-  pMatROZ[3,(n_pops_ROZ+1)] <- 0 #set the "not there" bin to prob = 0
+		 a_TOP[i] ~ dcat( omega_TOP[(eta_PRO[i,6] * fish_type[i] + 1), 1:(n_branch_TOP+1)] ) 
+			 for (j in 1:n_branch_TOP)	{ 
+				 eta_TOP[i,j] <- equals(a_TOP[i],j) # equals(x,y) is a test for equality, returns [1,0] 
+			 }
 
-  # possible values for each branch
-  # 1 = LMC, 2 = TAN, 3 = SWK, 4 = LMT, 5 = Black box
+		 eta_LMC[i] ~ dbern(eta_ROZ[i, 1] * phi_LMC[fish_type[i]]) 
 
-  for(j in 1:2) {
-    phi_LMC[j] ~ dbeta(1,1) # prob of migrating up past UMC
-  }
+	} # end the n_fish loop 
 
-  for (i in 1:n_fish) {
-   a_ROZ[i] ~ dcat( pMatROZ[(catexp_SUN[i,4] * fishOrigin[i] + 1), 1:(n_pops_ROZ+1)] )
-     for (j in 1:n_pops_ROZ)	{
-      catexp_ROZ[i,j] <- equals(a_ROZ[i],j) # equals(x,y) is a test for equality, returns [1,0]
-     }
 
-    Sunnyside[i,10] ~ dbern( LMCB0_p * catexp_ROZ[i,1] )
-    Sunnyside[i,11] ~ dbern( LMCA0_p * catexp_ROZ[i,1] )
+# Were tags observed? 
 
-    z_LMC[i] ~ dbern(catexp_ROZ[i,1] * phi_LMC[fishOrigin[i]] ) # did fish go past UMC?
-    Sunnyside[i,12] ~ dbern( UMCB0_p * z_LMC[i] )
-    Sunnyside[i,13] ~ dbern( UMCA0_p * z_LMC[i] )
+	 for (i in 1:n_fish) {
 
-    Sunnyside[i,14] ~ dbern( TANB0_p * catexp_ROZ[i,2] )
-    Sunnyside[i,15] ~ dbern( TANA0_p * catexp_ROZ[i,2] )
+		 cap_hist[i,1] ~ dbern( JDA_p * eta_PRO[i,1] );
 
-    Sunnyside[i,16] ~ dbern( SWKB0_p * catexp_ROZ[i,3] )
-    Sunnyside[i,17] ~ dbern( SWKA0_p * catexp_ROZ[i,3] )
+		 cap_hist[i,2] ~ dbern( JD1B0_p * eta_PRO[i,2] );
 
-    Sunnyside[i,18] ~ dbern( LMTB0_p * catexp_ROZ[i,4] )
-    Sunnyside[i,19] ~ dbern( LMTA0_p * catexp_ROZ[i,4] )
+		 cap_hist[i,3] ~ dbern( JD1A0_p * eta_PRO[i,2] );
 
-  }
+		 cap_hist[i,4] ~ dbern( MCN_p * eta_PRO[i,3] );
 
-} # ends model file
+		 cap_hist[i,5] ~ dbern( ICHB0_p * eta_PRO[i,4] );
+
+		 cap_hist[i,6] ~ dbern( ICHA0_p * eta_PRO[i,4] );
+
+		 cap_hist[i,7] ~ dbern( PRAB0_p * eta_PRO[i,8] );
+
+		 cap_hist[i,8] ~ dbern( PRAA0_p * eta_PRO[i,8] );
+
+		 cap_hist[i,9] ~ dbern( SATB0_p * eta_PRO[i,5] );
+
+		 cap_hist[i,10] ~ dbern( SATA0_p * eta_PRO[i,5] );
+
+		 cap_hist[i,11] ~ dbern( TOPB0_p * eta_PRO[i,6] );
+
+		 cap_hist[i,12] ~ dbern( TOPA0_p * eta_PRO[i,6] );
+
+		 cap_hist[i,13] ~ dbern( SM1B0_p * eta_TOP[i,1] );
+
+		 cap_hist[i,14] ~ dbern( SM1A0_p * eta_TOP[i,1] );
+
+		 cap_hist[i,15] ~ dbern( TP2B0_p * eta_TOP[i,2] );
+
+		 cap_hist[i,16] ~ dbern( TP2A0_p * eta_TOP[i,2] );
+
+		 cap_hist[i,17] ~ dbern( SUNB0_p * eta_PRO[i,7] );
+
+		 cap_hist[i,18] ~ dbern( SUNA0_p * eta_PRO[i,7] );
+
+		 cap_hist[i,19] ~ dbern( AH1B0_p * eta_SUN[i,1] );
+
+		 cap_hist[i,20] ~ dbern( AH1A0_p * eta_SUN[i,1] );
+
+		 cap_hist[i,21] ~ dbern( LNR_p * eta_SUN[i,2] );
+
+		 cap_hist[i,22] ~ dbern( LWCB0_p * eta_SUN[i,3] );
+
+		 cap_hist[i,23] ~ dbern( LWCA0_p * eta_SUN[i,3] );
+
+		 cap_hist[i,24] ~ dbern( ROZB0_p * eta_SUN[i,4] );
+
+		 cap_hist[i,25] ~ dbern( ROZA0_p * eta_SUN[i,4] );
+
+		 cap_hist[i,26] ~ dbern( LMCB0_p * eta_ROZ[i,1] );
+
+		 cap_hist[i,27] ~ dbern( LMCA0_p * eta_ROZ[i,1] );
+
+		 cap_hist[i,28] ~ dbern( UMCB0_p * eta_LMC[i] );
+
+		 cap_hist[i,29] ~ dbern( UMCA0_p * eta_LMC[i] );
+
+		 cap_hist[i,30] ~ dbern( TANB0_p * eta_ROZ[i,2] );
+
+		 cap_hist[i,31] ~ dbern( TANA0_p * eta_ROZ[i,2] );
+
+		 cap_hist[i,32] ~ dbern( SWKB0_p * eta_ROZ[i,3] );
+
+		 cap_hist[i,33] ~ dbern( SWKA0_p * eta_ROZ[i,3] );
+
+		 cap_hist[i,34] ~ dbern( LMTB0_p * eta_ROZ[i,4] );
+
+		 cap_hist[i,35] ~ dbern( LMTA0_p * eta_ROZ[i,4] );
+
+	}  # end the n_fish loop 
+}

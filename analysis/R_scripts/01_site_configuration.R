@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: Develop configuration file for DABOM
 # Created: 2/14/20
-# Last Modified: 2/14/20
+# Last Modified: 2/4/2025
 # Notes:
 
 #-----------------------------------------------------------------
@@ -9,336 +9,317 @@
 library(PITcleanr)
 library(tidyverse)
 library(magrittr)
+library(sf)
+library(here)
+
+#-----------------------------------------------------------------
+# set starting point
+root_site = "PRO"
+
+# #-----------------------------------------------------------------
+# # grab configuration data from PITcleanr package
+# load("O:/Documents/Git/MyProjects/PITcleanr/inst/extdata/PRO_site_config.Rdata")
+#
+# flowlines <-
+#   flowlines |>
+#   rename(Dnhydroseq = DnHydroseq) |>
+#   janitor::clean_names()
 
 #-----------------------------------------------------------------
 # build configuration table (requires internet connection)
 org_config = buildConfig()
 
 # customize some nodes based on DABOM framework
-configuration = org_config %>%
-  mutate(Node = if_else(SiteID %in% c('PRO'),
-                        'PRO',
-                        Node),
-         Node = if_else(SiteID %in% c("NFTEAN", "TEANAR", "TEANM", "TEANWF"),
-                       "LMTA0",
-                       Node),
-         Node = if_else(SiteID == 'ROZ',
-                        if_else(AntennaID %in% c('01', '02', '03'),
-                                Node,
-                                as.character(NA)),
-                        Node),
-         Node = if_else(SiteID == 'TAN' & ConfigID %in% c(120, 130),
-                        "TANB0",
-                        Node),
-         Node = if_else(SiteID %in% c('MC1', 'MC2', 'MCJ', 'MCN'),
-                       'MCN',
-                       Node),
-         Node = if_else(SiteID == 'ICH',
-                       'ICHB0',
-                       Node),
-         Node = if_else(grepl('522\\.', RKM) & RKMTotal > 538,
-                       'ICHA0',
-                       Node),
-         Node = if_else(SiteID == 'JD1',
-                       'JD1B0',
-                       Node),
-         Node = if_else(SiteID %in% c('30M', 'BR0', 'JDM', 'SJ1', 'SJ2', 'MJ1'),
-                       'JD1A0',
-                       Node),
-         Node = if_else(SiteID != 'JD1' & as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) < 351,
-                       'BelowJD1',
-                       Node),
-         Node = if_else(SiteID == 'PRA',
-                        'PRAB0',
-                        Node),
-         Node = if_else(SiteID != 'PRA' & as.integer(stringr::str_split(RKM, '\\.', simplify = T)[,1]) >= 639,
-                        'PRAA0',
-                        Node))
+configuration <-
+  org_config |>
+  mutate(across(node,
+                ~ case_when(site_code %in% c("PRO") ~ "PRO",
+                            site_code %in% c("NFTEAN",
+                                             "TEANAR",
+                                             "TEANM",
+                                             "TEANWF",
+                                             "NFT",
+                                             "UMT") ~ "LMT_U",
+                            site_code %in% c("ROZ",
+                                             "RZF") &
+                              antenna_id %in% c('01', '02', '03') ~ "ROZ",
+                            site_code == "ROZ" &
+                              antenna_id %in% c('A1', 'A2', 'C0') ~ NA_character_,
+                            site_code == "ROZ" &
+                              site_type == "MRR" ~ "ROZ",
+                            site_code %in% c('MC1',
+                                             'MC2',
+                                             'MCJ',
+                                             'MCN') ~ 'MCN',
+                            site_code == 'ICH' ~ "ICH_D",
+                            str_detect(rkm, '^522\\.') &
+                              rkm_total > 538 ~ 'ICH_U',
+                            as.integer(stringr::str_split_i(rkm, '\\.', 1)) == 351 &
+                              site_code != "JD1" ~ "JD1_U",
+                            site_code == 'JD1' ~ 'JD1_D',
+                            site_code != 'JD1' &
+                              as.integer(stringr::str_split_i(rkm, '\\.', 1)) < 351 &
+                              str_detect(site_code, "^COLR", negate = T) ~ 'JDA',
+                            site_code %in% c("PRA",
+                                             "PRDLDR") ~ "PRA_D",
+                            site_code != "PRA" &
+                              as.integer(stringr::str_split_i(rkm, '\\.', 1)) >= 639 ~ "PRA_U",
+                            .default = .)),
+         across(c(latitude,
+                  longitude),
+                ~ case_when(site_code == "SWK" &
+                              is.na(.) ~ unique(.[site_code == "SWAUKC"]),
+                            .default = .)))
 
 
 # Node network for DABOM
-site_df = writePRONodeNetwork()
 
-# Save file.
-save(configuration,
-     site_df,
-     file = 'analysis/data/derived_data/site_config.rda')
+# get spatial object of sites used in model
+sites_sf <-
+  writeOldNetworks()$Prosser %>%
+  mutate(across(c(SiteID,
+                  Step2,
+                  Step3),
+                ~ case_match(.,
+                             "BelowJD1" ~ "JDA",
+                             .default = .)),
+         path = str_replace(path, "BelowJD1", "JDA")) %>%
+  rename(site_code = SiteID) |>
+  left_join(configuration,
+            by = join_by(site_code)) %>%
+  group_by(site_code) %>%
+  filter(config_id == max(config_id)) %>%
+  ungroup() %>%
+  select(site_code,
+         site_name,
+         site_type = site_type_name,
+         type = site_type,
+         rkm,
+         site_description = site_description,
+         latitude, longitude) %>%
+  distinct() %>%
+  filter(!is.na(latitude)) %>%
+  st_as_sf(coords = c("longitude",
+                      "latitude"),
+           crs = 4326) %>%
+  st_transform(crs = 5070)
+
+# tmp <- writeOldNetworks()$Prosser
+# pro_sites <- tmp$SiteID
+# miss_sites <- pro_sites[!pro_sites %in% sites_sf$site_code]
+# tmp |>
+#   filter(SiteID %in% miss_sites)
 
 
 #-----------------------------------------------------------------
-# which sites are in site_df, but not in the PTAGIS configuration file?
-site_df %>%
-  filter(!(SiteID %in% configuration$SiteID |
-             SiteID %in% configuration$Node))
+# download the NHDPlus v2 flowlines
+nhd_list = queryFlowlines(sites_sf = sites_sf,
+                          root_site_code = root_site,
+                          min_strm_order = 2)
 
+# compile the upstream and downstream flowlines
+flowlines = nhd_list$flowlines
+
+#-----------------------------------------------------------------
+# plot the flowlines and the sites
+ggplot() +
+  geom_sf(data = flowlines,
+          aes(color = as.factor(streamorde),
+              linewidth = streamorde)) +
+  scale_color_viridis_d(direction = -1,
+                        option = "D",
+                        name = "Stream\nOrder",
+                        end = 0.9) +
+  scale_linewidth_continuous(range = c(0.2, 2),
+                             name = "Stream\nOrder") +
+  geom_sf(data = nhd_list$basin,
+          fill = NA,
+          lwd = 2) +
+  geom_sf(data = sites_sf,
+          size = 4,
+          color = "black") +
+  geom_sf_label(data = sites_sf,
+                aes(label = site_code)) +
+  geom_sf_label(data = sites_sf %>%
+                  filter(site_code == root_site),
+                aes(label = site_code),
+                color = "red") +
+  theme_bw() +
+  theme(axis.title = element_blank())
+
+
+#-----------------------------------------------------------------
+# build parent child table
+parent_child <-
+  sites_sf |>
+  buildParentChild(flowlines,
+                   # rm_na_parent = T,
+                   add_rkm = F) |>
+  editParentChild(fix_list =
+                    list(c("JDA", 'MCN', "PRO"),
+                         c("JDA", 'JD1', "PRO"),
+                         c(NA, "JDA", "PRO"),
+                         c("MCN", 'PRA', "PRO"),
+                         c("MCN", "ICH", "PRO")),
+                  switch_parent_child =
+                    list(c("MCN", "PRO")))
+
+# add RKMs from configuration file (since we had to fix at least one from PTAGIS)
+parent_child <-
+  parent_child |>
+  left_join(configuration %>%
+              select(parent = site_code,
+                     parent_rkm = rkm) %>%
+              distinct(),
+            by = "parent") %>%
+  left_join(configuration %>%
+              select(child = site_code,
+                     child_rkm = rkm) %>%
+              distinct(),
+            by = "child") %>%
+  distinct()
+
+
+#-----------------------------------------------------------------
+# Save some configuration stuff
+save(configuration,
+     sites_sf,
+     flowlines,
+     parent_child,
+     file = here('analysis/data/derived_data/site_config.rda'))
+
+
+#-----------------------------------------------------------------
+# pull out configuration info about all sites in the model
+pro_sites <- configuration %>%
+  filter(site_code %in% sites_sf$site_code) %>%
+  select(node) %>%
+  distinct() %>%
+  left_join(configuration %>%
+              select(site_code,
+                     node,
+                     site_name,
+                     site_type,
+                     site_description) %>%
+              distinct(),
+            multiple = "all") %>%
+  select(site_code,
+         node,
+         site_name,
+         site_type,
+         site_description) %>%
+  distinct() %>%
+  arrange(node, site_code)
+
+write_csv(pro_sites,
+          file = here("analysis/data/derived_data",
+                      "PRO_DABOM_sites_nodes.csv"))
+
+# save flowlines
+st_write(flowlines,
+         dsn = here("analysis/data/derived_data",
+                    "PRO_flowlines.gpkg"))
+
+# save parent child table
+parent_child %>%
+  write_csv(file = here("analysis/data/derived_data",
+                        "PRO_DABOM_ParentChild.csv"))
+
+# save relevant parts of configuration file
 configuration %>%
-# org_config %>%
-  filter(grepl("ROZ", SiteID)) %>%
-  # filter(ConfigID == 130) %>%
-  # as.data.frame()
-  select(SiteID, ConfigID, SiteName, Node, AntennaID, AntennaGroup, SiteDescription)
+  filter(site_code %in% sites_sf$site_code) %>%
+  write_csv(file = here("analysis/data/derived_data",
+                        "PRO_DABOM_Configuration.csv"))
 
 
 #-----------------------------------------------------------------
 # Build network diagram
+# simple
+pc_graph = plotNodes(parent_child,
+                     layout = "tree")
+pc_graph
+
+# add nodes
+pc_nodes_graph = parent_child %>%
+  addParentChildNodes(configuration) %>%
+  plotNodes()
+pc_nodes_graph
+
+
 #-----------------------------------------------------------------
-library(tidygraph)
+# A fancier version
+#-----------------------------------------------------------------
 library(ggraph)
-library(netplot)
 
-# build parent-child table
-# which spawn year are we dealing with?
-yr = 2019
-# start date is July 1 of the previous year
-start_date = paste0(yr - 1, '0701')
+# assign branch names to each site
+node_order <-
+  buildNodeOrder(parent_child) %>%
+  mutate(branch_nm = case_when(node == "PRO" ~ "Start",
+                               str_detect(path, "TOP") ~ "Toppenish",
+                               str_detect(path, "SUN") &
+                                 str_detect(path, "ROZ", negate = T) ~ "Naches",
+                               str_detect(path, "ROZ") ~ "Upper Yakima",
+                               str_detect(path, "SAT") ~ "Satus",
+                               .default = "Downstream")) |>
+  mutate(
+    across(
+      branch_nm,
+      ~ factor(.,
+               levels = c("Start",
+                          "Satus",
+                          "Toppenish",
+                          "Naches",
+                          "Upper Yakima",
+                          "Downstream"))
+    )
+  )
 
-# build parent-child table
-par_ch_node = createParentChildDf(site_df,
-                                  configuration,
-                                  startDate = start_date)
-
-root_node = par_ch_node %>%
-  filter(nodeOrder == 1) %>%
-  pull(ParentNode)
-
-par_ch_site = par_ch_node %>%
-  select(ParentNode, ChildNode) %>%
-  mutate(ParentSite = str_remove(ParentNode, 'A0$'),
-         ParentSite = str_remove(ParentSite, 'B0$'),
-         ChildSite = str_remove(ChildNode, 'A0$'),
-         ChildSite = str_remove(ChildSite, 'B0$')) %>%
-  filter(ParentSite != ChildSite) %>%
-  select(ParentSite,
-         ChildSite) %>%
-  distinct() %>%
-  bind_rows(tibble(ParentSite = root_node,
-                   ChildSite = root_node)) %>%
-  left_join(configuration %>%
-              select(ChildSite = SiteID,
-                     SiteType,
-                     RKM, RKMTotal,
-                     lat = Latitude,
-                     long = Longitude) %>%
-              distinct()) %>%
-  filter(!(ChildSite %in% ChildSite[duplicated(ChildSite)] & SiteType == 'MRR')) %>%
-  mutate(SiteType = if_else(is.na(SiteType) & ChildSite == 'BelowJD1',
-                       configuration %>%
-                         filter(SiteID == 'CHINOR') %>%
-                         pull(SiteType),
-                       SiteType),
-         lat = if_else(is.na(lat) & ChildSite == 'BelowJD1',
-                       configuration %>%
-                         filter(SiteID == 'CHINOR') %>%
-                         pull(Latitude),
-                       lat),
-         long = if_else(is.na(long) & ChildSite == 'BelowJD1',
-                        configuration %>%
-                          filter(SiteID == 'CHINOR') %>%
-                          pull(Longitude),
-                        long))
-
-# add nodes for black boxes
-bbNodes = par_ch_site %>%
-  group_by(ParentSite) %>%
-  summarise(nChild = n_distinct(ChildSite)) %>%
-  filter(nChild > 1) %>%
-  left_join(par_ch_site %>%
-              select(-ParentSite,
-                     ParentSite = ChildSite,
-                     SiteType:long)) %>%
-  mutate(SiteType = 'BB') %>%
-  mutate(ChildSite = paste0(ParentSite, '_bb')) %>%
-  select(-nChild) %>%
-  distinct()
-
-par_ch_site %<>%
-  bind_rows(bbNodes)
-
-node_order = par_ch_site %>%
-  rename(ParentNode = ParentSite,
-         ChildNode = ChildSite) %>%
-  getValidPaths(root_site = 'PRO') %>%
-  createNodeOrder(configuration,
-                  site_df,
-                  step_num = 2) %>%
-  select(-NodeSite) %>%
-  mutate(Group = fct_recode(Group,
-                            'DwnStrm' = 'BelowJD1',
-                            'DwnStrm' = 'JD1',
-                            'DwnStrm' = 'MCN',
-                            'DwnStrm' = 'ICH',
-                            'DwnStrm' = 'PRA'),
-         Group = as.character(Group),
-         Group = if_else(grepl('ROZ', Path) | Node == 'LWC',
-                         'ROZ',
-                         Group),
-         Group = if_else(Node == 'PRO',
-                         'PRO',
-                         Group),
-         Group = factor(Group,
-                        levels = c('PRO', 'DwnStrm', 'SAT', 'TOP', 'SUN', 'ROZ')),
-         # Group = fct_explicit_na(Group),
-         BranchNum = as.numeric(Group)) %>%
-  arrange(Group, NodeOrder, RKM)
-
-# build table of nodes
-nodes = par_ch_site %>%
-  select(ParentSite, ChildSite) %>%
-  gather(type, node) %>%
-  select(node) %>%
-  distinct() %>%
-  left_join(par_ch_site %>%
-              select(-starts_with("Parent")) %>%
-              rename(node = ChildSite)) %>%
+# construct nodes and edges of a graph
+nodes = buildNodeGraph(parent_child) %>%
+  as_tibble() %>%
   left_join(node_order %>%
-              select(node = Node,
-                     NodeOrder,
-                     Group)) %>%
-  mutate(NodeOrder = if_else(node == 'PRO_bb',
-                         1.5,
-                         as.numeric(NodeOrder))) %>%
-  mutate(Group = if_else(node == 'PRO_bb',
-                         'PRO',
-                         as.character(Group))) %>%
-  mutate(Group = factor(Group,
-                        levels = levels(node_order$Group))) %>%
-  arrange(Group, NodeOrder, RKM) %>%
-  mutate(index = 1:n()) %>%
-  rename(label = node) %>%
-  select(index, label, everything())
+              select(label = node,
+                     branch_nm))
+edges = parent_child %>%
+  left_join(nodes, by = c('parent' = 'label')) %>%
+  rename(from = index) %>%
+  left_join(nodes, by = c('child' = 'label')) %>%
+  rename(to = index) %>%
+  select(from, to)
 
-nodes %<>%
-  left_join(par_ch_site %>%
-              group_by(label = ParentSite) %>%
-              summarise(nChilds = n_distinct(ChildSite)) %>%
-              bind_rows(par_ch_site %>%
-                          filter(!ChildSite %in% ParentSite) %>%
-                          select(label = ChildSite) %>%
-                          mutate(nChilds = 0)) %>%
-              mutate(nodeType = if_else(nChilds == 0,
-                                        'Terminal',
-                                        if_else(nChilds == 1,
-                                                'PassThru', 'Branch')))) %>%
-  mutate(nodeType = if_else(SiteType == 'BB',
-                            'BB', nodeType),
-         nodeType = factor(nodeType,
-                           levels = c('Branch',
-                                      'PassThru',
-                                      'Terminal',
-                                      'BB')))
+node_graph = tidygraph::tbl_graph(nodes = nodes,
+                                  edges = edges)
 
-# build table of edges (connecting nodes)
-edges = par_ch_site %>%
-  filter(ParentSite != ChildSite) %>%
-  select(from = ParentSite,
-         to = ChildSite) %>%
-  distinct() %>%
-  mutate(edgeID = 1:n()) %>%
-  gather(direction, label, -edgeID) %>%
-  left_join(nodes %>%
-              select(index, label)) %>%
-  select(-label) %>%
-  spread(direction, index) %>%
-  select(-edgeID)
-
-# one graph with all sites
-myGraph = tbl_graph(nodes = nodes,
-                    edges = edges)
-
-
-#--------------------------------------------------
-# tidygraph
-
-# myLayout = c('kk')
-# myLayout = c('dendrogram')
-# myLayout = c('treemap')
-# myLayout = c('partition')
-# myLayout = c('circlepack')
-myLayout = c('star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds',
-             'randomly', 'fr', 'kk', 'drl', 'lgl')[4]
-
-c('star', 'dh', 'lgl')
-
-set.seed(8)
-allGr_p = myGraph %>%
-  # ggraph(layout = 'igraph',
-  #        algorithm = 'nicely') +
-  # ggraph(layout = 'igraph',
-  #        algorithm = 'fr') +
-  ggraph(layout = myLayout) +
-  geom_edge_diagonal() +
-  # geom_edge_link() +
-  geom_node_point(aes(color = Group,
-                      shape = nodeType),
-                  size = 7) +
-  geom_node_label(aes(label = label),
-                  # repel = T,
-                  size = 2,
-                  label.padding = unit(0.1, 'lines'),
-                  label.size = 0.1) +
-  # geom_node_text(aes(label = label),
-  #                 # repel = T,
-  #                 size = 2) +
-  scale_color_brewer(palette = 'Set1',
-                     guide = 'none') +
-  scale_shape_manual(values = c('Branch' = 19,
-                                'PassThru' = 18,
-                                'Terminal' = 15,
-                                'BB' = 22),
-                     guide = 'none') +
+node_p = node_graph %>%
+  ggraph(layout = "tree",
+         circular = F,
+         flip.y = F) +
+  geom_edge_link(arrow = arrow(length = unit(2, 'mm'),
+                               type = "closed"),
+                 end_cap = circle(4, 'mm')) +
+  geom_node_point(size = 7,
+                  aes(color = branch_nm)) +
   theme_graph(base_family = 'Times') +
-  theme(legend.position = 'bottom')
-allGr_p
+  theme(legend.position = 'none') +
+  scale_color_brewer(palette = "Set2",
+                     na.value = "black") +
+  geom_node_label(aes(label = label),
+                  size = 1.5,
+                  label.padding = unit(0.1, 'lines'),
+                  label.size = 0.1)
 
-#--------------------------------------------------
-# netplot
-set.seed(8)
-# l = igraph::layout_with_fr(myGraph)
-# l = igraph::layout_with_kk(myGraph)
-# l = igraph::layout_with_dh(myGraph)
-# l = igraph::layout_with_gem(myGraph)
-# l = igraph::layout_nicely(myGraph)
-# l = igraph::layout_on_grid(myGraph)
-# l = igraph::layout_in_circle(myGraph)
-# l = igraph::layout_with_graphopt(myGraph)
-# l = igraph::layout_with_sugiyama(myGraph)
-l = igraph::layout_as_tree(myGraph,
-                           flip.y = F)
+node_p
 
-# l = igraph::layout_with_lgl(myGraph,
-#                             root = 1)
-#
-# l = igraph::layout_with_mds(myGraph,
-#                             dist = dist(st_coordinates(nodes_sf),
-#                                         method = 'euclidean',
-#                                         diag = T,
-#                                         upper = T) %>%
-#                               as.matrix(),
-#                             dim = 2)
+# save as pdf
+ggsave(here("analysis/figures",
+            "Prosser_DABOM_sites.pdf"),
+       node_p,
+       width = 9,
+       height = 6)
 
-# set of colors
-myColors = RColorBrewer::brewer.pal(nlevels(nodes$Group), 'Set1')
-# myColors = viridis::plasma(nlevels(nodes$Group))
-# myColors = gray.colors(nlevels(nodes$Group), start = 0.3, end = 0.9)
-# myColors = c(rep('darkgray', 3), 'black')
-
-# myColors = sample(myColors, length(myColors))
-
-# myLabs = nodes$label
-# myLabs[grepl('_bb$', myLabs)] = NA
-
-pro_sites = nplot(myGraph,
-                  layout = l,
-                  vertex.color = myColors[nodes$Group],
-                  # vertex.color = myColors[nodes$nodeType],
-                  # vertex.size = 1,
-                  vertex.size.range = c(0.1, 0.05),
-                  vertex.nsides = c(100, 3, 4, 4)[nodes$nodeType],
-                  vertex.rot = c(0, 1.55, 0.78, 0.78)[nodes$nodeType],
-                  vertex.label = nodes$label,
-
-                             # vertex.label = myLabs,
-                  vertex.label.fontsize = 12,
-                  # edge.curvature = 0)
-                  edge.curvature = pi/6)
-pro_sites
+# save as png
+ggsave(here("analysis/figures",
+            "Prosser_DABOM_sites.png"),
+       node_p,
+       width = 9,
+       height = 6)
