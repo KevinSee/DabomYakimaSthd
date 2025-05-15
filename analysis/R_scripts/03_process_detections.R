@@ -129,10 +129,10 @@ all_paths = buildPaths(addParentChildNodes(parent_child,
 
 tag_path = summarizeTagData(filter_obs,
                             bio_df) %>%
-  select(tag_code, spawn_node) %>%
+  select(tag_code, final_node) %>%
   distinct() %>%
   left_join(all_paths,
-            by = c('spawn_node' = 'end_loc')) %>%
+            by = c('final_node' = 'end_loc')) %>%
   rename(tag_path = path)
 
 # check if any user definied keep_obs lead to invalid paths
@@ -188,7 +188,7 @@ sum(duplicated(tag_summ$tag_code))
 #   as.data.frame()
 
 # where are tags assigned?
-janitor::tabyl(tag_summ, spawn_node) %>%
+janitor::tabyl(tag_summ, final_node) %>%
   arrange(desc(n)) %>%
   janitor::adorn_totals()
 
@@ -235,7 +235,7 @@ brnch_df <- addParentChildNodes(parent_child,
 
 tag_summ %<>%
   left_join(brnch_df %>%
-              select(spawn_node = node,
+              select(final_node = node,
                      branch_nm))
 
 # how many tags in each branch?
