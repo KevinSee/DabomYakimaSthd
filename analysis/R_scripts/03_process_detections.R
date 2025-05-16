@@ -1,7 +1,7 @@
 # Author: Kevin See
 # Purpose: clean PTAGIS data with PITcleanr
 # Created: 2/21/20
-# Last Modified: 4/10/2023
+# Last Modified: 5/16/25
 # Notes:
 
 #-----------------------------------------------------------------
@@ -22,7 +22,7 @@ load(here('analysis/data/derived_data',
 # which spawn year are we dealing with?
 yr = 2024
 
-for(yr in c(2012:2022)) {
+# for(yr in c(2012:2022)) {
   cat(paste("Working on", yr, "\n"))
 
 #-----------------------------------------------------------------
@@ -80,7 +80,7 @@ rm(prepped_ch,
    ptagis_obs,
    ptagis_file)
 
-}
+# }
 
 
 
@@ -111,13 +111,34 @@ prepped_ch |>
 
 
 # read in the updated version of the PITcleanr output Excel file
-yn_df = read_excel(here('analysis',
-                        "data",
-                        "raw_data",
-                        "YakimaNation",
-                        paste0('PRO_Steelhead_', yr, '.xlsx')))
+yn_df <-
+  read_excel(here('analysis',
+                  "data",
+                  "raw_data",
+                  "YakimaNation",
+                  # paste0('PRO_Steelhead_', yr, '.xlsx'))) |>
+                  paste0('PRO_Steelhead_', yr, '_KS.xlsx'))) |>
+  mutate(across(c(duration,
+                  travel_time),
+                as.numeric),
+         across(c(duration,
+                  travel_time),
+                ~ as.difftime(., units = "mins")))
 
-filter_obs = yn_df %>%
+if(!"node_order" %in% names(yn_df)) {
+  no <- parent_child |>
+    addParentChildNodes(configuration) |>
+    buildNodeOrder()
+
+  yn_df <-
+    yn_df |>
+    left_join(no)
+}
+
+
+filter_obs <-
+  yn_df %>%
+  # prepped_ch |>
   mutate(user_keep_obs = if_else(is.na(user_keep_obs),
                                  auto_keep_obs,
                                  user_keep_obs)) %>%
@@ -127,17 +148,20 @@ filter_obs = yn_df %>%
 all_paths = buildPaths(addParentChildNodes(parent_child,
                                            configuration))
 
-tag_path = summarizeTagData(filter_obs,
-                            bio_df) %>%
-  select(tag_code, final_node) %>%
+tag_path <-
+  estimateFinalLoc(filter_obs) |>
+  select(tag_code,
+         final_node) %>%
   distinct() %>%
   left_join(all_paths,
-            by = c('final_node' = 'end_loc')) %>%
+            by = join_by(final_node == end_loc)) %>%
   rename(tag_path = path)
 
-# check if any user definied keep_obs lead to invalid paths
-error_tags = filter_obs %>%
-  left_join(tag_path) %>%
+# check if any user defined keep_obs lead to invalid paths
+error_tags <-
+  filter_obs %>%
+  left_join(tag_path,
+            by = join_by(tag_code)) %>%
   rowwise() %>%
   mutate(node_in_path = str_detect(tag_path, node)) %>%
   ungroup() %>%
@@ -159,7 +183,8 @@ prepped_ch %>%
   tabyl(auto_keep_obs,
         user_keep_obs)
 
-prepped_ch = prepped_ch %>%
+prepped_ch <-
+  prepped_ch %>%
   select(-user_keep_obs) %>%
   left_join(yn_df %>%
               select(tag_code:max_det,
@@ -219,24 +244,22 @@ prepped_ch %>%
 brnch_df <- addParentChildNodes(parent_child,
                                 configuration) %>%
   buildNodeOrder() %>%
-  mutate(branch_nm = if_else(node == "PRO",
-                             "Start",
-                             if_else(str_detect(path, "TOP"),
-                                     "Toppenish",
-                                     if_else(str_detect(path, "SUN") & str_detect(path, "ROZ", negate = T),
-                                             "Naches",
-                                             if_else(str_detect(path, "ROZ"),
-                                                     "UpperYakima",
-                                                     if_else(str_detect(path, "SAT"),
-                                                             "Satus",
-                                                             "Downstream")))))) %>%
+  mutate(branch_nm = case_when(node == "PRO" ~ "Start",
+                               str_detect(path, "TOP") ~ "Toppenish",
+                               str_detect(path, "SUN") &
+                                 str_detect(path, "ROZ", negate = T) ~ "Naches",
+                               str_detect(path, "ROZ") ~ "UpperYakima",
+                               str_detect(path, "SAT") ~ "Satus",
+                               .default = "Downstream")) |>
   mutate(across(branch_nm,
                 as.factor))
 
-tag_summ %<>%
+tag_summ <-
+  tag_summ |>
   left_join(brnch_df %>%
               select(final_node = node,
-                     branch_nm))
+                     branch_nm),
+            by = join_by(final_node))
 
 # how many tags in each branch?
 tag_summ %>%
