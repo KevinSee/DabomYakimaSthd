@@ -51,6 +51,8 @@ configuration <-
                                              'MC2',
                                              'MCJ',
                                              'MCN') ~ 'MCN',
+                            # map the downstream juvenile bypass (in a canal) to the adjacent in-stream site
+                            site_code == "SSJ" ~ "SUN_U",
                             site_code == 'ICH' ~ "ICH_D",
                             str_detect(rkm, '^522\\.') &
                               rkm_total > 538 ~ 'ICH_U',
