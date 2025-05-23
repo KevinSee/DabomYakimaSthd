@@ -22,7 +22,7 @@ load(here('analysis/data/derived_data/site_config.rda'))
 # Load required DABOM data
 #-----------------------------------------------------------------
 # set year
-yr = 2020
+yr = 2024
 
 # for(yr in 2011:2019) {
 #   cat(paste("Working on", yr, "\n\n"))
@@ -38,6 +38,12 @@ filter_obs = prepped_ch %>%
                                  user_keep_obs)) %>%
   filter(user_keep_obs)
 
+if(n_distinct(filter_obs$tag_code) != n_distinct(bio_df$tag_code)) {
+
+  filter_obs <-
+    filter_obs |>
+    filter(tag_code %in% bio_df$tag_code)
+}
 
 # determine origin of each fish
 fish_origin = bio_df %>%

@@ -20,7 +20,7 @@ library(here)
 # set species
 spp = "Steelhead"
 # set year
-yr = 2020
+yr = 2024
 
 #-----------------------------------------------------------------
 # load configuration and site_df data
@@ -44,26 +44,25 @@ detect_summ %>%
   arrange(desc(sd))
 
 # compile all movement probabilities, and multiply them appropriately
-trans_df = compileTransProbs_PRO(dabom_mod,
-                                 parent_child) %>%
-  mutate(origin = recode(origin,
-                         "2" = "H",
-                         "1" = "W"))
+trans_post = extractTransPost(dabom_mod,
+                              parent_child,
+                              configuration)
+
+
+trans_df = compileTransProbs(trans_post,
+                             parent_child) |>
+  select(-main_branch) |>
+  mutate(across(origin,
+                ~ case_match(.,
+                             1 ~ "W",
+                             2 ~ "H",
+                             .default = NA_character_)))
 
 # summarize transition probabilities
-trans_summ = trans_df %>%
-  group_by(origin, param) %>%
-  summarise(mean = mean(value),
-            median = median(value),
-            mode = estMode(value),
-            sd = sd(value),
-            skew = moments::skewness(value),
-            kurtosis = moments::kurtosis(value),
-            lowerCI = coda::HPDinterval(coda::as.mcmc(value))[,1],
-            upperCI = coda::HPDinterval(coda::as.mcmc(value))[,2],
-            .groups = "drop") %>%
-  mutate(across(c(mean, median, mode, sd, matches('CI$')),
-                ~ if_else(. < 0, 0, .)))
+trans_summ = summarisePost(trans_df,
+                           value,
+                           param,
+                           origin)
 
 #-----------------------------------------------------------------
 # total escapement past Prosser
@@ -84,12 +83,14 @@ tot_win_cnt = getWindowCounts(dam = 'PRO',
 # total counts from Yakima Nation (use these)
 yak_cnts = tibble(year = c(2012:2014,
                            2019,
-                           2020),
+                           2020,
+                           2024),
                   tot_win_cnt = c(6359,
                                   4787,
                                   4143,
                                   1132,
-                                  1657))
+                                  1657,
+                                  1550))
 
 if(yr %in% yak_cnts$year) {
   tot_win_cnt = yak_cnts %>%
@@ -104,19 +105,17 @@ escape_post <- trans_df %>%
          escp = value * tot_escp)
 
 # summary statistics
-escape_summ = escape_post %>%
-  group_by(location = param) %>%
-  summarise(mean = mean(escp),
-            median = median(escp),
-            mode = estMode(escp),
-            sd = sd(escp),
-            skew = moments::skewness(escp),
-            kurtosis = moments::kurtosis(escp),
-            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
-            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %>%
-  mutate(across(c(mean, median, mode, sd, matches('CI$')),
-                ~ if_else(. < 0, 0, .))) %>%
-  ungroup()
+escape_summ = summarisePost(escape_post,
+                            escp,
+                            location = param,
+                            origin) %>%
+  mutate(across(c(mean, median, mode, sd, skew, kurtosis, matches('CI$')),
+                ~ round(.,
+                        digits = 2))) %>%
+  arrange(desc(origin), location) %>%
+  tibble::add_column(species = "Steelhead",
+                     spawn_year = yr,
+                     .before = 0)
 
 # generate population level estimates
 pop_summ = escape_post %>%
@@ -138,20 +137,8 @@ pop_summ = escape_post %>%
                                  'Naches',
                                  'Upper Yakima',
                                  'Sunnyside_bb'))) %>%
-  group_by(pop) %>%
-  summarise(mean = mean(escp),
-            median = median(escp),
-            mode = estMode(escp),
-            sd = sd(escp),
-            skew = moments::skewness(escp),
-            kurtosis = moments::kurtosis(escp),
-            lowerCI = coda::HPDinterval(coda::as.mcmc(escp))[,1],
-            upperCI = coda::HPDinterval(coda::as.mcmc(escp))[,2]) %>%
-  mutate_at(vars(mean, median, mode, sd, matches('CI$')),
-            list(~ if_else(. < 0, 0, .))) %>%
-  ungroup()
-
-
+  summarisePost(value = escp,
+                pop)
 
 # compare with dam counts at Roza dam
 roz_win_cnt = getWindowCounts(dam = 'ROZ',
@@ -199,16 +186,17 @@ save(tag_summ,
 # write results to an Excel file
 save_list = list('Population Escapement' = pop_summ %>%
                    select(-skew, -kurtosis) %>%
-                   mutate(across(-pop,
+                   mutate(across(mean:upper_ci,
                                  ~ round(.,
                                          digits = 1))),
                  'All Escapement' = escape_summ %>%
                    select(-skew, -kurtosis) %>%
-                   mutate(across(-location,
+                   mutate(across(mean:upper_ci,
                                  ~ round(.,
                                          digits = 1))),
                  'Detection' = detect_summ %>%
-                   mutate(across(-node,
+                   select(-skew, -kurtosis) %>%
+                   mutate(across(mean:upper_ci,
                                  ~ round(.,
                                          digits = 3))),
                  "Tag Summary" = tag_summ)

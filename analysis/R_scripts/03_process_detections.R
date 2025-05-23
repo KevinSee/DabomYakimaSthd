@@ -125,6 +125,10 @@ yn_df <-
                   travel_time),
                 ~ as.difftime(., units = "mins")))
 
+identical(dim(prepped_ch),
+          dim(yn_df))
+
+
 if(!"node_order" %in% names(yn_df)) {
   no <- parent_child |>
     addParentChildNodes(configuration) |>
@@ -192,7 +196,7 @@ prepped_ch <-
 
 save(parent_child, configuration, start_date, bio_df, prepped_ch,
      file = here('analysis/data/derived_data/PITcleanr',
-                 paste0('UC_Steelhead_', yr, '.rda')))
+                 paste0('PRO_Steelhead_', yr, '.rda')))
 
 
 

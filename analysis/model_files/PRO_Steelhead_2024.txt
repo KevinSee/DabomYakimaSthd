@@ -2,38 +2,38 @@ model {
 
 # Priors for detection probabilities 
 
-	 ICH_D_p ~ dbeta(1, 1);
-	 ICH_U_p ~ dbeta(1, 1);
-	 JD1_D_p ~ dbeta(1, 1);
-	 JD1_U_p ~ dbeta(1, 1);
-	 JDA_p ~ dbeta(1, 1);
-	 MCN_p ~ dbeta(1, 1);
-	 PRA_D_p ~ dbeta(1, 1);
-	 PRA_U_p ~ dbeta(1, 1);
-	 SAT_D_p ~ dbeta(1, 1);
-	 SAT_U_p ~ dbeta(1, 1);
+	 ICH_D_p <- 0; # no detections / not in operation
+	 ICH_U_p <- 0; # no detections / not in operation
+	 JD1_D_p <- 0; # no detections / not in operation
+	 JD1_U_p <- 1; # Single array, no upstream detections
+	 JDA_p <- 1; # Single array, no upstream detections
+	 MCN_p <- 0; # no detections / not in operation
+	 PRA_D_p <- 0; # no detections / not in operation
+	 PRA_U_p <- 0; # no detections / not in operation
+	 SAT_D_p <- 1; # Single array, no upstream detections
+	 SAT_U_p <- 0; # no detections / not in operation
 	 SUN_D_p ~ dbeta(1, 1);
 	 SUN_U_p ~ dbeta(1, 1);
 	 AH1_D_p ~ dbeta(1, 1);
 	 AH1_U_p ~ dbeta(1, 1);
-	 LNR_p ~ dbeta(1, 1);
-	 LWC_D_p ~ dbeta(1, 1);
-	 LWC_U_p ~ dbeta(1, 1);
+	 LNR_p <- 0; # no detections / not in operation
+	 LWC_D_p <- 0; # no detections / not in operation
+	 LWC_U_p <- 0; # no detections / not in operation
 	 ROZ_p ~ dbeta(1, 1);
-	 LMC_D_p ~ dbeta(1, 1);
-	 LMC_U_p ~ dbeta(1, 1);
-	 UMC_D_p ~ dbeta(1, 1);
-	 UMC_U_p ~ dbeta(1, 1);
-	 LMT_D_p ~ dbeta(1, 1);
-	 LMT_U_p ~ dbeta(1, 1);
+	 LMC_D_p <- 0; # no detections / not in operation
+	 LMC_U_p <- 0; # no detections / not in operation
+	 UMC_D_p <- 0; # no detections / not in operation
+	 UMC_U_p <- 0; # no detections / not in operation
+	 LMT_D_p <- 0; # no detections / not in operation
+	 LMT_U_p <- 0; # no detections / not in operation
 	 SWK_D_p ~ dbeta(1, 1);
 	 SWK_U_p ~ dbeta(1, 1);
 	 TAN_D_p ~ dbeta(1, 1);
 	 TAN_U_p ~ dbeta(1, 1);
 	 TOP_D_p ~ dbeta(1, 1);
 	 TOP_U_p ~ dbeta(1, 1);
-	 SM1_D_p ~ dbeta(1, 1);
-	 SM1_U_p ~ dbeta(1, 1);
+	 SM1_D_p <- 0; # no detections / not in operation
+	 SM1_U_p <- 0; # no detections / not in operation
 	 TP2_D_p ~ dbeta(1, 1);
 	 TP2_U_p ~ dbeta(1, 1);
 
@@ -87,8 +87,8 @@ model {
 	 omega_TOP[3, 1:n_branch_TOP] <- psi_TOP[2,]; 
 	 omega_TOP[3, (n_branch_TOP + 1)] <- 0; 
 
-	 phi_LMC[1] ~ dbeta(1, 1); 
-	 phi_LMC[2] ~ dbeta(1, 1); 
+	 phi_LMC[1] <- 0 # no upstream detections
+	 phi_LMC[2] <- 0 # no upstream detections
 
 # Where is each fish? 
 
